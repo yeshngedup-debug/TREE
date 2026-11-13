@@ -23,10 +23,5 @@
       "src": "/tree",
       "dest": "/tree"
     }
-  ],
-  "functions": {
-    "src/api/*": {
-      "runtime": "nodejs20"
-    }
-  }
+  ]
 }
