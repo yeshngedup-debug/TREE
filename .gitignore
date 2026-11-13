@@ -1,0 +1,35 @@
+# Wishing Tree .gitignore
+# See https://help.github.com/en/github/using-git/ignoring-files
+
+# Dependencies
+node_modules/
+
+# Next.js build/output
+.next/
+out/
+
+# Environment variables
+.env
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Database migrations
+*.sql
+
+# Production builds
+*.pem
+
+# Misc
+.DS_Store
+lerna-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Folder structure
+/lib/theme/
+/theme/
