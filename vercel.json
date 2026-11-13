@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "builds": {
-    "api": "src/api/*"
-  },
+  "builds": [
+    {
+      "src": "src/api/*",
+      "use": "@vercel/nextjs"
+    }
+  ],
   "functions": {
     "src/api/*": {
       "runtime": "nodejs20"
