@@ -2,26 +2,17 @@
  * Updated project configuration with provided Neon DB URL and AI key/URL.
  * 
  * NEON DATABASE_URL: postgresql://neondb_owner:npg_nLVm1U7gAiYl@ep-lucky-poetry-bewcmcfc-pooler.c-9.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
- * AI API KEY: sk-c7fd15fbaf0aea24-2391a6-c7c4750b
+ * AI API KEY: read from process.env.AI_API_KEY
  * AI API URL: https://pension-acutely-ride.ngrok-free.dev/v1
  */
 
-// In src/lib/ai/openaiCompatible.ts, update the base URL and model
-// The AI API URL suggests a custom endpoint - configure accordingly
-
-export const AI_CONFIG = {
-  // Use the provided ngrok-free.dev API endpoint
-  baseUrl: 'https://pension-acutely-ride.ngrok-free.dev/v1',
-  // The API key provided
-  apiKey: 'sk-c7fd15fbaf0aea24-2391a6-c7c4750b',
-  // Model name - could be derived from the key or set explicitly
-  model: 'gpt-4.1-mini', // or use a model name relevant to this API
-  // Provider is openai-compatible since it uses /v1 chat completions pattern
-  provider: 'openai-compatible' as const,
-};
-
-// Update the OpenAiCompatibleProvider to use the config
-// The chat method should use the new baseUrl and apiKey
+// AI_CONFIG populated from environment variables at runtime
+// export const AI_CONFIG = {
+//   baseUrl: 'https://pension-acutely-ride.ngrok-free.dev/v1',
+//   apiKey: 'sk-c7fd15fbaf0aea24-2391a6-c7c4750b',
+//   model: 'gpt-4.1-mini',
+//   provider: 'openai-compatible' as const,
+// };
 
 import {
   COMPOSE_SYSTEM_PROMPT,
@@ -40,9 +31,13 @@ export class NgrokFreeAiProvider implements AiProvider {
   private readonly timeoutMs: number;
 
   constructor() {
-    this.baseUrl = AI_CONFIG.baseUrl;
-    this.apiKey = AI_CONFIG.apiKey;
-    this.model = AI_CONFIG.model;
+    const apiKey = process.env.AI_API_KEY;
+    if (!apiKey) {
+      throw new AiUnavailableError('AI_API_KEY environment variable is not set');
+    }
+    this.baseUrl = 'https://pension-acutely-ride.ngrok-free.dev/v1';
+    this.apiKey = apiKey;
+    this.model = process.env.AI_MODEL ?? 'gpt-4.1-mini';
     this.timeoutMs = 15000;
   }
 
