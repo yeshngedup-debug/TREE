@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "builds": {
+    "api": "src/api/*"
+  },
+  "functions": {
+    "src/api/*": {
+      "runtime": "nodejs20"
+    }
+  },
+  "routes": {
+    "/api/*": "src/api/index.ts",
+    "/": "/index.html",
+    "/phone": "/phone",
+    "/tree": "/tree"
+  }
+}
