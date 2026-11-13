@@ -3,6 +3,8 @@
 
 # Dependencies
 node_modules/
+# Large binary blobs (exceed GitHub 100MB limit)
+*@next/swc*
 
 # Next.js build/output
 .next/
