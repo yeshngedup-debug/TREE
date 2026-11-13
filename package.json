@@ -5,7 +5,7 @@
   "description": "A real-time wishing tree: every leaf is a visitor's aspiration. Next.js + Neon Postgres on Vercel.",
   "scripts": {
     "dev": "next dev",
-    "build": "chmod +x node_modules/.bin/next && node node_modules/.bin/next build",
+    "build": "npx next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
