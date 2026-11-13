@@ -7,10 +7,22 @@
     }
   ],
   "routes": [
-    "/api/*",
-    "/",
-    "/phone",
-    "/tree"
+    {
+      "src": "/api/*",
+      "dest": "src/api/index.ts"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/phone",
+      "dest": "/phone"
+    },
+    {
+      "src": "/tree",
+      "dest": "/tree"
+    }
   ],
   "functions": {
     "src/api/*": {
