@@ -1,8 +1,9 @@
-# Wishing Tree — Full-Stack Guide
+# L Tree (Living Tree)
+A real-time wishing tree web app where every leaf is a visitor's aspiration.
 
 ## Overview
 
-A real-time wishing tree web app built with **Next.js 15** (React 19), **Neon Postgres**, and **Vercel**. Visitors submit aspirations from their phone; leaves animate onto the public tree screen instantly.
+**L Tree (Living Tree)** — A real-time wishing tree web app built with **Next.js 15** (React 19), **Neon Postgres**, and **Vercel**. Visitors submit aspirations from their phone; leaves animate onto the public tree screen instantly.
 
 **Two routes in one Vercel project:**
 
