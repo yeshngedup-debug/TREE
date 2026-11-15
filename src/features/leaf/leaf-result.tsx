@@ -149,6 +149,14 @@ export function LeafResult({
             <blockquote className="text-sm leading-5">
               “{leaf.leaf_message}”
             </blockquote>
+            {leaf.post_slug ? (
+              <Link
+                href={`/posts/${leaf.post_slug}`}
+                className="mt-2 inline-flex items-center gap-1 text-[10px] underline underline-offset-4"
+              >
+                Read the full post <ArrowUpRight size={11} />
+              </Link>
+            ) : null}
           </div>
         </section>
         <GuideRecommendation path={leaf.chamber_id} reason={leaf.chamber_reason} />
@@ -250,6 +258,14 @@ export function LeafResult({
           })}
         </p>
       </section>
+      {keepsake && leaf.post_slug ? (
+        <Link
+          href={`/posts/${leaf.post_slug}`}
+          className="flex min-h-11 items-center justify-center gap-2 rounded-full bg-card px-4 text-xs font-medium"
+        >
+          Read the full aspiration or idea <ArrowUpRight size={14} />
+        </Link>
+      ) : null}
       <div className="no-print grid grid-cols-2 gap-3">
         <Button variant="secondary" onClick={share}>
           <Share2 size={15} />

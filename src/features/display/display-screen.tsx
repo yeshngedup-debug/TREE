@@ -372,6 +372,15 @@ export function DisplayScreen() {
                     ? `Leaf #${active.id.slice(0, 6)} · ${themeFor(active.category).short}`
                     : "Scan to grow a new leaf."}
                 </p>
+                {active?.post_slug && !reflection ? (
+                  <Link
+                    href={`/posts/${active.post_slug}`}
+                    className="kiosk-post-link"
+                  >
+                    Read the full post{" "}
+                    <ArrowUpRight size={13} aria-hidden="true" />
+                  </Link>
+                ) : null}
                 {active && !reflection && (
                   <p className="kiosk-guide">
                     <MapPin size={13} />

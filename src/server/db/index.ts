@@ -2,6 +2,7 @@ import { randomBytes, randomUUID, createHash, createCipheriv, createDecipheriv }
 import { Pool, PoolClient, type QueryResult } from "pg";
 import {
   themes,
+  themeFor,
   type Leaf,
   type Theme,
   type TreeStats,
@@ -13,6 +14,11 @@ import {
   defaultTreeSettings,
   type TreeSettings,
 } from "@/lib/tree-settings";
+import {
+  communityCategorySeeds,
+  communityLeafMessage,
+  leafThemeForCategory,
+} from "@/lib/community";
 import {
   query as sqliteQuery,
   transaction as sqliteTransaction,
@@ -26,6 +32,10 @@ let pool: Pool | null = null;
 let sessionSecretValue = "";
 
 const useSqlite = Boolean(process.env.DATABASE_PATH);
+
+export function databaseProvider(): "sqlite" | "postgres" {
+  return useSqlite ? "sqlite" : "postgres";
+}
 
 if (useSqlite) {
   sessionSecretValue = sqliteGetSessionSecret();
@@ -130,11 +140,172 @@ if (useSqlite) {
         expires bigint not null
       );
 
+      -- Community identity. Deliberately separate from visitor_profiles:
+      -- a visitor profile is a private CID/PIN history, an account is a
+      -- public author identity for published aspirations and ideas.
+      create table if not exists community_accounts (
+        id text primary key,
+        username text not null unique,
+        display_name text not null,
+        bio text not null default '',
+        avatar_url text not null default '',
+        password_hash text not null,
+        password_salt text not null,
+        role text not null default 'member' check (role in ('member','moderator','admin')),
+        status text not null default 'active' check (status in ('active','suspended')),
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table if not exists community_sessions (
+        token_hash text primary key,
+        account_id text not null references community_accounts(id) on delete cascade,
+        created_at timestamptz not null default now(),
+        expires bigint not null
+      );
+
+      create index if not exists community_sessions_account on community_sessions(account_id);
+
+      create table if not exists community_categories (
+        slug text primary key,
+        label text not null,
+        description text not null default '',
+        sort_order integer not null default 0,
+        created_at timestamptz not null default now()
+      );
+
+      create table if not exists community_posts (
+        id text primary key,
+        slug text not null unique,
+        author_id text not null references community_accounts(id) on delete cascade,
+        title text not null,
+        body text not null,
+        content_type text not null check (content_type in ('aspiration','idea')),
+        category_slug text not null references community_categories(slug),
+        image_url text not null default '',
+        status text not null default 'published' check (status in ('published','hidden','removed')),
+        search_text text not null default '',
+        like_count integer not null default 0,
+        comment_count integer not null default 0,
+        featured integer not null default 0,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      -- Databases created before community curation existed need the flag.
+      alter table community_posts
+        add column if not exists featured integer not null default 0;
+
+      create index if not exists community_posts_feed on community_posts(status, created_at desc, id desc);
+      create index if not exists community_posts_category on community_posts(category_slug, status, created_at desc);
+      create index if not exists community_posts_author on community_posts(author_id, status, created_at desc);
+      create index if not exists community_posts_featured on community_posts(featured, status, created_at desc);
+      create index if not exists community_posts_type_feed on community_posts(content_type, status, created_at desc, id desc);
+      create index if not exists community_posts_search on community_posts using gin (to_tsvector('simple', search_text));
+
+      create table if not exists community_tags (
+        slug text primary key,
+        label text not null,
+        created_at timestamptz not null default now()
+      );
+
+      create table if not exists community_post_tags (
+        post_id text not null references community_posts(id) on delete cascade,
+        tag_slug text not null references community_tags(slug) on delete cascade,
+        primary key (post_id, tag_slug)
+      );
+
+      create index if not exists community_post_tags_tag on community_post_tags(tag_slug, post_id);
+
+      create table if not exists community_likes (
+        post_id text not null references community_posts(id) on delete cascade,
+        account_id text not null references community_accounts(id) on delete cascade,
+        created_at timestamptz not null default now(),
+        primary key (post_id, account_id)
+      );
+
+      create index if not exists community_likes_account on community_likes(account_id, created_at desc);
+
+      create table if not exists community_bookmarks (
+        post_id text not null references community_posts(id) on delete cascade,
+        account_id text not null references community_accounts(id) on delete cascade,
+        created_at timestamptz not null default now(),
+        primary key (post_id, account_id)
+      );
+
+      create index if not exists community_bookmarks_account on community_bookmarks(account_id, created_at desc);
+
+      create table if not exists community_comments (
+        id text primary key,
+        post_id text not null references community_posts(id) on delete cascade,
+        author_id text not null references community_accounts(id) on delete cascade,
+        body text not null,
+        status text not null default 'published' check (status in ('published','hidden','removed')),
+        created_at timestamptz not null default now()
+      );
+
+      create index if not exists community_comments_post on community_comments(post_id, status, created_at asc);
+      create index if not exists community_comments_author on community_comments(author_id, created_at desc);
+
+      create table if not exists community_reports (
+        id text primary key,
+        post_id text references community_posts(id) on delete cascade,
+        comment_id text references community_comments(id) on delete cascade,
+        reporter_id text not null references community_accounts(id) on delete cascade,
+        reason text not null check (reason in ('spam','harassment','misinformation','unsafe','other')),
+        detail text not null default '',
+        status text not null default 'open' check (status in ('open','resolved','dismissed')),
+        created_at timestamptz not null default now(),
+        resolved_at timestamptz,
+        check ((post_id is not null and comment_id is null) or (post_id is null and comment_id is not null))
+      );
+
+      create index if not exists community_reports_status on community_reports(status, created_at asc);
+      create unique index if not exists community_reports_post_unique on community_reports(post_id, reporter_id) where post_id is not null;
+      create unique index if not exists community_reports_comment_unique on community_reports(comment_id, reporter_id) where comment_id is not null;
+
+      create table if not exists community_moderation (
+        id text primary key,
+        actor_kind text not null check (actor_kind in ('staff','account')),
+        actor_id text not null default '',
+        action text not null,
+        target_kind text not null,
+        target_id text not null,
+        note text not null default '',
+        created_at timestamptz not null default now()
+      );
+
+      create index if not exists community_moderation_target on community_moderation(target_kind, target_id, created_at desc);
+
+      -- One tree leaf per published community post. The link table keeps the
+      -- existing approved_leaves table as the single source of truth for the
+      -- 3D tree while letting a post change without losing its leaf history.
+      create table if not exists community_tree_leaves (
+        post_id text primary key references community_posts(id) on delete cascade,
+        leaf_id text not null unique,
+        linked_at timestamptz not null default now()
+      );
+
+      create index if not exists community_tree_leaves_leaf on community_tree_leaves(leaf_id);
+
       insert into app_meta (key, value) values ('revision', '0') on conflict (key) do nothing;
     `;
     // No parameters here: node-postgres only uses the simple query protocol
     // (which accepts multiple statements) when no values are passed.
     await pool.query(initSql);
+    // Seeded once; a later admin-edited category label must survive restarts.
+    for (const category of communityCategorySeeds) {
+      await pool.query(
+        "insert into community_categories(slug,label,description,sort_order) values($1,$2,$3,$4) on conflict(slug) do nothing",
+        [
+          category.slug,
+          category.label,
+          category.description,
+          category.sortOrder,
+        ],
+      );
+    }
+    await backfillCommunityLeaves();
     await pool.query(
       "insert into app_meta (key, value) values ('session_secret', $1) on conflict (key) do nothing",
       [randomBytes(32).toString("hex")],
@@ -151,8 +322,24 @@ if (useSqlite) {
 
 export const db = useSqlite ? sqliteDb : (pool as unknown as { query: typeof sqliteQuery; exec: typeof sqliteDb.exec; all: typeof sqliteDb.all; get: typeof sqliteDb.get; run: typeof sqliteDb.run; transaction: typeof sqliteTransaction });
 export const sessionSecret = sessionSecretValue;
+export const usingSqlite = useSqlite;
+
+/** Read helper for feature modules that build their own SQL. */
+export function queryRows<T = unknown>(
+  text: string,
+  params?: unknown[],
+): Promise<T[]> {
+  return q<T>(text, params);
+}
 export const publicFields =
   "id, category, leaf_message, chamber_id, chamber_reason, created_at, mode, is_demo";
+
+/** Public leaves linked to a published community post expose its slug. */
+const leafPostSlug = `(select p.slug
+  from community_tree_leaves ctl
+  join community_posts p on p.id=ctl.post_id
+  where ctl.leaf_id=approved_leaves.id and p.status='published'
+  limit 1) as post_slug`;
 
 function requireDb(): { query: typeof sqliteQuery } {
   if (useSqlite) return sqliteDb;
@@ -162,7 +349,160 @@ function requireDb(): { query: typeof sqliteQuery } {
 }
 
 function rowToLeaf(row: Record<string, unknown>): Leaf {
-  return { ...row, is_demo: Boolean(row.is_demo) } as Leaf;
+  return {
+    ...row,
+    is_demo: Boolean(row.is_demo),
+    post_slug: row.post_slug ? String(row.post_slug) : undefined,
+  } as Leaf;
+}
+
+/**
+ * Keeps the Living Tree in step with a community post.
+ *
+ * `approved_leaves` stays the single tree source of truth. A published post
+ * owns exactly one leaf through `community_tree_leaves`; edits rewrite the
+ * leaf message and category, while hiding or removing the post hides the
+ * leaf. Restoring is explicit so a leaf hidden independently by staff is not
+ * silently made public again by an ordinary edit.
+ */
+export type CommunityLeafInput = {
+  id: string;
+  title: string;
+  body: string;
+  categorySlug: string;
+  status: string;
+  createdAt: string;
+};
+
+export async function syncCommunityPostLeaf(
+  runner: Queryable,
+  post: CommunityLeafInput,
+  options: { restore?: boolean } = {},
+) {
+  const theme = leafThemeForCategory(post.categorySlug);
+  const message = communityLeafMessage(post.title, post.body);
+  const chamberId = themeFor(theme).path;
+  const links = await rowsFor<{ leaf_id: string }>(
+    runner,
+    "select leaf_id from community_tree_leaves where post_id=$1",
+    [post.id],
+  );
+  const leafId = links[0]?.leaf_id;
+
+  if (post.status !== "published") {
+    if (leafId) {
+      const result = await runner.query(
+        "update approved_leaves set status='hidden' where id=$1 and status<>'hidden'",
+        [leafId],
+      );
+      if (result.rowCount) await bumpRevision(runner);
+    }
+    return;
+  }
+
+  if (leafId) {
+    await runner.query(
+      `update approved_leaves
+       set leaf_message=$1, category=$2, chamber_id=$3, chamber_reason=$4
+       where id=$5`,
+      [
+        message,
+        theme,
+        chamberId,
+        "A published community aspiration connected to the Living Tree.",
+        leafId,
+      ],
+    );
+    if (options.restore) {
+      const result = await runner.query(
+        "update approved_leaves set status='approved' where id=$1 and status<>'approved'",
+        [leafId],
+      );
+      if (result.rowCount) await bumpRevision(runner);
+    }
+    return;
+  }
+
+  const key = `community:${post.id}`;
+  await runner.query(
+    `insert into approved_leaves(id,idempotency_key,category,leaf_message,chamber_id,chamber_reason,created_at,status,mode,is_demo,payload_hash)
+     values($1,$2,$3,$4,$5,$6,$7,'approved','offline',0,'community')
+     on conflict(idempotency_key) do nothing`,
+    [
+      randomUUID(),
+      key,
+      theme,
+      message,
+      chamberId,
+      "A published community aspiration connected to the Living Tree.",
+      post.createdAt,
+    ],
+  );
+  const created = await rowsFor<{ id: string }>(
+    runner,
+    "select id from approved_leaves where idempotency_key=$1",
+    [key],
+  );
+  if (!created[0]) return;
+  await runner.query(
+    `insert into community_tree_leaves(post_id,leaf_id,linked_at)
+     values($1,$2,$3) on conflict(post_id) do nothing`,
+    [post.id, created[0].id, new Date().toISOString()],
+  );
+  await bumpRevision(runner);
+}
+
+async function bumpRevision(runner: Queryable) {
+  await runner.query(
+    "update app_meta set value=cast(value as integer)+1 where key='revision'",
+  );
+  changed();
+}
+
+/**
+ * Published posts created before tree linking existed still need a leaf.
+ * Runs once during Postgres startup and is idempotent.
+ */
+async function backfillCommunityLeaves() {
+  if (!pool) return;
+  try {
+    const pending = await pool.query<{
+      id: string;
+      title: string;
+      body: string;
+      category_slug: string;
+      created_at: Date | string;
+    }>(
+      `select p.id, p.title, p.body, p.category_slug, p.created_at
+       from community_posts p
+       left join community_tree_leaves l on l.post_id=p.id
+       where p.status='published' and l.post_id is null
+       limit 500`,
+    );
+    if (!pending.rows.length) return;
+    for (const row of pending.rows) {
+      await syncCommunityPostLeaf(
+        pool as unknown as Queryable,
+        {
+          id: row.id,
+          title: row.title,
+          body: row.body,
+          categorySlug: row.category_slug,
+          status: "published",
+          createdAt:
+            row.created_at instanceof Date
+              ? row.created_at.toISOString()
+              : String(row.created_at),
+        },
+        { restore: true },
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Community leaf backfill failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+  }
 }
 
 async function q<T = unknown>(
@@ -282,14 +622,14 @@ export function listLeaves(
     ? [cursor.created_at, cursor.created_at, cursor.id, limit]
     : [limit];
   return q<Leaf>(
-    `select ${publicFields} from approved_leaves where status='approved'${filter} order by created_at desc, id desc limit $${params.length}`,
+    `select ${publicFields}, ${leafPostSlug} from approved_leaves where status='approved'${filter} order by created_at desc, id desc limit $${params.length}`,
     params,
   ).then((rows) => rows.map(rowToLeaf));
 }
 
 export function getLeaf(id: string): Promise<Leaf | undefined> {
   return q<Leaf>(
-    `select ${publicFields} from approved_leaves where id=$1 and status='approved'`,
+    `select ${publicFields}, ${leafPostSlug} from approved_leaves where id=$1 and status='approved'`,
     [id],
   ).then((rows) => (rows[0] ? rowToLeaf(rows[0]) : undefined));
 }

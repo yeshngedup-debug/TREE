@@ -1,8 +1,9 @@
 # BI Tree — the Bhutanese Idea Tree
 
-An interactive collective aspiration experience for Bhutan. Scan one QR code, share an anonymous hope, and watch a leaf join the reception tree. In return you get a private reply and a guide path into a real corner of Bhutan: temples, valleys, restaurants, heritage sites and folktales, served by a sourced travel guide and an agentic AI companion.
+A Bhutan-focused community platform where aspirations grow into ideas, and ideas grow into action. People publish an **aspiration** or an **idea**, discuss it, and every published post grows a leaf on the interactive 3D Living Tree. The original anonymous QR experience is still here: scan one code, share a hope, and watch a leaf join the reception tree without creating an account.
 
-**Next.js 16, React 19, TypeScript, Tailwind 4, shadcn-style components with Radix, Three.js, Neon PostgreSQL and an OpenAI-compatible AI provider.** One Node server serves phones, the display, the explore guide, staff tools and the API.
+**Next.js 16, React 19, TypeScript, Tailwind 4, shadcn-style components with Radix, Three.js, Neon PostgreSQL and an OpenAI-compatible AI provider.** One Node server serves phones, the display, the community, the explore guide, staff tools and the API.
+
 
 ## Start
 
@@ -20,7 +21,12 @@ Set `DATABASE_URL` in `.env.local` to your PostgreSQL connection string (hosted 
 
 | Route        | Experience                                                           |
 | ------------ | -------------------------------------------------------------------- |
-| `/`          | Introduction, live tree preview, theme shortcuts                     |
+| `/`          | Introduction, live tree preview, featured posts, theme shortcuts     |
+| `/discover`  | Published aspirations and ideas: search, type/category/tag filters, sort |
+| `/create`    | Join, sign in, and publish an aspiration or idea                     |
+| `/posts/[slug]` | Full post, author, likes, bookmarks, comments and reports         |
+| `/u/[username]` | Public profile, published posts and account details               |
+| `/saved`     | Private reading list for the signed-in account                       |
 | `/join`      | Visit type, theme, aspiration, consent, private reply and receipt    |
 | `/voices`    | Optional CID + PIN sign-in and private previous notes/replies        |
 | `/display`   | Reception tree, QR, queued leaf arrivals, reflection, fullscreen     |
@@ -29,6 +35,39 @@ Set `DATABASE_URL` in `.env.local` to your PostgreSQL connection string (hosted 
 | `/leaf/[id]` | Public keepsake, sharing/copy fallback, downloadable SVG             |
 | `/privacy`   | Participation, external processing, cookies and retention            |
 | `/admin`     | Staff sign-in, hide/restore, demo data, counts and reflection        |
+| `/admin/community` | Community moderation queue, reports, accounts and categories   |
+
+## Community platform
+
+The community layer is separate from the anonymous leaf flow but feeds the same
+tree. See [Community platform architecture](docs/COMMUNITY.md) for the schema,
+authorization model and extension points.
+
+- **Accounts:** username, display name, bio and optional avatar URL. Passwords
+  use salted `scrypt`; session tokens are stored only as SHA-256 hashes.
+- **Publishing:** a titled aspiration or idea with a category, up to six tags
+  and an optional HTTPS image URL. Server-side Zod validation and rate limits
+  apply to every write.
+- **Discovery:** `/discover` supports free-text search, type/category/tag
+  filters, newest or popular sorting, and pagination. PostgreSQL full-text
+  search is indexed with a GIN index; the SQLite test harness uses an `instr`
+  fallback.
+- **Engagement:** likes, private bookmarks, comments and reports. Counters are
+  maintained transactionally.
+- **Profiles:** `/u/[username]` lists published posts for active accounts.
+- **Living Tree:** every published post owns exactly one approved leaf. Edits
+  update the leaf, hiding or removing the post hides it, and restoring is
+  explicit.
+- **Moderation:** staff and community moderators review reports, hide or remove
+  posts and comments, and feature editorial picks. Only staff or a community
+  **admin** can change roles, suspend accounts or edit categories. All actions
+  are appended to an audit log.
+- **SEO:** sitemap and robots cover public posts and profiles only. Private and
+  noindex routes are excluded from both.
+
+The header account menu links to the signed-in profile, saved posts, moderation
+(for moderators and admins) and sign-out. Sign-in remains optional for reading.
+
 
 ## Explore Bhutan
 
@@ -142,8 +181,9 @@ Raw CIDs and PINs are never stored or sent to AI. CID lookup uses a keyed HMAC; 
 ## Code map
 
 ```text
-src/app/                 Pages and API routes (incl. /explore and /api/agent/chat)
+src/app/                 Pages and API routes (community, explore, admin and /api/agent/chat)
 src/features/home/       Introduction and live preview
+src/features/community/  Discover, composer, post engagement, profile and moderation UI
 src/features/join/       Guided mobile submission and visitor history
 src/features/display/    Growing branch model, orbit camera, 3D/fallback and kiosk
 src/features/studio/     Full-screen authoring, controls, growth previews and exports
@@ -152,16 +192,18 @@ src/features/guide/      Shared guide presentation pieces
 src/features/leaf/       Result, share and SVG download
 src/features/admin/      Staff console
 src/components/ui/       Local shadcn-style components
-src/lib/                 Types, catalog, bhutan-guide data, schemas and browser helpers
+src/lib/                 Types, catalog, community schemas, bhutan-guide data and browser helpers
 src/hooks/use-tree.ts    SSE, reconciliation, offline state and cache
-src/server/db/           PostgreSQL/SQLite adapter, queries and transactions
+src/server/db/           PostgreSQL/SQLite adapter, community schema, queries and tree sync
+src/server/community.ts  Accounts, posts, engagement, moderation and search service
 src/server/services/     AI, moderation, fallback, reflection and the guide agent
 src/server/auth.ts       Signed sessions and authorization
 src/server/http.ts       Bounded body parsing and origin checks
 src/vendor/just-a-simple-tree/  Adapted geometry and retained MIT licence
 scripts/                 Setup, smoke test and isolated test harness
-tests/                   Browser, API, guide and mocked-AI tests
+tests/                   Browser, API, guide, community and mocked-AI tests
 docs/AI_SETUP.md         Provider setup for the BI Tree AI layer
+docs/COMMUNITY.md        Community schema, roles, moderation and extension points
 ```
 
 ## Validate
@@ -183,6 +225,12 @@ npx playwright test            # in a second terminal
 
 ## Known limitations
 
+- **Community images:** avatars and post images are external HTTPS URLs. There is no upload, resizing or image-moderation pipeline.
+- **Account recovery:** community accounts have no password reset, password change or email verification yet. Recovery is a staff/database operation.
+- **Migrations:** the community schema uses idempotent bootstrap SQL (`create table if not exists`, additive `alter table`, `create index if not exists`). A destructive change needs a proper versioned migration runner first.
+- **Search:** discovery uses PostgreSQL `simple` full-text search. There is no stemming, synonym expansion or semantic ranking.
+- **Moderation:** the queue is lightweight — reports, status controls and an audit log, without assignment, SLAs or notifications.
+- **Monetization:** no payments, ads or sponsored ranking exist. `docs/COMMUNITY.md` records the intended extension points.
 - **Neon connectivity:** during the BI Tree rebuild the configured Neon endpoint accepted TCP but stalled the PostgreSQL SSL request (`SELECT` never completed) from this network. Verify the project is active and the client IP is allowed in the Neon console before deploying; the app needs a reachable `DATABASE_URL`.
 - **`npm audit`:** six moderate advisories come from the `minimatch` chain pulled in by `@typescript-eslint` (tooling only, no runtime exposure). `npm audit fix --force` would downgrade or break the lint toolchain, so it is intentionally not applied.
 - **Unused legacy dependencies:** `@clerk/nextjs`, `ably` and `@anthropic-ai/sdk` remain listed from the original import. Nothing imports them; removing them churns the lockfile and is deferred to a maintenance pass.

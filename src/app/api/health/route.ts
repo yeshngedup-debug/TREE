@@ -1,6 +1,6 @@
 import { noStore } from "@/server/http";
 import { aiMode } from "@/server/services/ai";
-import { asyncRevision } from "@/server/db";
+import { asyncRevision, databaseProvider } from "@/server/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET() {
@@ -9,7 +9,7 @@ export async function GET() {
     return Response.json(
       {
         status: "ok",
-        database: "postgres",
+        database: databaseProvider(),
         ai: aiMode(),
         serverTime: new Date().toISOString(),
       },

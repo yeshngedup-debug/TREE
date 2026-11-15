@@ -1,10 +1,50 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { HydrationCompatibility } from "@/components/hydration-compat";
+
+function metadataBase() {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  try {
+    return new URL(configured || "http://localhost:3000");
+  } catch {
+    return new URL("http://localhost:3000");
+  }
+}
+
+const description =
+  "Where aspirations grow into ideas, and ideas grow into action. A Bhutan-focused community platform for sharing aspirations and practical ideas, with an interactive 3D Living Tree.";
+
 export const metadata: Metadata = {
-  title: "Bhutanese Idea Tree",
-  description: "Rooted in values. Growing through people.",
+  metadataBase: metadataBase(),
+  title: {
+    default: "BI Tree — Where aspirations grow into ideas",
+    template: "%s",
+  },
+  description,
+  applicationName: "BI Tree",
+  keywords: [
+    "Bhutan",
+    "aspirations",
+    "ideas",
+    "community",
+    "innovation",
+    "Living Tree",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "BI Tree",
+    title: "BI Tree — Where aspirations grow into ideas",
+    description,
+    locale: "en_BT",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BI Tree — Where aspirations grow into ideas",
+    description,
+  },
+  robots: { index: true, follow: true },
 };
+
 export default function RootLayout({
   children,
 }: {

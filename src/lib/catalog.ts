@@ -111,6 +111,8 @@ export type Leaf = {
   created_at: string;
   mode: "openai" | "offline";
   is_demo: boolean;
+  /** Slug of the published community post this leaf represents, if any. */
+  post_slug?: string;
 };
 export type TreeStats = {
   total: number;

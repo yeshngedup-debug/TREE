@@ -10,11 +10,12 @@ test.describe("Home page - every button and link", () => {
 
     // Header links
     await expect(page.getByRole("link", { name: "BI Tree home" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "The experience" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Home", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Discover", exact: true }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Explore Bhutan" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Live tree" })).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Add a hope" }),
+      page.getByRole("link", { name: "Share an idea" }).first(),
     ).toBeVisible();
 
     // Footer links
@@ -22,6 +23,7 @@ test.describe("Home page - every button and link", () => {
       page.getByRole("link", { name: "Participation & privacy" }),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: "Staff console" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Add a hope" })).toBeVisible();
 
     // Hero CTA
     await expect(

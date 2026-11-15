@@ -63,7 +63,7 @@ for (const width of [1440, 320]) {
     await expect(page.locator(".tree-fallback")).toHaveCount(0);
     await page.goto("/explore");
     await page
-      .getByRole("link", { name: "The experience", exact: true })
+      .getByRole("link", { name: "Home", exact: true })
       .click();
     await expect(page.locator(".procedural-tree")).toHaveAttribute(
       "data-renderer",
@@ -74,6 +74,8 @@ for (const width of [1440, 320]) {
       "/",
       "/join",
       "/explore",
+      "/discover",
+      "/create",
       "/privacy",
       "/display",
       "/tree",

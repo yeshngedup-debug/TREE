@@ -318,6 +318,11 @@ export function AdminConsole() {
             Tree Studio
             <ArrowUpRight size={13} className="ml-auto" />
           </Link>
+          <Link href="/admin/community" className="admin-nav-item">
+            <ShieldCheck size={18} strokeWidth={1.5} />
+            Community moderation
+            <ArrowUpRight size={13} className="ml-auto" />
+          </Link>
           <Link href="/" className="admin-nav-item">
             <ArrowLeft size={18} strokeWidth={1.5} />
             Visitor website
