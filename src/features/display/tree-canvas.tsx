@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import { Plus, Minus, RotateCcw, Move3D } from "lucide-react";
-import { TreeIllustration } from "./tree-illustration";
 import { defaultTreeSettings, type TreeSettings } from "@/lib/tree-settings";
 import { treeGrowth } from "@/lib/tree-growth";
 import { themeFor, type Leaf } from "@/lib/catalog";
@@ -13,7 +12,6 @@ export function TreeCanvas({
   arrivalId,
   arrivalIds = [],
   onSelect,
-  illustrative = false,
   className = "",
   settings = defaultTreeSettings,
   contributionCount = leaves.length,
@@ -26,7 +24,6 @@ export function TreeCanvas({
   arrivalId?: string;
   arrivalIds?: readonly string[];
   onSelect?: (leaf: Leaf) => void;
-  illustrative?: boolean;
   className?: string;
   settings?: TreeSettings;
   contributionCount?: number;
@@ -47,7 +44,7 @@ export function TreeCanvas({
     settings,
     contributionCount,
   });
-  const [state, setState] = useState<"loading" | "3d" | "illustration">(
+  const [state, setState] = useState<"loading" | "3d" | "unavailable">(
       "loading",
     ),
     hint = useId(),
@@ -57,11 +54,13 @@ export function TreeCanvas({
     let cancelled = false,
       scene: SceneController | null = null;
     latest.current = { leaves, activeId, arrivalId, arrivalIds, settings, contributionCount };
-    setTimeout(() => setState("loading"), 0);
-    if (settings.renderer === "illustration") {
-      setTimeout(() => setState("illustration"), 0);
-      return;
-    }
+    const fail = () => {
+      scene?.dispose();
+      scene = null;
+      controller.current = null;
+      if (sceneRef) sceneRef.current = null;
+      if (!cancelled) setState("unavailable");
+    };
     const project = (items: ProjectedLeaf[], metrics?: GrowthMetrics) => {
       const projectedIds = new Set(items.map((item) => item.id));
       for (const [id, button] of markerElements.current)
@@ -90,12 +89,7 @@ export function TreeCanvas({
             host.current,
             latest.current.settings,
             project,
-            () => {
-              scene?.dispose();
-              controller.current = null;
-              if (sceneRef) sceneRef.current = null;
-              if (!cancelled) setState("illustration");
-            },
+            fail,
             environment,
           );
           controller.current = scene;
@@ -109,30 +103,32 @@ export function TreeCanvas({
           );
           setState("3d");
         } catch {
-          setState("illustration");
+          fail();
         }
       })
-      .catch(() => {
-        if (!cancelled) setState("illustration");
-      });
+      .catch(fail);
     return () => {
       cancelled = true;
       scene?.dispose();
       controller.current = null;
       if (sceneRef) sceneRef.current = null;
     };
-    // Renderer changes need a new context; other edits update the existing scene.
+    // Only the environment needs a new WebGL context; other edits reconfigure.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.renderer, environment]);
+  }, [environment]);
   useEffect(() => {
     try {
       controller.current?.configure(settings);
     } catch {
       controller.current?.dispose();
       controller.current = null;
-      setTimeout(() => setState("illustration"), 0);
+      if (sceneRef) sceneRef.current = null;
+      setTimeout(() => setState("unavailable"), 0);
     }
-  }, [appearance]);
+    // `appearance` is the serialized settings: object identity alone must not
+    // rebuild the scene.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appearance, sceneRef]);
   useEffect(() => {
     controller.current?.update(
       leaves,
@@ -189,18 +185,13 @@ export function TreeCanvas({
           }
         }}
       />
-      {state !== "3d" && (
-        <div className="tree-fallback">
-          <TreeIllustration
-            leaves={leaves}
-            activeId={activeId}
-            arrivalId={arrivalId}
-            arrivalIds={arrivalIds}
-            onSelect={onSelect}
-            illustrative={illustrative}
-            count={contributionCount}
-            settings={settings}
-          />
+      {state === "unavailable" && (
+        <div className="tree-unavailable" role="status">
+          <p className="tree-unavailable-title">3D tree unavailable</p>
+          <p>
+            Turn on hardware acceleration in this display&rsquo;s browser, then
+            reload.
+          </p>
         </div>
       )}
       {state === "3d" && onSelect && (
@@ -269,9 +260,6 @@ export function TreeCanvas({
             <RotateCcw size={15} />
           </button>
         </div>
-      )}
-      {state === "illustration" && (
-        <span className="renderer-note">Illustrated display</span>
       )}
     </div>
   );

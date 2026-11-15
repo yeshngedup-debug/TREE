@@ -48,7 +48,7 @@ for (const size of [
           },
           revision: 1,
           serverTime: new Date().toISOString(),
-          settings: { ...settings, renderer: "illustration" },
+          settings,
         },
       }),
     );

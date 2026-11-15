@@ -9,6 +9,8 @@ export const treeSettingsSchema = z.object({
   wind: z.number().min(0).max(1),
   rotation: z.number().min(0).max(360),
   quality: z.enum(["auto", "low", "high"]),
+  // Retained so existing stored rows keep parsing. The display is always the
+  // 3D scene now; this key no longer selects a renderer.
   renderer: z.enum(["auto", "illustration"]),
   acceptingContributions: z.boolean(),
   headline: z.string().trim().min(1).max(90),

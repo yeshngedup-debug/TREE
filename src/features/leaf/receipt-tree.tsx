@@ -9,8 +9,7 @@ import { themeFor, type Leaf } from "@/lib/catalog";
 import { treePalettes } from "@/lib/tree-settings";
 export function ReceiptTree({ leaf }: { leaf: Leaf }) {
   const { tree } = useTree();
-  const scene = useRef<SceneController | null>(null),
-    container = useRef<HTMLDivElement>(null);
+  const scene = useRef<SceneController | null>(null);
   const [busy, setBusy] = useState(false),
     [notice, setNotice] = useState("");
   const leaves = tree
@@ -92,24 +91,9 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
         );
         suffix = "png";
       } else {
-        const illustration = container.current?.querySelector("svg.tree-svg");
-        if (!illustration)
-          throw new Error("The tree is still loading. Try saving in a moment.");
-        const svg = illustration.cloneNode(true) as SVGSVGElement;
-        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        svg.setAttribute("width", "1000");
-        svg.setAttribute("height", "1100");
-        // Make the selected leaf visible even without the website stylesheet.
-        svg
-          .querySelector(".active-leaf > path")
-          ?.setAttribute("stroke", "#ffffff");
-        svg
-          .querySelector(".active-leaf > path")
-          ?.setAttribute("stroke-width", "2");
-        blob = new Blob([new XMLSerializer().serializeToString(svg)], {
-          type: "image/svg+xml",
-        });
-        suffix = "svg";
+        throw new Error(
+          "The 3D tree is still loading. Try saving in a moment.",
+        );
       }
       const url = URL.createObjectURL(blob),
         anchor = document.createElement("a");
@@ -142,7 +126,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
           </p>
         </div>
       </div>
-      <div ref={container} className="receipt-tree-stage">
+      <div className="receipt-tree-stage">
         <TreeCanvas
           leaves={leaves}
           contributionCount={Math.max(tree?.stats.total || 0, leaves.length)}

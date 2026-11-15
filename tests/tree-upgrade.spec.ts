@@ -1,7 +1,7 @@
 import { test, expect, request as requests } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 const password = "test-only-staff-password";
-test("older TV APIs fall back to polling and an illustration without interrupting visitor leaves", async ({
+test("older TV APIs fall back to polling without interrupting the 3D tree", async ({
   page,
   request,
 }) => {
@@ -9,21 +9,12 @@ test("older TV APIs fall back to polling and an illustration without interruptin
     Object.defineProperty(AbortSignal, "any", { value: undefined });
     Object.defineProperty(AbortSignal, "timeout", { value: undefined });
     Object.defineProperty(window, "EventSource", { value: undefined });
-    const original = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function (
-      this: HTMLCanvasElement,
-      kind: string,
-      ...args: unknown[]
-    ) {
-      if (/webgl/.test(kind)) return null;
-      return Reflect.apply(original, this, [kind, ...args]);
-    } as typeof original;
   });
   await page.goto("/display");
   await expect(page.getByText("A living collection")).toBeVisible();
   await expect(page.locator(".kiosk-tree")).toHaveAttribute(
     "data-renderer",
-    "illustration",
+    "3d",
   );
   const count = await page.locator(".tree-leaf").count();
   const response = await request.post("/api/contributions", {
@@ -210,7 +201,7 @@ for (const size of [
     await expect(page.getByText("A living collection")).toBeVisible();
     await expect(page.locator(".kiosk-tree")).toHaveAttribute(
       "data-renderer",
-      /3d|illustration/,
+      "3d",
     );
     expect(
       await page.evaluate(() => ({
@@ -229,7 +220,7 @@ for (const size of [
     if (size.name === "portrait-hd" || size.name === "landscape-hd")
       await page.screenshot({ path: `test-results/tree-${size.name}.png` });
   });
-test("3D tree renders without shader errors; staff can choose the illustration fallback", async ({
+test("3D tree renders without shader errors and never leaves a second tree behind", async ({
   request,
   page,
 }) => {
@@ -277,16 +268,22 @@ test("3D tree renders without shader errors; staff can choose the illustration f
     });
     await expect(page.locator(".kiosk-tree")).toHaveAttribute(
       "data-renderer",
-      "illustration",
+      "unavailable",
     );
+    await expect(page.locator(".kiosk-tree canvas")).toHaveCount(0);
+    await expect(page.locator(".tree-fallback")).toHaveCount(0);
+    await expect(page.getByText("3D tree unavailable")).toBeVisible();
+    // Stored rows may still carry the retired renderer key; it must not bring
+    // a second (illustrated) tree back.
     await request.put("/api/admin/tree", {
       data: { ...original, renderer: "illustration" },
     });
+    await page.reload();
     await expect(page.locator(".kiosk-tree")).toHaveAttribute(
       "data-renderer",
-      "illustration",
+      "3d",
     );
-    await expect(page.getByText("Illustrated display")).toBeVisible();
+    await expect(page.locator(".procedural-tree canvas")).toHaveCount(1);
   } finally {
     await request.put("/api/admin/tree", { data: original });
     await request.post("/api/admin", { data: { action: "clear_demo" } });

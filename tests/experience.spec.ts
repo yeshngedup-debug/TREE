@@ -16,6 +16,15 @@ test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and exp
   });
   await display.goto("/display");
   await expect(display.getByText("A living collection")).toBeVisible();
+  await expect(display.locator(".kiosk-tree")).toHaveAttribute(
+    "data-renderer",
+    "3d",
+  );
+  // Markers only exist once the 3D scene has the leaf snapshot; wait for the
+  // baseline so the assertion below compares against a settled display.
+  await expect
+    .poll(() => display.locator(".tree-leaf").count())
+    .toBeGreaterThan(0);
   const before = await display.locator(".tree-leaf").count();
   await phone.goto("/join");
   await phone.getByRole("radio", { name: "Education & opportunity" }).check();
@@ -72,6 +81,13 @@ test("display retains a cached tree offline and resynchronizes hidden leaves aft
   });
   await page.goto("/display");
   await expect(page.getByText("A living collection")).toBeVisible();
+  await expect(page.locator(".kiosk-tree")).toHaveAttribute(
+    "data-renderer",
+    "3d",
+  );
+  await expect
+    .poll(() => page.locator(".tree-leaf").count())
+    .toBeGreaterThan(0);
   const initial = await page.locator(".tree-leaf").count();
   expect(initial).toBeGreaterThan(0);
   await context.setOffline(true);

@@ -67,9 +67,9 @@ Our renderer adds BI Tree palettes, wind, foliage, deterministic visitor markers
 
 Portrait keeps a vertical sequence: title, tree, controls, horizontal themes, centered story and QR. The camera frames the tree in the upper area while keeping a continuous full-screen sky/ground canvas, so zoomed branches can extend behind transparent content. Stories have a fixed area: public leaves are limited to 100 characters and displayed reflections to 160, with graceful truncation. Landscape retains its existing overlay positions.
 
-Submitted receipts add a sourced Bhutan guide recommendation, the current tree with the visitor's leaf highlighted, a tree PNG download (standalone SVG without WebGL), a separate leaf SVG, and an **Explore this in Bhutan** link into `/explore`. Downloads contain only public tree/leaf content.
+Submitted receipts add a sourced Bhutan guide recommendation, the current tree with the visitor's leaf highlighted, a tree PNG download, a separate leaf SVG, and an **Explore this in Bhutan** link into `/explore`. Downloads contain only public tree/leaf content.
 
-3D uses WebGL2; WebGPU is not required. If WebGL is unavailable or the context is lost, the interactive illustrated tree takes over. Staff can choose illustration explicitly. Automatic quality caps pixel density and foliage work; reduced-motion mode renders only when the view changes. Tree visuals are generated locally without external image, font or music downloads.
+3D uses WebGL2; WebGPU is not required. The 3D scene is the only tree renderer. If WebGL is unavailable or the context is lost, the display shows a short notice asking for hardware acceleration rather than drawing a second, illustrated tree. Automatic quality caps pixel density and foliage work; reduced-motion mode renders only when the view changes. Tree visuals are generated locally without external image, font or music downloads.
 
 ### Interactive Tree Studio
 
@@ -85,7 +85,7 @@ The default `growthMode` is `contributions`. At zero approved hopes the tree is 
 
 `leavesForMaturity` controls the pace (48 by default). At higher counts the tree continues to expand gradually. Hidden leaves stop contributing; rejected and duplicate submissions do not add growth. Existing approved contributions still count. The studio's **Bare** preview shows the empty start without changing records.
 
-The live renderer draws individual contribution leaves, capped at 2,400 in low quality and 6,000 in high quality. Above those limits, the canopy is an aggregate visual sample; every accepted record remains in PostgreSQL and total counts still drive growth. Up to 120 recent leaves remain individually selectable. The illustration fallback also starts bare and scales with contributions.
+The live renderer draws individual contribution leaves, capped at 2,400 in low quality and 6,000 in high quality. Above those limits, the canopy is an aggregate visual sample; every accepted record remains in PostgreSQL and total counts still drive growth. Up to 120 recent leaves remain individually selectable.
 
 ## Phones and display
 

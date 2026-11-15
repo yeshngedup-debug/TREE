@@ -285,19 +285,6 @@ export function TreeControls({
           </select>
         </label>
         <label className="studio-field">
-          Renderer
-          <select
-            aria-label="Studio renderer"
-            value={settings.renderer}
-            onChange={(event) =>
-              change("renderer", event.target.value as TreeSettings["renderer"])
-            }
-          >
-            <option value="auto">3D with fallback</option>
-            <option value="illustration">Illustration</option>
-          </select>
-        </label>
-        <label className="studio-field">
           Reception headline
           <input
             aria-label="Reception headline"

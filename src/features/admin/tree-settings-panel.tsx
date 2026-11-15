@@ -291,27 +291,6 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
               </select>
             </label>
           </div>
-          <label className="block space-y-2 text-xs">
-            <span>Tree renderer</span>
-            <select
-              aria-label="Tree renderer"
-              className="admin-select"
-              value={settings.renderer}
-              onChange={(event) =>
-                change(
-                  "renderer",
-                  event.target.value as TreeSettings["renderer"],
-                )
-              }
-            >
-              <option value="auto">
-                3D with automatic illustration fallback
-              </option>
-              <option value="illustration">
-                Illustration · widest compatibility
-              </option>
-            </select>
-          </label>
           <label className="flex items-start gap-3 rounded-2xl bg-muted p-4 text-xs leading-relaxed">
             <input
               type="checkbox"

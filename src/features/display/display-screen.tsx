@@ -196,7 +196,7 @@ export function DisplayScreen() {
         style={
           {
             background: palette.background,
-            "--fallback-bg": palette.background,
+            "--tree-surface": palette.background,
             color:
             settings.palette === "night"
               ? "#f5f8ee"

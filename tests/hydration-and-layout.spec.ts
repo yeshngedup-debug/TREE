@@ -38,7 +38,7 @@ test("form-filling browser attributes are normalized before hydration", async ({
 });
 
 for (const width of [1440, 320]) {
-  test(`server-rendered pages hydrate cleanly with the SVG fallback at ${width}px`, async ({
+  test(`server-rendered pages hydrate cleanly with the 3D tree at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -53,55 +53,23 @@ for (const width of [1440, 320]) {
         errors.push(message.text());
     });
     page.on("pageerror", (error) => errors.push(error.message));
-    // Keep the SVG mounted on browsers without WebGL, including during the
-    // initial hydration where the old floating-point hash used to mismatch.
-    await page.addInitScript(() => {
-      const original = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (
-        this: HTMLCanvasElement,
-        kind: string,
-        ...args: unknown[]
-      ) {
-        if (/webgl/.test(kind)) return null;
-        return Reflect.apply(original, this, [kind, ...args]);
-      } as typeof original;
-    });
-    // Attribute warnings can be disabled in production React, and React keeps
-    // mismatched server attributes. Compare a hard-loaded SVG with a fresh
-    // client navigation too, so tiny Node/browser coordinate drift is caught.
+    // A hard load and a fresh client navigation must both reach the single 3D
+    // renderer without a hydration mismatch or a second tree in the DOM.
     await page.goto("/");
     await expect(page.locator(".procedural-tree")).toHaveAttribute(
       "data-renderer",
-      "illustration",
+      "3d",
     );
-    const serverPositions = await page
-      .locator(".firefly")
-      .evaluateAll((nodes) =>
-        nodes.map((node) => [
-          node.getAttribute("cx"),
-          node.getAttribute("cy"),
-          node.getAttribute("r"),
-        ]),
-      );
-    expect(serverPositions).toHaveLength(22);
+    await expect(page.locator(".tree-fallback")).toHaveCount(0);
     await page.goto("/explore");
     await page
       .getByRole("link", { name: "The experience", exact: true })
       .click();
     await expect(page.locator(".procedural-tree")).toHaveAttribute(
       "data-renderer",
-      "illustration",
+      "3d",
     );
-    const clientPositions = await page
-      .locator(".firefly")
-      .evaluateAll((nodes) =>
-        nodes.map((node) => [
-          node.getAttribute("cx"),
-          node.getAttribute("cy"),
-          node.getAttribute("r"),
-        ]),
-      );
-    expect(clientPositions).toEqual(serverPositions);
+    await expect(page.locator(".procedural-tree canvas")).toHaveCount(1);
     for (const path of [
       "/",
       "/join",
@@ -115,7 +83,7 @@ for (const width of [1440, 320]) {
       if (["/", "/display", "/tree"].includes(path))
         await expect(page.locator(".procedural-tree")).toHaveAttribute(
           "data-renderer",
-          "illustration",
+          "3d",
         );
       else if (path === "/admin")
         await expect(

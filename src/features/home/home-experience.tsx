@@ -67,7 +67,6 @@ export function HomeExperience() {
           <div className="home-tree">
             <TreeCanvas
               leaves={tree?.leaves || []}
-              illustrative={!tree?.leaves.length}
               settings={tree?.settings}
               contributionCount={tree?.total || 0}
               className="home-tree-canvas"
