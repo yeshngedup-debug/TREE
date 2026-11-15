@@ -35,6 +35,16 @@ export function createTreeScene(
   onFailure: () => void,
   environment: "transparent" | "garden" = "transparent",
 ): SceneController {
+  // WebGL2 is the minimum three r163+ runs on. Probe first: on kiosks and
+  // sandboxed browsers the GPU is policy-disabled, and constructing the
+  // renderer there only logs a console error before throwing. Failing fast
+  // lets the caller switch to the illustrated tree silently instead.
+  const probe = document.createElement("canvas");
+  const probeContext =
+    probe.getContext("webgl2") ?? probe.getContext("webgl");
+  if (!probeContext)
+    throw new Error("WebGL is not available on this device or browser");
+  probeContext.getExtension("WEBGL_lose_context")?.loseContext();
   let settings = initial,
     disposed = false,
     dirty = true,
