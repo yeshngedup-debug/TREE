@@ -32,6 +32,9 @@ import { after } from "next/server";
 import type { ContributionReceipt } from "@/lib/catalog";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// The provider signal caps generation at AI_TIMEOUT_MS, but moderation,
+// persistence and the reflection refresh all happen in this invocation.
+export const maxDuration = 60;
 const globalFlights = globalThis as unknown as {
   biTreeFlights?: Map<
     string,

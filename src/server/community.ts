@@ -36,6 +36,9 @@ import {
 } from "@/server/db";
 import { cookieValue, isAdmin } from "@/server/auth";
 import { AppError } from "@/server/http";
+import { requestIp } from "@/server/request-ip";
+
+export { requestIp };
 
 export const COMMUNITY_COOKIE = "bi_community";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
@@ -269,17 +272,6 @@ export function communityCookie(
   return `${COMMUNITY_COOKIE}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${
     new URL(request.url).protocol === "https:" ? "; Secure" : ""
   }`;
-}
-
-export function requestIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const raw =
-    forwarded?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "local";
-  // Rate-limit keys never need the raw address. Hashing keeps the README's
-  // privacy promise while still distinguishing repeat callers.
-  return createHash("sha256").update(raw).digest("hex").slice(0, 24);
 }
 
 export async function rateLimit(

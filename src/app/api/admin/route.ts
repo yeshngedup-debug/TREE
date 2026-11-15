@@ -19,6 +19,8 @@ import {
 } from "@/server/http";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Staff actions refresh the AI reflection before responding.
+export const maxDuration = 60;
 export async function GET(request: Request) {
   try {
     requireAdmin(request);

@@ -1,8 +1,11 @@
+export const noStore = { "Cache-Control": "no-store" };
+
 export class AppError extends Error {
   constructor(
     message: string,
     public status = 400,
     public code = "INVALID_REQUEST",
+    public headers: Record<string, string> = {},
   ) {
     super(message);
   }
@@ -53,7 +56,7 @@ export function errorResponse(error: unknown) {
   if (error instanceof AppError)
     return Response.json(
       { error: error.message, code: error.code },
-      { status: error.status },
+      { status: error.status, headers: { ...noStore, ...error.headers } },
     );
   console.error(
     "Request failed:",
@@ -64,7 +67,6 @@ export function errorResponse(error: unknown) {
       error: "Something went wrong. Your hope is safe to retry.",
       code: "SERVER_ERROR",
     },
-    { status: 500 },
+    { status: 500, headers: noStore },
   );
 }
-export const noStore = { "Cache-Control": "no-store" };

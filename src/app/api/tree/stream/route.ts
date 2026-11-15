@@ -1,6 +1,9 @@
 import { asyncRevision, snapshot } from "@/server/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Vercel closes a streaming function at its plan limit; the client reconnects
+// with the retry hint below and resumes from the last event id.
+export const maxDuration = 60;
 export function GET(request: Request) {
   const encoder = new TextEncoder();
   let cleanup = () => {};

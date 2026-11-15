@@ -95,12 +95,14 @@ const children = [
     ai: "offline",
     key: "",
     db: resolve(`data/tests/${run}-offline.sqlite`),
+    agentLimit: "3",
   },
   {
     port: "3101",
     ai: "auto",
     key: "test-only-provider-key",
     db: resolve(`data/tests/${run}-ai.sqlite`),
+    agentLimit: "100",
   },
 ].map((config) =>
   spawn(
@@ -126,6 +128,8 @@ const children = [
         DATABASE_PATH: config.db,
         NEXT_PUBLIC_APP_URL: "",
         GLOBAL_RATE_LIMIT: "300",
+        AGENT_RATE_LIMIT: config.agentLimit,
+        AGENT_GLOBAL_RATE_LIMIT: "300",
       },
     },
   ),

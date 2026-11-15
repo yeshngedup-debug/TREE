@@ -21,7 +21,9 @@ export async function GET(request: Request) {
       if (
         !cursor ||
         typeof cursor.id !== "string" ||
-        typeof cursor.created_at !== "string"
+        !cursor.id ||
+        typeof cursor.created_at !== "string" ||
+        Number.isNaN(Date.parse(cursor.created_at))
       )
         throw new AppError("Invalid cursor.");
     }

@@ -19,6 +19,7 @@ import {
   communityLeafMessage,
   leafThemeForCategory,
 } from "@/lib/community";
+import { leafCursorFilter } from "@/lib/leaf-cursor";
 import {
   query as sqliteQuery,
   transaction as sqliteTransaction,
@@ -40,15 +41,25 @@ export function databaseProvider(): "sqlite" | "postgres" {
 if (useSqlite) {
   sessionSecretValue = sqliteGetSessionSecret();
 } else {
-  try {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 5,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
-    });
+  const pgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+    keepAlive: true,
+  });
+  pool = pgPool;
+  // Neon closes idle connections server-side. Without this listener an error
+  // emitted by an idle client is unhandled and would take the Node process
+  // down; the pool discards the broken client and the next query reconnects.
+  pgPool.on("error", (error) => {
+    console.error(
+      "Idle PostgreSQL connection failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+  });
 
-    const initSql = `
+  const initSql = `
       create extension if not exists pgcrypto;
 
       create table if not exists approved_leaves (
@@ -290,12 +301,14 @@ if (useSqlite) {
 
       insert into app_meta (key, value) values ('revision', '0') on conflict (key) do nothing;
     `;
+
+  const initialize = async () => {
     // No parameters here: node-postgres only uses the simple query protocol
     // (which accepts multiple statements) when no values are passed.
-    await pool.query(initSql);
+    await pgPool.query(initSql);
     // Seeded once; a later admin-edited category label must survive restarts.
     for (const category of communityCategorySeeds) {
-      await pool.query(
+      await pgPool.query(
         "insert into community_categories(slug,label,description,sort_order) values($1,$2,$3,$4) on conflict(slug) do nothing",
         [
           category.slug,
@@ -306,17 +319,31 @@ if (useSqlite) {
       );
     }
     await backfillCommunityLeaves();
-    await pool.query(
+    await pgPool.query(
       "insert into app_meta (key, value) values ('session_secret', $1) on conflict (key) do nothing",
       [randomBytes(32).toString("hex")],
     );
-    const secretRow = await pool.query<{ value: string }>(
+    const secretRow = await pgPool.query<{ value: string }>(
       "select value from app_meta where key='session_secret'",
     );
     sessionSecretValue = String(secretRow.rows[0]?.value ?? "");
-  } catch (error) {
-    dbInitError = error instanceof Error ? error : new Error(String(error));
-    console.error("Database initialization failed:", dbInitError.message);
+  };
+
+  try {
+    await initialize();
+  } catch (firstError) {
+    // A cold serverless instance can lose its first connection while Neon
+    // wakes up. Every statement above is idempotent, so one retry is safe.
+    console.error(
+      "Database initialization failed; retrying once:",
+      firstError instanceof Error ? firstError.message : String(firstError),
+    );
+    try {
+      await initialize();
+    } catch (error) {
+      dbInitError = error instanceof Error ? error : new Error(String(error));
+      console.error("Database initialization failed:", dbInitError.message);
+    }
   }
 }
 
@@ -615,12 +642,8 @@ export function listLeaves(
   limit = 120,
   cursor?: { created_at: string; id: string },
 ): Promise<Leaf[]> {
-  const filter = cursor
-    ? " and (created_at < $1 or (created_at = $1 and id < $2))"
-    : "";
-  const params = cursor
-    ? [cursor.created_at, cursor.created_at, cursor.id, limit]
-    : [limit];
+  const { filter, params: cursorParams } = leafCursorFilter(cursor);
+  const params = [...cursorParams, limit];
   return q<Leaf>(
     `select ${publicFields}, ${leafPostSlug} from approved_leaves where status='approved'${filter} order by created_at desc, id desc limit $${params.length}`,
     params,
@@ -733,10 +756,15 @@ export function treeStats(): Promise<TreeStats> {
       month: "2-digit",
       day: "2-digit",
     }).format(new Date());
+    // `today` is a Thimphu calendar day. Compare in the same zone instead of
+    // relying on the database session timezone, which is UTC on Neon.
+    const todayFilter = useSqlite
+      ? "date(created_at, '+6 hours') = date($1)"
+      : "(created_at at time zone 'Asia/Thimphu')::date = $1::date";
     return q<{ total: string; demo: string; today: string }>(
       `select count(*) as total,
              coalesce(sum(is_demo),0) as demo,
-             coalesce(sum(case when date(created_at) = date($1) then 1 else 0 end),0) as today
+             coalesce(sum(case when ${todayFilter} then 1 else 0 end),0) as today
       from approved_leaves where status='approved'`,
       [today],
     ).then((r) => ({
