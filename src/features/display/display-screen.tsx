@@ -193,15 +193,18 @@ export function DisplayScreen() {
         className="kiosk-shell"
         data-testid="kiosk-display"
         data-palette={settings.palette}
-        style={{
-          background: palette.background,
-          color:
+        style={
+          {
+            background: palette.background,
+            "--fallback-bg": palette.background,
+            color:
             settings.palette === "night"
               ? "#f5f8ee"
               : settings.palette === "frost"
                 ? "#071d2e"
                 : "#243c3a",
-        }}
+          } as React.CSSProperties
+        }
       >
         <TreeCanvas
           leaves={leaves}

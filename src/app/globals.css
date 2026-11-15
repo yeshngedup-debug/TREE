@@ -946,6 +946,11 @@ select:focus-visible {
   height: 100%;
   object-fit: contain;
 }
+/* The kiosk fallback is an opaque poster: without a background the
+   illustrated tree ghosts on top of the 3D scene, showing both at once. */
+.kiosk-tree .tree-fallback {
+  background: var(--fallback-bg, #e5efed);
+}
 .tree-marker-layer {
   pointer-events: none;
   overflow: hidden;
