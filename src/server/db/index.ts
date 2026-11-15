@@ -45,6 +45,7 @@ if (useSqlite) {
         id text primary key,
         idempotency_key text not null unique,
         category text not null check (category in ('nature','innovation','education','community','wellbeing','culture')),
+        leaf_message text not null default '',
         chamber_id integer not null check (chamber_id between 1 and 4),
         chamber_reason text not null,
         created_at timestamptz not null default now(),
@@ -53,6 +54,10 @@ if (useSqlite) {
         is_demo integer not null default 0,
         payload_hash text not null default ''
       );
+
+      -- Databases created by an earlier schema version are missing this column.
+      alter table approved_leaves
+        add column if not exists leaf_message text not null default '';
 
       create index if not exists leaves_public_order on approved_leaves(status, created_at desc, id desc);
 
@@ -126,9 +131,14 @@ if (useSqlite) {
       );
 
       insert into app_meta (key, value) values ('revision', '0') on conflict (key) do nothing;
-      insert into app_meta (key, value) values ('session_secret', $1) on conflict (key) do nothing;
     `;
-    await pool.query(initSql, [randomBytes(32).toString("hex")]);
+    // No parameters here: node-postgres only uses the simple query protocol
+    // (which accepts multiple statements) when no values are passed.
+    await pool.query(initSql);
+    await pool.query(
+      "insert into app_meta (key, value) values ('session_secret', $1) on conflict (key) do nothing",
+      [randomBytes(32).toString("hex")],
+    );
     const secretRow = await pool.query<{ value: string }>(
       "select value from app_meta where key='session_secret'",
     );
@@ -161,6 +171,31 @@ async function q<T = unknown>(
 ): Promise<T[]> {
   const { rows } = await requireDb().query(text, params);
   return rows as unknown as T[];
+}
+
+type Queryable = {
+  query: (
+    text: string,
+    params?: unknown[],
+  ) => Promise<{ rows: unknown[]; rowCount: number | null }>;
+};
+
+/**
+ * Runs a read on a transaction client when one is supplied.
+ *
+ * Postgres hands every transaction its own connection, so a query that goes
+ * through the pool cannot see rows the open transaction has written. SQLite
+ * shares one connection and hides the bug, which is why transactional reads
+ * always have to use the client.
+ */
+function rowsFor<T>(
+  runner: Queryable,
+  text: string,
+  params?: unknown[],
+): Promise<T[]> {
+  return runner
+    .query(text, params)
+    .then((result) => result.rows as unknown as T[]);
 }
 
 export async function transaction<T>(operation: (client: PoolClient) => Promise<T>): Promise<T> {
@@ -259,23 +294,35 @@ export function getLeaf(id: string): Promise<Leaf | undefined> {
   ).then((rows) => (rows[0] ? rowToLeaf(rows[0]) : undefined));
 }
 
-export function getByKey(key: string) {
-  return q<{
-    id: string;
-    category: string;
-    leaf_message: string;
-    chamber_id: number;
-    chamber_reason: string;
-    created_at: string;
-    mode: string;
-    is_demo: number;
-    payload_hash: string;
-    status: string;
-  }>(
-    `select ${publicFields}, payload_hash, status from approved_leaves where idempotency_key=$1`,
-    [key],
-  ).then((rows) => {
-    const row = rows[0];
+export function getByKey(key: string, runner?: PoolClient) {
+  const text = `select ${publicFields}, payload_hash, status from approved_leaves where idempotency_key=$1`;
+  const rows = runner
+    ? rowsFor<{
+        id: string;
+        category: string;
+        leaf_message: string;
+        chamber_id: number;
+        chamber_reason: string;
+        created_at: string;
+        mode: string;
+        is_demo: number;
+        payload_hash: string;
+        status: string;
+      }>(runner as unknown as Queryable, text, [key])
+    : q<{
+        id: string;
+        category: string;
+        leaf_message: string;
+        chamber_id: number;
+        chamber_reason: string;
+        created_at: string;
+        mode: string;
+        is_demo: number;
+        payload_hash: string;
+        status: string;
+      }>(text, [key]);
+  return rows.then((found) => {
+    const row = found[0];
     if (!row) return undefined;
     const { payload_hash, status, ...leaf } = row;
     return {
@@ -319,14 +366,14 @@ export function insertLeaf(
     );
     if (result.rowCount && result.rowCount > 0) {
       if (original)
-        recordSubmission(original, "approved", leaf.id, "", original.reply);
+        recordSubmission(original, "approved", leaf.id, "", original.reply, client);
       await client.query(
         "update app_meta set value=cast(value as integer)+1 where key='revision'",
       );
       changed();
       recordMetric("accepted");
     }
-    return getByKey(key);
+    return getByKey(key, client);
   });
 }
 
@@ -524,25 +571,27 @@ export function recordSubmission(
   leafId?: string,
   reason = "",
   reply = "",
+  runner?: PoolClient,
 ) {
-  return q(
-    `insert into visitor_submissions(id,idempotency_key,leaf_id,private_message,selected_theme,outcome,reason,created_at,private_reply,owner_key,visit_kind)
+  const text = `insert into visitor_submissions(id,idempotency_key,leaf_id,private_message,selected_theme,outcome,reason,created_at,private_reply,owner_key,visit_kind)
      values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-     on conflict(idempotency_key) do nothing`,
-    [
-      randomUUID(),
-      input.idempotencyKey,
-      leafId || null,
-      encryptMessage(input.aspiration),
-      input.theme,
-      outcome,
-      reason,
-      new Date().toISOString(),
-      reply ? encryptMessage(reply) : "",
-      input.owner_key || "",
-      input.visitor_type || "first",
-    ],
-  );
+     on conflict(idempotency_key) do nothing`;
+  const params = [
+    randomUUID(),
+    input.idempotencyKey,
+    leafId || null,
+    encryptMessage(input.aspiration),
+    input.theme,
+    outcome,
+    reason,
+    new Date().toISOString(),
+    reply ? encryptMessage(reply) : "",
+    input.owner_key || "",
+    input.visitor_type || "first",
+  ];
+  return runner
+    ? rowsFor(runner as unknown as Queryable, text, params)
+    : q(text, params);
 }
 
 export function replyByKey(key: string) {
@@ -672,17 +721,17 @@ export function adminLeaves() {
 }
 
 export function setLeafStatus(id: string, status: "approved" | "hidden") {
-  return transaction(async () => {
-    const result = await db.query(
+  return transaction(async (client) => {
+    const result = await client.query(
       "update approved_leaves set status=$1 where id=$2 and status<>$2",
       [status, id],
     );
     if (result.rowCount && result.rowCount > 0) {
-      await db.query(
+      await client.query(
         "update app_meta set value=cast(value as integer)+1 where key='revision'",
       );
       changed();
-      await db.query(
+      await client.query(
         "insert into audit_events(action,leaf_id,created_at) values($1,$2,$3)",
         [status === "hidden" ? "hide" : "restore", id, new Date().toISOString()],
       );
@@ -692,15 +741,15 @@ export function setLeafStatus(id: string, status: "approved" | "hidden") {
 }
 
 export function seedDemo() {
-  return transaction(async () => {
-    const countRow = await db.query(
+  return transaction(async (client) => {
+    const countRow = await client.query(
       "select count(*) as count from approved_leaves where is_demo=1",
     );
-    if (Number(countRow.rows[0].count) > 0) return 0;
+    if (Number((countRow.rows[0] as { count: string }).count) > 0) return 0;
     for (let round = 0; round < 4; round++) {
       for (const theme of themes) {
         const id = randomUUID();
-        await db.query(
+        await client.query(
           `insert into approved_leaves(id,idempotency_key,category,leaf_message,chamber_id,chamber_reason,created_at,mode,is_demo,payload_hash)
            values($1,$2,$3,$4,$5,$6,$7,$8,1,'demo')`,
           [
@@ -719,11 +768,11 @@ export function seedDemo() {
       }
     }
     changed();
-    await db.query("delete from reflection_cache where id=1");
-    await db.query(
+    await client.query("delete from reflection_cache where id=1");
+    await client.query(
       "update app_meta set value=cast(value as integer)+1 where key='revision'",
     );
-    await db.query(
+    await client.query(
       "insert into audit_events(action,created_at) values('seed_demo',$1)",
       [new Date().toISOString()],
     );
@@ -732,16 +781,16 @@ export function seedDemo() {
 }
 
 export function clearDemo() {
-  return transaction(async () => {
-    const result = await db.query(
+  return transaction(async (client) => {
+    const result = await client.query(
       "delete from approved_leaves where is_demo=1",
     );
     changed();
-    await db.query("delete from reflection_cache where id=1");
-    await db.query(
+    await client.query("delete from reflection_cache where id=1");
+    await client.query(
       "update app_meta set value=cast(value as integer)+1 where key='revision'",
     );
-    await db.query(
+    await client.query(
       "insert into audit_events(action,created_at) values('clear_demo',$1)",
       [new Date().toISOString()],
     );
