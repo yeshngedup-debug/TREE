@@ -33,12 +33,12 @@ import type { ContributionReceipt } from "@/lib/catalog";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const globalFlights = globalThis as unknown as {
-  gmcFlights?: Map<
+  biTreeFlights?: Map<
     string,
     { hash: string; promise: Promise<ContributionReceipt> }
   >;
 };
-const flights = (globalFlights.gmcFlights ??= new Map());
+const flights = (globalFlights.biTreeFlights ??= new Map());
 async function processLeaf(
   input: ContributionInput,
   hash: string,

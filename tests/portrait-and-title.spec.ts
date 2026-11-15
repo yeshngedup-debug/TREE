@@ -16,20 +16,20 @@ for (const size of [
     const leaves = [
       {
         id: randomUUID(),
-        leaf_message: "A hopeful city.",
+        leaf_message: "A hopeful Bhutan.",
         category: "nature",
         chamber_id: 2,
       },
       {
         id: randomUUID(),
         leaf_message:
-          "May the city make room for every generation to learn, belong and care for our shared future together.",
+          "May Bhutan make room for every generation to learn, belong and care for our shared future together.",
         category: "education",
         chamber_id: 3,
       },
     ].map((leaf) => ({
       ...leaf,
-      chamber_reason: "Discover the city",
+      chamber_reason: "Discover Bhutan",
       created_at: new Date().toISOString(),
       mode: "offline",
       is_demo: false,
@@ -56,7 +56,7 @@ for (const size of [
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/display");
     await expect(page.locator(".kiosk-feature blockquote")).toContainText(
-      "A hopeful city.",
+      "A hopeful Bhutan.",
     );
     const selectors = [
       ".kiosk-controls",
@@ -157,7 +157,7 @@ test("admin can save only the display title and update a connected display", asy
       .click();
     await page
       .getByLabel("Display headline")
-      .fill("Growing together in Gelephu");
+      .fill("Growing together in Thimphu");
     await page
       .getByRole("button", { name: "Save display title", exact: true })
       .click();
@@ -165,7 +165,7 @@ test("admin can save only the display title and update a connected display", asy
     expect(
       (await (await request.get("/api/tree/settings")).json()).settings
         .headline,
-    ).toBe("Growing together in Gelephu");
+    ).toBe("Growing together in Thimphu");
   } finally {
     await request.put("/api/admin/tree", { data: original });
   }

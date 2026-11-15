@@ -159,7 +159,7 @@ export function TreeCanvas({
       }
       data-growth-phase={state === "3d" ? undefined : growth.phase}
       role="group"
-      aria-label="GM Tree"
+      aria-label="BI Tree"
     >
       <div
         ref={host}

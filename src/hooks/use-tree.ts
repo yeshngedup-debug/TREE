@@ -52,7 +52,7 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
       setConnection(navigator.onLine ? "live" : "reconnecting");
       if (cache)
         try {
-          localStorage.setItem("gmc-tree-cache", JSON.stringify(data));
+          localStorage.setItem("bi-tree-cache", JSON.stringify(data));
         } catch {
           /* optional cache */
         }
@@ -60,7 +60,7 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
     if (cache)
       try {
         const stored = JSON.parse(
-          localStorage.getItem("gmc-tree-cache") || "null",
+          localStorage.getItem("bi-tree-cache") || "null",
         );
         if (
           stored &&

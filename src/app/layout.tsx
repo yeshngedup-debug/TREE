@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { HydrationCompatibility } from "@/components/hydration-compat";
 export const metadata: Metadata = {
-  title: "Gelephu Mindfulness Tree",
+  title: "Bhutanese Idea Tree",
   description: "Rooted in values. Growing through people.",
 };
 export default function RootLayout({

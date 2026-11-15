@@ -24,17 +24,20 @@ export function VisitorVoices() {
         method: "DELETE",
       });
       try {
-        sessionStorage.removeItem("gmc-hope-conversation");
-        sessionStorage.removeItem("gmc-hope-receipt");
-        sessionStorage.removeItem("gmc-hope-draft");
+        sessionStorage.removeItem("bi-tree-hope-conversation");
+        sessionStorage.removeItem("bi-tree-hope-receipt");
+        sessionStorage.removeItem("bi-tree-hope-draft");
       } catch {
         /* Storage can be disabled. */
       }
       setHistory(null);
       setPage(1);
+      // setPage(1) only re-triggers the load effect when the page was not
+      // already 1, so reload explicitly to reveal the locked state.
+      load();
       setConfirmForget(false);
-      // setPage(1) triggers the load effect with the updated page number;
-      // calling load() here would read the stale pre-update page value.
+      // load() reads the current page closure; the unauthenticated response
+      // does not depend on the page number.
     } catch (err) {
       setError(err instanceof Error ? err.message : "Please try again.");
     } finally {
@@ -89,7 +92,7 @@ export function VisitorVoices() {
                   month: "long",
                   day: "numeric",
                 })}{" "}
-                · Chamber {voice.chamber_id}
+                · Guide path {voice.chamber_id}
               </p>
               <h2 className="mt-3 text-sm font-medium">Your note</h2>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6">

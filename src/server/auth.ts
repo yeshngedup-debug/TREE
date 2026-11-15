@@ -26,7 +26,7 @@ export function cookie(
   return `${name}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${new URL(request.url).protocol === "https:" ? "; Secure" : ""}`;
 }
 export function visitor(request: Request) {
-  const current = cookieValue(request, "gmc_visitor");
+  const current = cookieValue(request, "bi_visitor");
   if (current) {
     const [id, sig] = current.split(".");
     if (id && sig && equal(signature(id), sig)) return { id, cookie: null };
@@ -35,7 +35,7 @@ export function visitor(request: Request) {
   return {
     id,
     cookie: cookie(
-      "gmc_visitor",
+      "bi_visitor",
       `${id}.${signature(id)}`,
       request,
       60 * 60 * 12,
@@ -51,7 +51,7 @@ export function verifyPassword(password: string) {
 export function createAdminCookie(request: Request) {
   const payload = `admin:${Date.now() + 8 * 60 * 60 * 1000}`;
   return cookie(
-    "gmc_admin",
+    "bi_admin",
     `${payload}.${signature(payload + ":" + process.env.ADMIN_PASSWORD)}`,
     request,
     8 * 60 * 60,
@@ -59,7 +59,7 @@ export function createAdminCookie(request: Request) {
 }
 export function isAdmin(request: Request) {
   if (!process.env.ADMIN_PASSWORD) return false;
-  const value = cookieValue(request, "gmc_admin");
+  const value = cookieValue(request, "bi_admin");
   if (!value) return false;
   const [payload, sig] = value.split(".");
   if (

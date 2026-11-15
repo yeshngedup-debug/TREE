@@ -429,7 +429,7 @@ export function createTreeScene(
         binary: true,
         onlyVisible: true,
         copyright:
-          "GM Tree; procedural geometry adapted from Mike Fernandez (MIT)",
+          "BI Tree; procedural geometry adapted from Mike Fernandez (MIT)",
       })) as ArrayBuffer;
     } finally {
       geometries.forEach((item) => item.dispose());

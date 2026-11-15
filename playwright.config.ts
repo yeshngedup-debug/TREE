@@ -1,20 +1,21 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig } from '@playwright/test';
+
+/**
+ * E2E suite. The dev server is started externally (npm run dev on port 3100,
+ * or BASE_URL=http://localhost:3000) — tests hit a live app, never spawn one,
+ * because the author runs their own dev server during development.
+ */
 export default defineConfig({
-  testDir: "./tests",
+  testDir: './tests',
+  timeout: 30_000,
+  expect: { timeout: 10_000 },
   fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
   workers: 1,
-  timeout: 45000,
-  expect: { timeout: 12000 },
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: 'list',
   use: {
-    baseURL: "http://127.0.0.1:3100",
-    trace: "retain-on-failure",
-    screenshot: "only-on-failure",
-  },
-  webServer: {
-    command: "node scripts/test-server.mjs",
-    url: "http://127.0.0.1:3100/api/health",
-    reuseExistingServer: false,
-    timeout: 60000,
+    baseURL: process.env.BASE_URL ?? 'http://127.0.0.1:3100',
+    trace: 'on-first-retry',
   },
 });

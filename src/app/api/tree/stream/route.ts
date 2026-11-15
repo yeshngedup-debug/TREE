@@ -1,4 +1,4 @@
-import { revision, snapshot } from "@/server/db";
+import { asyncRevision, snapshot } from "@/server/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export function GET(request: Request) {
@@ -24,7 +24,7 @@ export function GET(request: Request) {
       const send = async () => {
         if (closed) return;
         try {
-          const next = revision();
+          const next = await asyncRevision();
           if (next !== last) {
             const data = await snapshot();
             controller.enqueue(

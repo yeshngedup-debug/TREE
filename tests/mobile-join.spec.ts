@@ -68,12 +68,12 @@ test.describe("Join page on phone (390x844)", () => {
 
     await page.getByRole("button", { name: "Try an example" }).click();
     await expect(
-      page.getByLabel("What is your hope for the city?"),
+      page.getByLabel("What is your hope for Bhutan?"),
     ).not.toHaveValue("");
 
-    await page.getByLabel("What is your hope for the city?").fill("");
+    await page.getByLabel("What is your hope for Bhutan?").fill("");
     await page
-      .getByLabel("What is your hope for the city?")
+      .getByLabel("What is your hope for Bhutan?")
       .fill("I hope every student can learn in a welcoming school.");
 
     await expect(page.getByText(/\d+ \/ 200/)).toBeVisible();
@@ -93,7 +93,7 @@ test.describe("Join page on phone (390x844)", () => {
     await page.getByRole("radio", { name: "Nature & sustainability" }).check();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await page
-      .getByLabel("What is your hope for the city?")
+      .getByLabel("What is your hope for Bhutan?")
       .fill("I hope for green parks everywhere.");
     await page.getByRole("checkbox").check();
     await page.getByRole("button", { name: "Grow my leaf", exact: true }).click();

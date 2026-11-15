@@ -7,7 +7,7 @@ import { themeSchema } from "@/lib/schemas";
 export const metadata = {
   title: "Add your hope",
   description:
-    "Share a hope for Gelephu Mindfulness City and grow a leaf on the GM Tree.",
+    "Share a hope for Bhutan and grow a leaf on the BI Tree.",
   robots: { index: false, follow: false },
 };
 
@@ -21,7 +21,7 @@ export default async function JoinPage({
   return (
     <div className="min-h-[100svh] flex flex-col bg-background text-foreground">
       <header className="border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20">
-        <div className="mx-auto w-full flex items-center justify-between gap-3 px-4 py-3.5 sm:px-6 sm:py-4">
+        <div className="mx-auto w-full flex items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-4">
           <Brand compact />
           <Link
             href="/display"

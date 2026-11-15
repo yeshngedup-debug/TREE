@@ -9,9 +9,9 @@ test.describe("Home page - every button and link", () => {
     await page.goto("/");
 
     // Header links
-    await expect(page.getByRole("link", { name: "GM Tree home" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "BI Tree home" })).toBeVisible();
     await expect(page.getByRole("link", { name: "The experience" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Four chambers" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Explore Bhutan" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Live tree" })).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Add a hope" }),
@@ -113,15 +113,15 @@ test.describe("Join page - complete user flow", () => {
     // Try an example fills the textarea
     await page.getByRole("button", { name: "Try an example" }).click();
     await expect(
-      page.getByLabel("What is your hope for the city?"),
+      page.getByLabel("What is your hope for Bhutan?"),
     ).not.toHaveValue("");
 
     // Clear it
-    await page.getByLabel("What is your hope for the city?").fill("");
+    await page.getByLabel("What is your hope for Bhutan?").fill("");
 
     // Fill a note manually
     await page
-      .getByLabel("What is your hope for the city?")
+      .getByLabel("What is your hope for Bhutan?")
       .fill("I hope every student can learn in a welcoming school.");
 
     // Character counter updates
@@ -143,7 +143,7 @@ test.describe("Join page - complete user flow", () => {
     await page.goto("/join");
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await page
-      .getByLabel("What is your hope for the city?")
+      .getByLabel("What is your hope for Bhutan?")
       .fill("I hope every student can learn in a welcoming school.");
     await page.getByRole("checkbox").check();
     await page.getByRole("button", { name: "Grow my leaf", exact: true }).click();
@@ -166,11 +166,11 @@ test.describe("Join page - complete user flow", () => {
       page.getByRole("button", { name: "Grow another hope" }),
     ).toBeVisible();
 
-    // Chamber recommendation
+    // Guide path recommendation
     await expect(
       page.locator("p.mb-1.text-xs.font-medium.text-foreground\\/65"),
-    ).toContainText("Your next stop");
-    await expect(page.getByText("Explore the chambers")).toBeVisible();
+    ).toContainText("Your next step");
+    await expect(page.getByText("Explore this in Bhutan")).toBeVisible();
   });
 
   test("step 1: privacy details visible", async ({ page }) => {
@@ -186,8 +186,8 @@ test.describe("Join page - complete user flow", () => {
     await page.goto("/join");
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await page
-      .getByLabel("What is your hope for the city?")
-      .fill("I hope for more nature in our city.");
+      .getByLabel("What is your hope for Bhutan?")
+      .fill("I hope for more nature in Bhutan.");
     await page.getByRole("checkbox").check();
     await page.getByRole("button", { name: "Grow my leaf", exact: true }).click();
 
@@ -274,37 +274,77 @@ test.describe("Voices page - visitor history flow", () => {
   });
 });
 
-test.describe("Chambers page - every link and button", () => {
-  test("all chamber sections and theme chips work", async ({ page }) => {
-    await page.goto("/chambers");
+test.describe("Explore Bhutan page - every link and button", () => {
+  test("all guide path chips, sections and the AI guide render", async ({
+    page,
+  }) => {
+    await page.goto("/explore");
 
-    // All 4 chamber headings visible (actual names, not "Chamber X")
+    // All four guide path chips filter the kinds of places shown
     await expect(
-      page.getByRole("heading", { name: "Immersive Experience Room", exact: true }),
+      page.getByRole("button", { name: "All", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "3D Model Mapping", exact: true }),
+      page.getByRole("button", { name: "1 · Sacred temples", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "8 Business Sectors", exact: true }),
+      page.getByRole("button", { name: "2 · Valleys & nature", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Life in Gelephu Mindfulness City", exact: true }),
+      page.getByRole("button", { name: "3 · Taste of Bhutan", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", {
+        name: "4 · Heritage & folktales",
+        exact: true,
+      }),
     ).toBeVisible();
 
-    // "What future will you grow?" button
+    // Kind sections
     await expect(
-      page.getByRole("link", { name: "What future will you grow?" }),
+      page.getByRole("heading", {
+        name: "Temples & monasteries",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Valleys & nature", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Taste of Bhutan", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Dzongs & heritage", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Folktales to carry home", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("6 stories · retold with sources"),
     ).toBeVisible();
 
-    // Theme chips link to /join
-    await page.getByRole("link", { name: /Nature/ }).click();
-    await expect(page).toHaveURL(/join\?theme=/);
+    // Agentic guide card
+    await expect(
+      page.getByRole("heading", { name: "Ask the BI Tree guide", exact: true }),
+    ).toBeVisible();
+
+    // Selecting a path narrows the sections and updates the URL
+    await page
+      .getByRole("button", { name: "1 · Sacred temples", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/explore\?path=1/);
+    await expect(
+      page.getByRole("heading", { name: "Valleys & nature", exact: true }),
+    ).not.toBeVisible();
   });
 
-  test("chamber map and route details work", async ({ page }) => {
-    await page.goto("/chambers");
-    await expect(page.getByText("From reception, look for the entrance")).toBeVisible();
+  test("sourcing note renders for curated places and stories", async ({
+    page,
+  }) => {
+    await page.goto("/explore");
+    await expect(
+      page.getByText(/Every place and story above is a real, sourced entry/),
+    ).toBeVisible();
   });
 });
 
@@ -396,7 +436,7 @@ test.describe("Full end-to-end user journey", () => {
   }) => {
     // Start at home
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /A city grows/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Bhutan grows/ })).toBeVisible();
 
     // Click Grow your leaf
     await page.getByRole("link", { name: "Grow your leaf" }).click();
@@ -408,8 +448,8 @@ test.describe("Full end-to-end user journey", () => {
 
     // Fill note
     await page
-      .getByLabel("What is your hope for the city?")
-      .fill("I hope our city makes space for peaceful, healthy, mindful lives.");
+      .getByLabel("What is your hope for Bhutan?")
+      .fill("I hope Bhutan makes space for peaceful, healthy, mindful lives.");
     await page.getByRole("checkbox").check();
     await page.getByRole("button", { name: "Grow my leaf", exact: true }).click();
 
@@ -422,7 +462,7 @@ test.describe("Full end-to-end user journey", () => {
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: "Save keepsake", exact: true }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toMatch(/^gmc-leaf-.+\.svg$/);
+    expect(download.suggestedFilename()).toMatch(/^bi-tree-leaf-.+\.svg$/);
 
     // Share leaf
     await page.getByRole("button", { name: "Share leaf", exact: true }).click();

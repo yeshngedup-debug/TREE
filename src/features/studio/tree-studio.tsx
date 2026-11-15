@@ -202,7 +202,7 @@ export function TreeStudio() {
       <header className="studio-header">
         <Link href="/display" className="studio-back">
           <ArrowLeft size={16} />
-          <span>GM Tree</span>
+          <span>BI Tree</span>
         </Link>
         <div className="studio-palettes" aria-label="Tree palettes">
           {palettes.map(([id, label, color]) => (
@@ -276,7 +276,7 @@ export function TreeStudio() {
       <aside className="studio-panel" aria-label="Tree customization">
         <div className="studio-panel-title">
           <div>
-            <p>Gelephu Tree Studio</p>
+            <p>BI Tree Studio</p>
             <h2>Make it your own.</h2>
           </div>
           <button
@@ -407,7 +407,7 @@ export function TreeStudio() {
                 new Blob([JSON.stringify({ version: 1, settings }, null, 2)], {
                   type: "application/json",
                 }),
-                `gmc-tree-${settings.seed}.json`,
+                `bi-tree-${settings.seed}.json`,
               )
             }
           >

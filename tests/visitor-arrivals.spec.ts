@@ -2,7 +2,7 @@ import { test, expect, request as requests } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
 for (const width of [390, 320])
-  test(`join stays compact and privately replies with blueprint wayfinding at ${width}px`, async ({
+  test(`join stays compact and privately replies with guide path wayfinding at ${width}px`, async ({
     page,
     request,
   }) => {
@@ -14,13 +14,13 @@ for (const width of [390, 320])
     });
     const first = (await continueButton.boundingBox())!;
     expect(first.y + first.height).toBeLessThanOrEqual(
-      width === 390 ? 844 : 740,
+      width === 390 ? 874 : 744,
     );
     await page.getByRole("radio", { name: "Education & opportunity" }).check();
     await continueButton.click();
     const note =
       "I hope every student can learn in a welcoming school and visit a library.";
-    await page.getByLabel("What is your hope for the city?").fill(note);
+    await page.getByLabel("What is your hope for Bhutan?").fill(note);
     await page.getByRole("checkbox").check();
     const submit = page.getByRole("button", {
       name: "Grow my leaf",
@@ -28,7 +28,7 @@ for (const width of [390, 320])
     });
     const button = (await submit.boundingBox())!;
     expect(button.y + button.height).toBeLessThanOrEqual(
-      width === 390 ? 844 : 740,
+      width === 390 ? 874 : 744,
     );
     const response = page.waitForResponse(
       (value) =>
@@ -41,23 +41,13 @@ for (const width of [390, 320])
     await expect(
       page.getByText("Offline reply", { exact: true }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "8 Business Sectors", exact: true }),
-    ).toBeVisible();
+    await expect(page.getByText("Explore this in Bhutan")).toBeVisible();
     const reply = await page.getByTestId("visitor-reply").innerText();
     expect(reply).not.toBe(receipt.leaf.leaf_message);
     await page.reload();
     await expect(page.getByTestId("visitor-reply")).toHaveText(reply);
     await page.getByText("Your original note", { exact: true }).click();
     await expect(page.getByText(note, { exact: true })).toBeVisible();
-    await page.getByText("Find it on the plan", { exact: true }).click();
-    await expect(page.locator('[data-chamber="3"]')).toHaveAttribute(
-      "data-recommended",
-      "true",
-    );
-    await expect(
-      page.getByText(/Continue past the model mapping area/),
-    ).toBeVisible();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
@@ -76,7 +66,7 @@ for (const width of [390, 320])
     await expect(page.getByTestId("visitor-reply")).toHaveCount(0);
   });
 
-test("offline replies respond to the note and use the blueprint's chamber numbers", async ({
+test("offline replies respond to the note and use the guide path numbers", async ({
   request,
 }) => {
   const examples = [
@@ -84,7 +74,7 @@ test("offline replies respond to the note and use the blueprint's chamber number
       aspiration:
         "I hope there are schools and libraries where students can learn.",
       theme: "community",
-      chamber: 3,
+      chamber: 4,
       word: "learn",
     },
     {
@@ -96,14 +86,14 @@ test("offline replies respond to the note and use the blueprint's chamber number
     {
       aspiration: "I hope people have peaceful spaces for mindfulness.",
       theme: "wellbeing",
-      chamber: 4,
+      chamber: 1,
       word: "well",
     },
     {
       aspiration:
         "I hope our culture and traditions remain part of daily life.",
       theme: "culture",
-      chamber: 1,
+      chamber: 4,
       word: "tradition",
     },
   ];

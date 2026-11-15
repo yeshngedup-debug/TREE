@@ -71,7 +71,7 @@ test("CID and PIN history is private, owned, persistent across devices and remov
         .some(
           (header) =>
             header.name.toLowerCase() === "set-cookie" &&
-            /gmc_visit_history=.*HttpOnly; SameSite=Strict/.test(header.value),
+            /bi_visit_history=.*HttpOnly; SameSite=Strict/.test(header.value),
         ),
     ).toBe(true);
     expect(
@@ -156,7 +156,7 @@ test("submitted visitor can save both images, remember a voice and return withou
   await page.getByRole("button", { name: "Continue with a new hope" }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page
-    .getByLabel("What is your hope for the city?")
+    .getByLabel("What is your hope for Bhutan?")
     .fill("I hope we keep green spaces for nature and peaceful walks.");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Grow my leaf", exact: true }).click();
@@ -164,7 +164,7 @@ test("submitted visitor can save both images, remember a voice and return withou
     page.getByRole("heading", { name: "Your leaf is growing." }),
   ).toBeVisible();
   await expect(
-    page.getByText("A little about Gelephu", { exact: true }),
+    page.getByText("A little about Bhutan", { exact: true }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Add my CID (optional)", exact: true })
@@ -191,13 +191,13 @@ test("submitted visitor can save both images, remember a voice and return withou
     previewResolution!,
   );
   expect(treeDownload.suggestedFilename()).toMatch(
-    /^gmc-tree-with-leaf-.+\.png$/,
+    /^bi-tree-with-leaf-.+\.png$/,
   );
   const leaf = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Save keepsake", exact: true })
     .click();
-  expect((await leaf).suggestedFilename()).toMatch(/^gmc-leaf-.+\.svg$/);
+  expect((await leaf).suggestedFilename()).toMatch(/^bi-tree-leaf-.+\.svg$/);
   await page.screenshot({
     path: "test-results/receipt-history-and-tree.png",
     fullPage: true,
@@ -233,8 +233,8 @@ test("illustration receipt also downloads a valid standalone tree SVG", async ({
     await page.goto("/join");
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await page
-      .getByLabel("What is your hope for the city?")
-      .fill("I hope for more nature in our city.");
+      .getByLabel("What is your hope for Bhutan?")
+      .fill("I hope for more nature in Bhutan.");
     await page.getByRole("checkbox").check();
     await page
       .getByRole("button", { name: "Grow my leaf", exact: true })

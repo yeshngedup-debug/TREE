@@ -109,7 +109,7 @@ for (const size of [
     await page.setViewportSize(size);
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /A city grows/ }),
+      page.getByRole("heading", { name: /Bhutan grows/ }),
     ).toBeVisible();
     const hero = (await page.locator(".home-hero").boundingBox())!;
     expect(hero.y + hero.height).toBeLessThanOrEqual(size.height + 1);

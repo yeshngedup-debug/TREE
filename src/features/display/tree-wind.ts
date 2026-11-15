@@ -56,7 +56,7 @@ export function createTreeWind(initial: TreeSettings) {
           "#include <begin_vertex>\ntransformed += treeSway(transformed, swayLift, swayDetail);",
         );
     };
-    material.customProgramCacheKey = () => "gmc-branch-wind-v1";
+    material.customProgramCacheKey = () => "bi-tree-branch-wind-v1";
   }
   const offset = new THREE.Vector3();
   function sample(p: THREE.Vector3, lift = 0, flex = 0, phase = 0) {

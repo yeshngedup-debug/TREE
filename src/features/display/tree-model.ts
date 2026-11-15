@@ -146,7 +146,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
   wood.customDepthMaterial = woodDepth;
   wood.frustumCulled = false;
   group.add(wood);
-  wood.name = "GMC growing branches";
+  wood.name = "BI Tree growing branches";
   const swayLifts = geometry.getAttribute("swayLift"),
     swayDetails = geometry.getAttribute("swayDetail");
   const anchors: Anchor[] = [],
@@ -251,7 +251,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
   foliage.count = 0;
   foliage.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   foliage.frustumCulled = false;
-  foliage.name = "GMC contribution leaves";
+  foliage.name = "BI Tree contribution leaves";
   group.add(foliage);
   const bounds = new THREE.Box3();
   if (positions?.count)

@@ -79,7 +79,7 @@ export function DELETE(request: Request) {
       {
         headers: {
           ...noStore,
-          "Set-Cookie": cookie("gmc_admin", "", request, 0),
+          "Set-Cookie": cookie("bi_admin", "", request, 0),
         },
       },
     );

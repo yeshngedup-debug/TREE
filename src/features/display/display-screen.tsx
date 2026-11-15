@@ -18,7 +18,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { TreeCanvas } from "./tree-canvas";
-import { themes, themeFor, chamberDetails, type Leaf } from "@/lib/catalog";
+import { themes, themeFor, pathDetails, type Leaf } from "@/lib/catalog";
 import { useTree } from "@/hooks/use-tree";
 import { appUrl } from "@/lib/client";
 import { displayMessage } from "@/lib/display-copy";
@@ -227,7 +227,7 @@ export function DisplayScreen() {
               <span>
                 The living tree
                 <span className="kiosk-brand-subtitle">
-                  Gelephu Mindfulness City
+                  Bhutan
                 </span>
               </span>
             </Link>
@@ -370,10 +370,10 @@ export function DisplayScreen() {
                     : "Scan to grow a new leaf."}
                 </p>
                 {active && !reflection && (
-                  <p className="kiosk-chamber">
+                  <p className="kiosk-guide">
                     <MapPin size={13} />
-                    Chamber {active.chamber_id} ·{" "}
-                    {chamberDetails[active.chamber_id].short}
+                    Guide path {active.chamber_id} ·{" "}
+                    {pathDetails[active.chamber_id].short}
                   </p>
                 )}
               </motion.div>
@@ -396,7 +396,7 @@ export function DisplayScreen() {
                   value={joinUrl}
                   size={220}
                   marginSize={6}
-                  title="Scan with your phone to add your hope"
+                  title="Scan to add your hope"
                 />
               </Link>
             )}

@@ -9,5 +9,6 @@ data/*.sqlite*
 .next-test/
 playwright-report/
 test-results/
+.playwright-mcp/
 data/tests/
 .reference-tree/

@@ -74,7 +74,7 @@ const provider = createServer(async (req, res) => {
             ? "Mock unsafe private reply about the visitor's school note."
             : mode === "reply_invalid"
               ? "x".repeat(400)
-              : "Learning in a welcoming school can help students feel confident and supported. Your hope highlights how much that everyday experience matters to the city's future.",
+              : "Learning in a welcoming school can help students feel confident and supported. Your hope highlights how much that everyday experience matters to the country's future.",
     confidence: 0.98,
     moderation_flags: mode === "rejected" ? ["not_an_aspiration"] : [],
   };
@@ -119,9 +119,9 @@ const children = [
         ...process.env,
         ADMIN_PASSWORD: "test-only-staff-password",
         AI_MODE: config.ai,
-        OPENAI_API_KEY: config.key,
-        OPENAI_MODEL: "gpt-6-luna",
-        OPENAI_BASE_URL: "http://127.0.0.1:3102/v1",
+        AI_API_KEY: config.key,
+        AI_MODEL: "test-model",
+        AI_BASE_URL: "http://127.0.0.1:3102/v1",
         AI_TIMEOUT_MS: "1200",
         DATABASE_PATH: config.db,
         NEXT_PUBLIC_APP_URL: "",

@@ -26,12 +26,12 @@ export function HomeExperience() {
               A shared future. One hope at a time.
             </p>
             <h1 className="text-[clamp(2.2rem,5vw,5.3rem)] leading-[1.05] tracking-[-.065em]">
-              A city grows.
+              Bhutan grows.
               <br />
               So do our <span className="hero-highlight">hopes.</span>
             </h1>
             <p className="hero-description mt-5 max-w-sm text-sm leading-6 text-foreground/60 lg:text-base">
-              What future do you imagine for Gelephu Mindfulness City? Add your
+              What future do you imagine for Bhutan? Add your
               voice to a living tree of possibility.
             </p>
             <div className="hero-actions mt-6 flex flex-wrap items-center gap-4">
@@ -99,7 +99,7 @@ export function HomeExperience() {
             {
               number: "01",
               title: "Pause & imagine",
-              body: "Choose what matters to you. Share one hope for the city's future.",
+              body: "Choose what matters to you. Share one hope for Bhutan's future.",
               Icon: Sparkles,
             },
             {
@@ -111,7 +111,7 @@ export function HomeExperience() {
             {
               number: "03",
               title: "Follow your curiosity",
-              body: "Discover a chamber that connects with your vision of tomorrow.",
+              body: "Explore a guide path that connects with your vision of tomorrow.",
               Icon: Compass,
             },
           ].map(({ number, title, body, Icon }) => (
@@ -144,7 +144,7 @@ export function HomeExperience() {
               <h2 className="text-2xl md:text-3xl">What matters to you?</h2>
             </div>
             <p className="max-w-xs text-xs leading-5 text-foreground/55">
-              A thriving city starts with the things we care about.
+              A thriving Bhutan starts with the things we care about.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">

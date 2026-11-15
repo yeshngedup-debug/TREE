@@ -21,7 +21,7 @@ console.log(
   "Local configuration ready. Find your staff password under ADMIN_PASSWORD in .env.local.",
 );
 console.log(
-  "Add OPENAI_API_KEY to enable OpenAI. Without it, the app uses its curated offline fallback.",
+  "Add AI_API_KEY to enable the AI interpreter. Without it, the app uses its curated offline fallback.",
 );
 console.log(
   "Restart the server after configuration changes. Run npm run dev to begin.",

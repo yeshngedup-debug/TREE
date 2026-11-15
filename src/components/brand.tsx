@@ -6,7 +6,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <Link
       href="/"
-      aria-label="GM Tree home"
+      aria-label="BI Tree home"
       className="inline-flex items-center gap-2 sm:gap-3"
     >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-accent sm:h-10 sm:w-10">
@@ -14,11 +14,11 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       </span>
       <span>
         <span className="block whitespace-nowrap text-[15px] font-semibold leading-none tracking-tight sm:text-xl">
-          GM Tree
+          BI Tree
         </span>
         {!compact && (
           <span className="mt-1.5 block whitespace-nowrap text-[6px] tracking-[.18em] opacity-55 sm:text-[8px]">
-            Gelephu Mindfulness Tree
+            Bhutanese Idea Tree
           </span>
         )}
       </span>
@@ -36,7 +36,7 @@ export function SiteHeader() {
       >
         {[
           ["/", "The experience"],
-          ["/chambers", "Four chambers"],
+          ["/explore", "Explore Bhutan"],
           ["/display", "Live tree"],
         ].map(([href, label]) => (
           <Link
@@ -66,7 +66,7 @@ export function SiteFooter() {
       <div className="flex flex-wrap gap-x-5 gap-y-3">
         <Link href="/privacy">Participation & privacy</Link>
         <Link href="/admin">Staff console</Link>
-        <span>Gelephu experience centre · Hackathon</span>
+        <span>Bhutanese Idea Tree · Hackathon</span>
       </div>
     </footer>
   );

@@ -16,7 +16,7 @@ import {
 import { cookie, cookieValue, visitor } from "./auth";
 import { AppError } from "./http";
 
-const cookieName = "gmc_visit_history";
+const cookieName = "bi_visit_history";
 const duration = 12 * 60 * 60;
 const digest = (value: string) =>
   createHash("sha256").update(value).digest("hex");
@@ -151,7 +151,8 @@ export async function unlockVisitorHistory(
       "HISTORY_LOCKED",
     );
   const token = randomBytes(32).toString("base64url");
-  await transaction(async (client) => {
+  const profileId = await transaction(async (client) => {
+    let id = profile ? String(profile.id) : "";
     if (!profile) {
       await client.query(
         "insert into visitor_profiles(id,cid_hash,pin_salt,pin_hash,created_at) values($1,$2,$3,$4,$5) on conflict(cid_hash) do nothing",
@@ -163,6 +164,7 @@ export async function unlockVisitorHistory(
       );
       const newProfile = profileResult.rows[0];
       if (
+        !newProfile ||
         newProfile.pin_salt !== salt ||
         newProfile.pin_hash !== hashed.toString("hex")
       )
@@ -171,16 +173,42 @@ export async function unlockVisitorHistory(
           409,
           "HISTORY_LOCKED",
         );
+      id = String(newProfile.id);
     }
-    if (input.action === "remember" && input.leafId)
-      await linkVisitorLeaf(String(profile!.id), input.leafId, owner);
+    if (input.action === "remember" && input.leafId) {
+      const owned = await client.query(
+        "select 1 from visitor_submissions where leaf_id=$1 and owner_key=$2 and outcome='approved'",
+        [input.leafId, owner],
+      );
+      if (!owned.rows[0])
+        throw new AppError(
+          "Open the submitted voice on the browser that created it to remember this visit.",
+          403,
+          "NOT_YOUR_VOICE",
+        );
+      const linked = await client.query(
+        "select profile_id from visitor_profile_leaves where leaf_id=$1",
+        [input.leafId],
+      );
+      if (linked.rows[0] && linked.rows[0].profile_id !== id)
+        throw new AppError(
+          "This voice is already connected to another visit history.",
+          403,
+          "NOT_YOUR_VOICE",
+        );
+      await client.query(
+        "insert into visitor_profile_leaves(leaf_id,profile_id,linked_at) values($1,$2,$3) on conflict(leaf_id) do nothing",
+        [input.leafId, id, new Date().toISOString()],
+      );
+    }
     await client.query(
       "insert into visitor_profile_sessions(token_hash,profile_id,expires) values($1,$2,$3)",
-      [digest(token), String(profile!.id), Date.now() + duration * 1000],
+      [digest(token), id, Date.now() + duration * 1000],
     );
+    return id;
   });
   return {
-    profile: String(profile!.id),
+    profile: profileId,
     cookies: [
       cookie(cookieName, token, request, duration),
       ...(session.cookie ? [session.cookie] : []),

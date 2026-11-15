@@ -27,7 +27,7 @@ test("form-filling browser attributes are normalized before hydration", async ({
       records.forEach((record) => record.addedNodes.forEach(mark)),
     ).observe(document, { subtree: true, childList: true });
   });
-  for (const path of ["/join", "/chambers", "/display"]) {
+  for (const path of ["/join", "/explore", "/display"]) {
     await page.goto(path);
     await expect(page.locator("#form-attribute-compatibility")).toHaveCount(1);
     await expect(
@@ -84,7 +84,7 @@ for (const width of [1440, 320]) {
         ]),
       );
     expect(serverPositions).toHaveLength(22);
-    await page.goto("/chambers");
+    await page.goto("/explore");
     await page
       .getByRole("link", { name: "The experience", exact: true })
       .click();
@@ -105,7 +105,7 @@ for (const width of [1440, 320]) {
     for (const path of [
       "/",
       "/join",
-      "/chambers",
+      "/explore",
       "/privacy",
       "/display",
       "/tree",

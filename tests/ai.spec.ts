@@ -12,8 +12,7 @@ async function mode(mode: string) {
     body: JSON.stringify({ mode }),
   });
 }
-test("OpenAI structured response is moderated, persisted and shared by concurrent retries", async () => {
-  await mode("safe");
+test("AI structured response is moderated, persisted and shared by concurrent retries", async () => {  await mode("safe");
   const client = await requests.newContext({
       baseURL: "http://127.0.0.1:3101",
     }),
@@ -47,7 +46,7 @@ test("OpenAI structured response is moderated, persisted and shared by concurren
   ).toBe(1);
   const last = (await (await fetch("http://127.0.0.1:3102/counts")).json())
     .lastGeneration;
-  expect(last).toEqual({ model: "gpt-6-luna", reasoning: { effort: "none" } });
+    expect(last).toEqual({ model: "test-model", reasoning: { effort: "none" } });
   await client.dispose();
 });
 for (const scenario of [
@@ -59,7 +58,7 @@ for (const scenario of [
   "reply_pii",
   "reply_flagged",
 ])
-  test(`OpenAI ${scenario} rejects without fallback publication`, async () => {
+  test(`AI ${scenario} rejects without fallback publication`, async () => {
     await mode(scenario);
     const client = await requests.newContext({
       baseURL: "http://127.0.0.1:3101",
@@ -73,7 +72,7 @@ for (const scenario of [
     await client.dispose();
   });
 for (const scenario of ["failure", "invalid", "timeout", "reply_invalid"])
-  test(`OpenAI ${scenario} uses a labelled curated fallback`, async () => {
+  test(`AI ${scenario} uses a labelled curated fallback`, async () => {
     await mode(scenario);
     const client = await requests.newContext({
       baseURL: "http://127.0.0.1:3101",

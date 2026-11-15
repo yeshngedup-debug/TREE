@@ -18,7 +18,7 @@ export default function PrivacyPage() {
               What becomes public
             </h2>
             <p>
-              Your approved leaf, its theme, timestamp and suggested chamber
+              Your approved leaf, its theme, timestamp and suggested guide path
               appear on the tree and a public keepsake page. Anyone with that
               page's link can view it. Your leaf may contribute to a collective
               reflection. Participation is optional and anonymous; we do not ask
@@ -33,7 +33,8 @@ export default function PrivacyPage() {
               After submitting, you can choose to connect your voice to your
               11-digit CID and a private 6-digit PIN. The CID is stored only as
               a keyed lookup value; the PIN is salted and hashed. Neither is
-              sent to OpenAI, displayed publicly or kept in browser storage.
+              sent to the configured AI provider, displayed publicly or kept in
+              browser storage.
               This is a private visit profile, not government identity
               verification. You need both values to unlock your linked notes and
               replies on a later visit. Staff cannot recover a forgotten PIN.
@@ -52,10 +53,11 @@ export default function PrivacyPage() {
               What happens to your words
             </h2>
             <p>
-              When interpretation is enabled, your aspiration is sent to OpenAI
-              for safety checks and interpretation, with response storage
-              disabled in our generation requests. OpenAI processes that request
-              under its own data policies. In offline mode we use local keyword
+              When interpretation is enabled, your aspiration is sent to the
+              configured AI provider for safety checks and interpretation, with
+              response storage disabled in our generation requests. The provider
+              processes that request under its own data policies. In offline
+              mode we use local keyword
               matching and a curated sentence instead. With the consent you give
               before submitting, your original words are retained privately for
               staff review. Email addresses, phone-like numbers and links are
@@ -66,13 +68,14 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="mb-3 text-2xl text-foreground">
-              What stays on the host laptop
+              Where your data is stored
             </h2>
             <p>
               Approved leaves, encrypted private messages and moderation
               outcomes, anonymous request fingerprints for safe retries,
               short-lived rate-limit counters, staff action records and
-              aggregate counts are stored in a local SQLite database. A signed
+              aggregate counts are stored in the configured PostgreSQL database
+              (Neon serverless). A signed
               anonymous browser cookie helps limit repeat submissions. Staff
               sign-in uses a separate cookie that expires after eight hours. The
               display caches approved leaves on its browser for up to one day to

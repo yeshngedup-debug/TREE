@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { randomUUID } from "node:crypto";
-test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and chambers open", async ({
+test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and explore opens", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -21,7 +21,7 @@ test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and cha
   await phone.getByRole("radio", { name: "Education & opportunity" }).check();
   await phone.getByRole("button", { name: "Continue" }).click();
   await phone
-    .getByLabel("What is your hope for the city?")
+    .getByLabel("What is your hope for Bhutan?")
     .fill("I hope students have wonderful schools to learn new skills.");
   await phone.getByRole("checkbox").check();
   await phone.getByRole("button", { name: "Grow my leaf" }).click();
@@ -31,14 +31,14 @@ test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and cha
   await expect(display.locator(".tree-leaf")).toHaveCount(before + 1);
   const download = phone.waitForEvent("download");
   await phone.getByRole("button", { name: "Save keepsake" }).click();
-  expect((await download).suggestedFilename()).toMatch(/gmc-leaf-.*\.svg/);
+  expect((await download).suggestedFilename()).toMatch(/bi-tree-leaf-.*\.svg/);
   await phone.getByRole("link", { name: "Open your keepsake page" }).click();
   await expect(
     phone.getByRole("heading", { name: "One leaf. A shared future." }),
   ).toBeVisible();
-  await phone.getByRole("link", { name: "Explore the chambers" }).click();
+  await phone.getByRole("link", { name: "Explore this in Bhutan" }).click();
   await expect(
-    phone.getByRole("heading", { name: "8 Business Sectors", exact: true }),
+    phone.getByRole("heading", { name: "Grow where your hope points." }),
   ).toBeVisible();
   expect(
     await phone.evaluate(
@@ -46,7 +46,7 @@ test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and cha
     ),
   ).toBeTruthy();
   await phone.screenshot({
-    path: "test-results/mobile-chambers.png",
+    path: "test-results/mobile-explore.png",
     fullPage: true,
   });
   await display.screenshot({
@@ -80,7 +80,7 @@ test("display retains a cached tree offline and resynchronizes hidden leaves aft
   await context.setOffline(false);
   await expect(page.getByText("A living collection")).toBeVisible();
   const input = {
-    aspiration: "May nature and parks help our city thrive.",
+    aspiration: "May nature and parks help Bhutan thrive.",
     theme: "nature",
     consent: true,
     idempotencyKey: randomUUID(),
@@ -141,7 +141,7 @@ test("home and form fit small phones without horizontal scrolling", async ({
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: /A city grows/ }),
+    page.getByRole("heading", { name: /Bhutan grows/ }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -163,7 +163,7 @@ test("home and form fit small phones without horizontal scrolling", async ({
   ).toBeTruthy();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(
-    page.getByLabel("What is your hope for the city?"),
+    page.getByLabel("What is your hope for Bhutan?"),
   ).toBeVisible();
   expect(
     await page.evaluate(

@@ -49,7 +49,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
   useEffect(() => {
     try {
       const saved = JSON.parse(
-        sessionStorage.getItem("gmc-hope-draft") || "null",
+        sessionStorage.getItem("bi-tree-hope-draft") || "null",
       ) as { aspiration?: string; theme?: string; key?: string } | null;
       const parsedTheme = themeSchema.safeParse(saved?.theme);
       if (
@@ -70,7 +70,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
         if (!initialTheme || initialTheme === parsedTheme.data)
           key.current = typeof saved.key === "string" ? saved.key : null;
       }
-      const receipt = sessionStorage.getItem("gmc-hope-receipt");
+      const receipt = sessionStorage.getItem("bi-tree-hope-receipt");
       if (receipt && !saved?.aspiration)
         void api<{ leaf: Leaf }>(`/api/leaves/${encodeURIComponent(receipt)}`, {
           cache: "no-store",
@@ -79,7 +79,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             setLeaf(data.leaf);
             try {
               const cached = JSON.parse(
-                sessionStorage.getItem("gmc-hope-conversation") || "null",
+                sessionStorage.getItem("bi-tree-hope-conversation") || "null",
               ) as {
                 leafId?: string;
                 reply?: string;
@@ -103,7 +103,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             setStep(2);
           })
           .catch(() => {
-            sessionStorage.removeItem("gmc-hope-receipt");
+            sessionStorage.removeItem("bi-tree-hope-receipt");
           });
     } catch {
       /* Storage is optional on private browsers. */
@@ -135,10 +135,10 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
   useEffect(() => {
     if (!hydrated) return;
     try {
-      if (leaf) sessionStorage.removeItem("gmc-hope-draft");
+      if (leaf) sessionStorage.removeItem("bi-tree-hope-draft");
       else
         sessionStorage.setItem(
-          "gmc-hope-draft",
+          "bi-tree-hope-draft",
           JSON.stringify({ theme, aspiration, key: key.current }),
         );
     } catch {
@@ -178,7 +178,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
     key.current ??= uuid();
     try {
       sessionStorage.setItem(
-        "gmc-hope-draft",
+        "bi-tree-hope-draft",
         JSON.stringify({ theme, aspiration, key: key.current }),
       );
     } catch {
@@ -201,9 +201,9 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
       setReplyMode(data.reply_mode);
       setOriginal(aspiration);
       try {
-        sessionStorage.setItem("gmc-hope-receipt", data.leaf.id);
+        sessionStorage.setItem("bi-tree-hope-receipt", data.leaf.id);
         sessionStorage.setItem(
-          "gmc-hope-conversation",
+          "bi-tree-hope-conversation",
           JSON.stringify({
             leafId: data.leaf.id,
             reply: data.reply,
@@ -233,8 +233,8 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
   }
   function reset() {
     try {
-      sessionStorage.removeItem("gmc-hope-receipt");
-      sessionStorage.removeItem("gmc-hope-conversation");
+      sessionStorage.removeItem("bi-tree-hope-receipt");
+      sessionStorage.removeItem("bi-tree-hope-conversation");
     } catch {
       /* Optional storage. */
     }
@@ -269,7 +269,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
       </section>
     );
   return (
-    <section ref={section} className="w-full space-y-10 sm:max-w-md sm:mx-auto" aria-label="Add your hope">
+    <section ref={section} className="w-full space-y-3 sm:space-y-10 sm:max-w-md sm:mx-auto" aria-label="Add your hope">
       <div className="visit-choice" aria-label="Your visit">
         <span className="text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
           Your visit
@@ -317,7 +317,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           <li key={label} className="flex flex-col items-center gap-1">
             <span
               className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-medium border",
+                "flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-medium border",
                 step === index
                   ? "bg-accent border-accent text-primary-foreground"
                   : "border-border text-foreground/40",
@@ -357,22 +357,22 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
       {step === 0 ? (
         <div className="space-y-6">
           <div>
-            <p className="mb-2 text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
+            <p className="mb-1 sm:mb-2 text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
               Step 1 of 3
             </p>
-            <h1 className="text-3xl tracking-tight">What matters to you?</h1>
+            <h1 className="text-2xl sm:text-3xl tracking-tight">What matters to you?</h1>
             <p className="mt-2 text-sm leading-6 text-foreground/50">
               Choose a branch. Your words come next.
             </p>
           </div>
           <fieldset className="border border-border rounded-2xl p-1">
             <legend className="sr-only">Choose a theme</legend>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {themes.map((item) => (
                 <label
                   key={item.id}
                   className={cn(
-                    "relative flex cursor-pointer items-center gap-3 rounded-xl bg-card border border-transparent p-3 transition-colors min-h-[56px]",
+                    "relative flex cursor-pointer items-center gap-3 rounded-xl bg-card border border-transparent p-2 sm:p-3 transition-colors min-h-[56px]",
                     theme === item.id
                       ? "bg-accent border-accent/40"
                       : "hover:bg-muted hover:border-border",
@@ -409,7 +409,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               ))}
             </div>
           </fieldset>
-          <Button onClick={() => setStep(1)} className="mt-2 w-full">
+          <Button onClick={() => setStep(1)} className="sm:mt-2 w-full">
             Continue
             <ArrowRight size={16} />
           </Button>
@@ -440,7 +440,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           </div>
           <h1 className="text-2xl tracking-tight">Share a little hope.</h1>
           <label htmlFor="aspiration" className="block text-sm font-medium">
-            What is your hope for the city?
+            What is your hope for Bhutan?
           </label>
           <textarea
             ref={textarea}
@@ -492,7 +492,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             <p className="leading-relaxed pt-2">
               No account is needed. Only your approved leaf is public; your note
               and personal reply are not shown on the shared tree. When enabled,
-              OpenAI interprets your note and checks it before publication.
+              The BI Tree AI interprets your note and checks it before publication.
               Otherwise, a matching offline reply and curated leaf are used.
               Your note and reply are saved privately with encryption for safe
               retries. This tab keeps your unfinished note and reply so a

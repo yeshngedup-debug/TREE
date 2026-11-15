@@ -99,13 +99,24 @@ function initSchema(database: DatabaseSync) {
 
 const WRITE_RE = /^\s*(insert|update|delete|create|alter|drop|replace)\b/i;
 
-function toSqliteParams(sql: string): { sql: string; count: number } {
-  let count = 0;
-  const converted = sql.replace(/\$(\d+)/g, () => {
-    count += 1;
+function toSqliteParams(
+  sql: string,
+  params: unknown[],
+): { sql: string; values: unknown[] } {
+  const values: unknown[] = [];
+  let max = 0;
+  const converted = sql.replace(/\$(\d+)/g, (_m, n) => {
+    const index = Number(n);
+    max = Math.max(max, index);
+    values.push(params[index - 1]);
     return "?";
   });
-  return { sql: converted, count };
+  if (max > params.length) {
+    throw new Error(
+      `SQLite placeholder mismatch: SQL references $${max} but only ${params.length} params were provided`,
+    );
+  }
+  return { sql: converted, values };
 }
 
 interface QueryResult {
@@ -118,13 +129,7 @@ export async function query<T = Record<string, unknown>>(
   params: unknown[] = [],
 ): Promise<QueryResult> {
   const database = getDb();
-  const { sql, count } = toSqliteParams(text);
-  if (params.length !== count) {
-    throw new Error(
-      `SQLite placeholder mismatch: expected ${count} params, got ${params.length}`,
-    );
-  }
-  const values = params as unknown[];
+  const { sql, values } = toSqliteParams(text, params);
   const db: any = database;
   if (WRITE_RE.test(text)) {
     const result = db.prepare(sql).run(...values);
@@ -139,13 +144,7 @@ async function run(
   params: unknown[] = [],
 ): Promise<{ rowCount: number; lastInsertRowid?: number }> {
   const database = getDb();
-  const { sql: converted, count } = toSqliteParams(sql);
-  if (params.length !== count) {
-    throw new Error(
-      `SQLite placeholder mismatch: expected ${count} params, got ${params.length}`,
-    );
-  }
-  const values = params as unknown[];
+  const { sql: converted, values } = toSqliteParams(sql, params);
   const db: any = database;
   const result = db.prepare(converted).run(...values);
   return { rowCount: result.changes ?? 0, lastInsertRowid: result.lastInsertRowid as number | undefined };
@@ -182,9 +181,9 @@ export function getSessionSecret(): string {
 export const db = {
   query,
   run,
-  exec: (sql: string, params?: unknown[]) => {
+  exec: (sql: string) => {
     const db: any = getDb();
-    return db.exec(sql, ...(params as unknown[]));
+    return db.exec(sql);
   },
   all: <T = unknown>(sql: string, params?: unknown[]) => {
     const db: any = getDb();

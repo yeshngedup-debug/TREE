@@ -5,6 +5,8 @@ import {
   setLeafStatus,
   seedDemo,
   clearDemo,
+  adminMetrics,
+  recentAudit,
 } from "@/server/db";
 import { refreshReflection, aiMode, aiModel } from "@/server/services/ai";
 import { requireAdmin } from "@/server/auth";
@@ -26,6 +28,8 @@ export async function GET(request: Request) {
         stats: await treeStats(),
         ai: aiMode(),
         model: aiModel(),
+        metrics: await adminMetrics(),
+        audit: await recentAudit(),
       },
       { headers: noStore },
     );

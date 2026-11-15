@@ -221,7 +221,7 @@ select:focus-visible {
   z-index: 40;
 }
 .admin-sidebar .serif,
-.admin-sidebar a[aria-label="GM Tree home"] > span:last-child > span {
+.admin-sidebar a[aria-label="BI Tree home"] > span:last-child > span {
   font-size: 17px;
 }
 .admin-sidebar > div:first-child {
@@ -1014,7 +1014,7 @@ select:focus-visible {
   border-radius: 70% 10% 70% 10%;
   transform: rotate(-25deg);
 }
-.kiosk-chamber {
+.kiosk-guide {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -1054,12 +1054,12 @@ select:focus-visible {
   gap: 4px;
   font-size: 10px;
 }
-.chamber-recommendation {
+.guide-card {
   border-radius: 20px;
   padding: 18px;
   background: var(--card);
 }
-.chamber-number {
+.guide-badge {
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -1068,57 +1068,6 @@ select:focus-visible {
   border-radius: 13px;
   background: var(--accent);
   font-size: 22px;
-}
-.chamber-route {
-  margin-top: 8px;
-}
-.chamber-route summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 36px;
-  cursor: pointer;
-  font-size: 11px;
-  list-style: none;
-}
-.chamber-route[open] summary {
-  margin-bottom: 10px;
-}
-.chamber-map svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 18px;
-}
-.chamber-map-key {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 10px;
-}
-.chamber-map-key button {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 38px;
-  background: var(--muted);
-  border-radius: 10px;
-  padding: 6px 9px;
-  font-size: 10px;
-}
-.chamber-map-key button[aria-pressed="true"] {
-  background: var(--accent);
-}
-.chamber-map-key button > span {
-  font-size: 12px;
-  font-weight: 600;
-}
-.chamber-map figcaption {
-  margin-top: 7px;
-  font-size: 9px;
-  line-height: 1.5;
-  color: #25262080;
 }
 .kiosk-shell {
   position: relative;
@@ -1640,7 +1589,7 @@ select:focus-visible {
     grid-row: 4;
     margin: 0;
   }
-  .kiosk-chamber {
+  .kiosk-guide {
     grid-row: 5;
     margin: 0;
     justify-content: center;
@@ -1738,7 +1687,7 @@ select:focus-visible {
     grid-row: 3;
     font-size: 8px;
   }
-  .kiosk-chamber {
+  .kiosk-guide {
     grid-row: 4;
     font-size: 9px;
   }
@@ -1770,7 +1719,7 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 .visit-choice > div {
@@ -1821,7 +1770,7 @@ select:focus-visible {
   font-size: 14px;
   outline-offset: 3px;
 }
-.gmc-fact {
+.bi-tree-fact {
   margin-top: 16px;
   padding: 14px;
   border-radius: 15px;
@@ -1872,7 +1821,7 @@ select:focus-visible {
   color: #264637;
   background: #e5efed;
 }
-.chamber-number {
+.guide-badge {
   width: 52px;
   height: 52px;
   font-size: 30px;

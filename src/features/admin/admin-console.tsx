@@ -346,7 +346,7 @@ export function AdminConsole() {
             Sign out
           </button>
           <p className="px-3 pt-3 text-[9px] text-foreground/35">
-            Gelephu experience centre · Staff workspace
+            Bhutanese Idea Tree · Staff workspace
           </p>
         </div>
       </aside>
@@ -390,7 +390,7 @@ export function AdminConsole() {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow mb-3 text-foreground/40">
-                GM Tree · Staff console
+                BI Tree · Staff console
               </p>
               <h1 className="text-3xl tracking-tight lg:text-4xl">
                 A little care helps it grow.
@@ -437,7 +437,7 @@ export function AdminConsole() {
                   ["Demo leaves", data?.stats.demo ?? "-"],
                   [
                     "Interpretation",
-                    data?.ai === "openai" ? "OpenAI" : "Offline fallback",
+                    data?.ai === "openai" ? "AI live" : "Offline fallback",
                   ],
                 ].map(([label, value]) => (
                   <Card key={label} className="p-5">
@@ -451,7 +451,7 @@ export function AdminConsole() {
                       <p className="mt-2 text-[10px] text-foreground/50">
                         {data?.ai === "openai"
                           ? data.model
-                          : "Add a provider key to enable OpenAI"}
+                          : "Add an AI provider key to enable interpretation"}
                       </p>
                     )}
                   </Card>
@@ -516,9 +516,7 @@ export function AdminConsole() {
                                 />
                                 {themeFor(leaf.category).short} ·{" "}
                                 {leaf.is_demo ? "Demo · " : ""}
-                                {leaf.mode === "openai"
-                                  ? "OpenAI"
-                                  : "Curated"}{" "}
+                                {leaf.mode === "openai" ? "AI" : "Curated"}{" "}
                                 ·{" "}
                                 {new Date(leaf.created_at).toLocaleTimeString(
                                   "en-GB",
@@ -685,13 +683,13 @@ export function AdminConsole() {
                     <h2 className="mb-4 text-xl">Service activity</h2>
                     <dl className="space-y-3 text-xs">
                       {[
-                        ["Accepted", data?.metrics.accepted || 0],
-                        ["Rejected", data?.metrics.rejected || 0],
+                        ["Accepted", data?.metrics?.accepted || 0],
+                        ["Rejected", data?.metrics?.rejected || 0],
                         [
-                          "OpenAI interpretations",
-                          data?.metrics.ai_success || 0,
+                          "AI interpretations",
+                          data?.metrics?.ai_success || 0,
                         ],
-                        ["Offline fallbacks", data?.metrics.ai_fallback || 0],
+                        ["Offline fallbacks", data?.metrics?.ai_fallback || 0],
                       ].map(([label, count]) => (
                         <div key={label} className="flex justify-between">
                           <dt className="text-foreground/55">{label}</dt>

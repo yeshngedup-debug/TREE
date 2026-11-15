@@ -217,6 +217,25 @@ export function recordMetric(key: string) {
   );
 }
 
+export function adminMetrics(): Promise<Record<string, number>> {
+  return q<{ key: string; count: number | string }>(
+    "select key, count from metrics",
+  ).then((rows) =>
+    Object.fromEntries(
+      rows.map((row) => [row.key, Number(row.count) || 0]),
+    ),
+  );
+}
+
+export function recentAudit(
+  limit = 8,
+): Promise<{ action: string; leaf_id: string | null; created_at: string }[]> {
+  return q<{ action: string; leaf_id: string | null; created_at: string }>(
+    "select action, leaf_id, created_at from audit_events order by created_at desc, id desc limit $1",
+    [limit],
+  );
+}
+
 export function listLeaves(
   limit = 120,
   cursor?: { created_at: string; id: string },
@@ -301,6 +320,9 @@ export function insertLeaf(
     if (result.rowCount && result.rowCount > 0) {
       if (original)
         recordSubmission(original, "approved", leaf.id, "", original.reply);
+      await client.query(
+        "update app_meta set value=cast(value as integer)+1 where key='revision'",
+      );
       changed();
       recordMetric("accepted");
     }
@@ -598,10 +620,13 @@ export function deleteSubmission(id: string) {
       );
     }
     await client.query("delete from visitor_submissions where id=$1", [id]);
+    await client.query(
+      "update app_meta set value=cast(value as integer)+1 where key='revision'",
+    );
     changed();
     await client.query(
       "insert into audit_events(action,leaf_id,created_at) values($1,$2,$3)",
-      [row.rows[0].leaf_id || null, new Date().toISOString()],
+      ["delete_message", row.rows[0].leaf_id || null, new Date().toISOString()],
     );
     return true;
   });
@@ -647,14 +672,17 @@ export function adminLeaves() {
 }
 
 export function setLeafStatus(id: string, status: "approved" | "hidden") {
-  return transaction(async (client) => {
-    const result = await client.query(
+  return transaction(async () => {
+    const result = await db.query(
       "update approved_leaves set status=$1 where id=$2 and status<>$2",
       [status, id],
     );
     if (result.rowCount && result.rowCount > 0) {
+      await db.query(
+        "update app_meta set value=cast(value as integer)+1 where key='revision'",
+      );
       changed();
-      await client.query(
+      await db.query(
         "insert into audit_events(action,leaf_id,created_at) values($1,$2,$3)",
         [status === "hidden" ? "hide" : "restore", id, new Date().toISOString()],
       );
@@ -664,15 +692,15 @@ export function setLeafStatus(id: string, status: "approved" | "hidden") {
 }
 
 export function seedDemo() {
-  return transaction(async (client) => {
-    const countRow = await client.query(
+  return transaction(async () => {
+    const countRow = await db.query(
       "select count(*) as count from approved_leaves where is_demo=1",
     );
     if (Number(countRow.rows[0].count) > 0) return 0;
     for (let round = 0; round < 4; round++) {
       for (const theme of themes) {
         const id = randomUUID();
-        await client.query(
+        await db.query(
           `insert into approved_leaves(id,idempotency_key,category,leaf_message,chamber_id,chamber_reason,created_at,mode,is_demo,payload_hash)
            values($1,$2,$3,$4,$5,$6,$7,$8,1,'demo')`,
           [
@@ -680,7 +708,7 @@ export function seedDemo() {
             id,
             theme.id,
             theme.message,
-            theme.chamber,
+            theme.path,
             "An illustrative contribution for the hackathon demonstration.",
             new Date(
               Date.now() - (24 - round * 6 - themes.indexOf(theme)) * 60000,
@@ -691,7 +719,11 @@ export function seedDemo() {
       }
     }
     changed();
-    await client.query(
+    await db.query("delete from reflection_cache where id=1");
+    await db.query(
+      "update app_meta set value=cast(value as integer)+1 where key='revision'",
+    );
+    await db.query(
       "insert into audit_events(action,created_at) values('seed_demo',$1)",
       [new Date().toISOString()],
     );
@@ -700,12 +732,16 @@ export function seedDemo() {
 }
 
 export function clearDemo() {
-  return transaction(async (client) => {
-    const result = await client.query(
+  return transaction(async () => {
+    const result = await db.query(
       "delete from approved_leaves where is_demo=1",
     );
     changed();
-    await client.query(
+    await db.query("delete from reflection_cache where id=1");
+    await db.query(
+      "update app_meta set value=cast(value as integer)+1 where key='revision'",
+    );
+    await db.query(
       "insert into audit_events(action,created_at) values('clear_demo',$1)",
       [new Date().toISOString()],
     );
