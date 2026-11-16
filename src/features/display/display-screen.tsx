@@ -586,7 +586,7 @@ export function DisplayScreen() {
                     size={252}
                     marginSize={2}
                     fgColor="#171b12"
-                    bgColor="transparent"
+                    bgColor="#ffffff"
                     title="Scan to add your hope"
                   />
                 </Link>

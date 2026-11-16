@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { SiteFooter, SiteHeader } from "@/components/brand";
+import { SurfaceShell } from "@/components/surface";
 import { PostComposer } from "@/features/community/post-composer";
 import { listCategories, getOwnPost } from "@/server/community";
 import { currentAccount } from "@/server/community-session";
@@ -26,12 +27,12 @@ export default async function EditPostPage({
   const categories = await listCategories();
 
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-[860px] px-5 pb-20 pt-6 md:px-10">
+      <main className="surface-narrow-wide">
         <PostComposer categories={categories} post={post} />
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

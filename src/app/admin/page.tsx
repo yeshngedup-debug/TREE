@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SurfaceShell } from "@/components/surface";
 import { AdminConsole } from "@/features/admin/admin-console";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminConsole />;
+  return (
+    <SurfaceShell tool>
+      <AdminConsole />
+    </SurfaceShell>
+  );
 }

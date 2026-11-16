@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { CalendarDays } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import {
+  SurfaceClosing,
+  SurfaceShell,
+} from "@/components/surface";
+import {
   CommunityAvatar,
   PostCard,
 } from "@/features/community/post-card";
@@ -69,9 +73,9 @@ export default async function ProfilePage({
   };
 
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-[1100px] px-5 pb-20 pt-6 md:px-10">
+      <main className="mx-auto w-full max-w-[1100px] px-5 pb-20 pt-4 md:px-10">
         <header className="profile-head">
           <CommunityAvatar author={account} size={88} />
           <div className="min-w-0">
@@ -115,7 +119,7 @@ export default async function ProfilePage({
             {isOwner ? (
               <a
                 href="/create"
-                className="flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground"
+                className="community-submit"
               >
                 Share something new
               </a>
@@ -147,8 +151,23 @@ export default async function ProfilePage({
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
           }}
         />
+        <SurfaceClosing
+          kicker={isOwner ? "Keep growing" : "Join the grove"}
+          title={
+            isOwner
+              ? "What will you grow next?"
+              : "Every aspiration starts with a voice."
+          }
+          text={
+            isOwner
+              ? "Add another aspiration or idea and watch it take its place on the Living Tree."
+              : "Create a free account to publish your own hopes and ideas, and keep them together on a profile like this one."
+          }
+          primary={{ href: "/create", label: isOwner ? "Share an idea" : "Join BI Tree" }}
+          secondary={{ href: "/discover", label: "Explore Discover" }}
+        />
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

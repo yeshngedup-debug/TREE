@@ -47,6 +47,7 @@ export function VisitorVoices() {
   return (
     <div className="space-y-6">
       <div>
+        <p className="surface-kicker">Your visit</p>
         <h1 className="text-3xl tracking-tight">Your previous voices</h1>
         <p className="mt-2 text-sm leading-6 text-foreground/60">
           A private place for the hopes you’ve shared and the replies you

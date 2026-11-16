@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SiteFooter, SiteHeader } from "@/components/brand";
+import { SurfaceShell } from "@/components/surface";
 import { CommunityAuthForm } from "@/features/community/community-auth-form";
 import { PostComposer } from "@/features/community/post-composer";
 import {
@@ -45,9 +46,9 @@ export default async function CreatePage({
   }
 
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-[860px] px-5 pb-20 pt-6 md:px-10">
+      <main className="surface-narrow-wide">
         {account ? (
           categories.length ? (
             <PostComposer
@@ -71,6 +72,6 @@ export default async function CreatePage({
         )}
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

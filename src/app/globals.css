@@ -2543,7 +2543,7 @@ select:focus-visible {
   width: clamp(92px, 10.6vmin, 158px);
   padding: clamp(6px, 0.7vmin, 10px);
   border-radius: 18px;
-  background: transparent;
+  background: #ffffff;
 }
 .kiosk-qr-label,
 .kiosk-qr-url {

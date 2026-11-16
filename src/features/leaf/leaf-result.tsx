@@ -94,7 +94,7 @@ export function LeafResult({
             <Check size={20} />
           </span>
           <div>
-            <h1 className="text-2xl">Your leaf is growing.</h1>
+            <h2 className="text-2xl">Your leaf is growing.</h2>
             <p className="mt-1 text-[10px] text-foreground/55">
               Look for leaf #{leaf.id.slice(0, 6)} on the big screen.
             </p>

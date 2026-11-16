@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bookmark, Sprout } from "lucide-react";
+import { ArrowUpRight, Bookmark, Sprout } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
+import { SurfaceClosing, SurfaceHero, SurfaceShell } from "@/components/surface";
 import { PostCard } from "@/features/community/post-card";
 import { listSavedPosts } from "@/server/community";
 import { currentAccount } from "@/server/community-session";
@@ -17,43 +18,49 @@ export default async function SavedPage() {
   const account = await currentAccount();
   if (!account) {
     return (
-      <>
+      <SurfaceShell>
         <SiteHeader />
-        <main className="mx-auto w-full max-w-[900px] px-5 pb-20 pt-10 md:px-10">
-          <section className="community-panel">
-            <p className="eyebrow text-foreground/45">Your reading list</p>
-            <h1 className="mt-3 text-3xl tracking-tight">Saved posts</h1>
-            <p className="mt-3 max-w-md text-sm leading-6 text-foreground/60">
-              Sign in to keep a private reading list of aspirations and ideas you
-              want to return to.
-            </p>
+        <main className="surface-narrow">
+          <SurfaceHero
+            kicker="Your reading list"
+            title="Saved posts"
+            lede="Sign in to keep a private reading list of aspirations and ideas you want to return to."
+          >
             <Link
               href="/create?mode=login&next=%2Fsaved"
-              className="community-submit mt-6 inline-flex items-center justify-center"
+              className="community-submit"
             >
               Sign in
+              <ArrowUpRight size={15} aria-hidden="true" />
             </Link>
-          </section>
+            <Link href="/discover" className="surface-link">
+              Browse Discover
+            </Link>
+          </SurfaceHero>
+          <SurfaceClosing
+            kicker="Find your grove"
+            title="Save what you want to return to."
+            text="Create a free account, or simply browse the aspirations and ideas already growing across Bhutan."
+            primary={{ href: "/discover", label: "Explore Discover" }}
+            secondary={{ href: "/join", label: "Add a hope" }}
+          />
         </main>
         <SiteFooter />
-      </>
+      </SurfaceShell>
     );
   }
 
   const posts = await listSavedPosts(account.id);
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-[1100px] px-5 pb-20 pt-8 md:px-10">
-        <header className="discover-head">
-          <p className="eyebrow text-foreground/45">Your reading list</p>
-          <h1 className="mt-3 text-4xl tracking-tight md:text-5xl">
-            Saved posts
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-foreground/60">
-            Only you can see this list. Remove a bookmark from any post page.
-          </p>
-        </header>
+      <main className="surface-wide">
+        <SurfaceHero
+          kicker="Your reading list"
+          title="Saved posts"
+          lede="Only you can see this list. Remove a bookmark from any post page."
+          compact
+        />
         {posts.length ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
@@ -73,8 +80,15 @@ export default async function SavedPage() {
             </Link>
           </div>
         )}
+        <SurfaceClosing
+          kicker="Keep growing"
+          title="There is always more to bring back."
+          text="Discover aspirations and practical ideas from across Bhutan, or add one of your own to the Living Tree."
+          primary={{ href: "/discover", label: "Explore Discover" }}
+          secondary={{ href: "/create", label: "Share an idea" }}
+        />
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

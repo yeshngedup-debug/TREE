@@ -1,0 +1,1863 @@
+/* ---------------------------------------------------------------------------
+   Surface experience
+   One shared editorial layer for every route except the reception display.
+   It carries the home / discover / explore language — paper, ink, cream,
+   lime and clay; a floating glass nav; oversized tight Outfit headings;
+   borderless cards; dark forest keepsakes — and re-themes the existing
+   community, visitor, post, profile, moderation, admin and studio blocks
+   inside .surface-shell only. Display tokens stay untouched.
+   --------------------------------------------------------------------------- */
+
+.surface-shell {
+  --background: #eaeae3;
+  --foreground: #171b12;
+  --primary: #171b12;
+  --primary-foreground: #f6f5ea;
+  --card: #f6f5ea;
+  --accent: #d8ed92;
+  --border: rgba(23, 27, 18, 0.12);
+  --muted: #edece2;
+  --s-ink: #171b12;
+  --s-forest: #141910;
+  --s-paper: #eaeae3;
+  --s-cream: #f6f5ea;
+  --s-lime: #d8ed92;
+  --s-clay: #b4622f;
+  --s-line: rgba(23, 27, 18, 0.12);
+  --s-soft: rgba(23, 27, 18, 0.055);
+  --s-shadow: 0 30px 80px rgba(23, 27, 18, 0.07);
+
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: var(--s-paper);
+  color: var(--s-ink);
+  font-family: inherit;
+}
+
+.surface-shell > main {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.surface-shell > footer {
+  flex: 0 0 auto;
+}
+
+.surface-shell :where(a, button, input, select, textarea, [tabindex], summary):focus-visible {
+  outline: 2px solid #5f7a2f;
+  outline-offset: 3px;
+}
+
+.surface-shell ::selection {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .surface-shell {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Navigation — the floating glass pill from home and discover ---------------- */
+
+.surface-shell .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  width: calc(100% - 24px);
+  max-width: 1440px;
+  margin: 10px auto 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 8px 8px 16px;
+  border-radius: 26px;
+  background: rgba(242, 242, 235, 0.74);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 18px 44px rgba(24, 30, 18, 0.07);
+}
+
+.surface-shell .site-header nav[aria-label="Main navigation"] {
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  color: var(--s-ink);
+  font-size: 11px;
+}
+
+.surface-shell .site-header nav a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(23, 27, 18, 0.62);
+  white-space: nowrap;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.surface-shell .site-header nav a:hover {
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--s-ink);
+}
+
+.surface-shell .site-header nav a[aria-current="page"] {
+  background: var(--s-ink);
+  color: var(--s-cream);
+}
+
+.surface-shell .site-header nav a > svg {
+  opacity: 0.6;
+}
+
+.surface-shell .site-header a[aria-label="Share an idea"] {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--s-ink);
+  color: var(--s-cream);
+  font-size: 12px;
+  font-weight: 500;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.surface-shell .site-header a[aria-label="Share an idea"]:hover {
+  background: #2a3223;
+  transform: translateY(-1px);
+}
+
+.surface-shell .site-header > div:last-child :is(a, summary):hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+@media (min-width: 768px) {
+  .surface-shell .site-header {
+    width: calc(100% - 40px);
+    padding: 8px 10px 8px 20px;
+    border-radius: 999px;
+    gap: 8px;
+  }
+
+  .surface-shell .site-header nav[aria-label="Main navigation"] {
+    font-size: 11px;
+  }
+
+  .surface-shell .site-header nav a {
+    padding: 0 12px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .surface-shell .site-header nav[aria-label="Main navigation"] {
+    font-size: 12px;
+  }
+
+  .surface-shell .site-header nav a {
+    padding: 0 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  .surface-shell .site-header nav a {
+    flex: 1;
+    min-height: 38px;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  .surface-shell .site-header a[aria-label="Share an idea"] {
+    min-height: 42px;
+    padding: 0 12px;
+  }
+
+  .surface-shell .site-header a[aria-label="Share an idea"] span {
+    display: none;
+  }
+}
+
+/* Footer -------------------------------------------------------------------- */
+
+.surface-shell > footer {
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--s-line);
+  color: rgba(23, 27, 18, 0.52);
+  font-size: 11px;
+}
+
+.surface-shell > footer a {
+  color: rgba(23, 27, 18, 0.58);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.surface-shell > footer a:hover {
+  color: var(--s-ink);
+}
+
+/* Editorial type ------------------------------------------------------------ */
+
+.surface-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(23, 27, 18, 0.55);
+}
+
+.surface-kicker::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--s-clay);
+  opacity: 0.7;
+}
+
+.surface-hero {
+  display: grid;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 3.25rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.surface-hero.is-compact {
+  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+@media (min-width: 900px) {
+  .surface-hero:has(.surface-hero-aside) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+}
+
+.surface-hero-copy {
+  min-width: 0;
+}
+
+.surface-title {
+  max-width: 18ch;
+  margin: clamp(1.1rem, 2vw, 1.6rem) 0 0;
+  font-size: clamp(2.7rem, 5.6vw, 4.85rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: var(--s-ink);
+  text-wrap: balance;
+}
+
+.surface-title em {
+  font-style: normal;
+  color: var(--s-clay);
+}
+
+.surface-lede {
+  max-width: 36rem;
+  margin: 1.4rem 0 0;
+  font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.68);
+}
+
+.surface-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1.75rem;
+}
+
+.surface-hero-aside {
+  min-width: 0;
+}
+
+/* Sunsetting the old uppercase micro-label look ----------------------------- */
+
+.surface-shell .eyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+/* Buttons ------------------------------------------------------------------- */
+
+.surface-shell [data-slot="button"] {
+  min-height: 50px;
+  border-radius: 999px;
+  padding: 0 22px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.surface-shell [data-slot="button"].bg-primary {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell [data-slot="button"].bg-primary:hover {
+  background: #cfe879;
+}
+
+.surface-shell [data-slot="button"].bg-card {
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--s-ink);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell [data-slot="button"].bg-card:hover {
+  background: #fff;
+}
+
+.surface-shell [data-slot="button"].bg-muted {
+  background: var(--s-soft);
+  color: var(--s-ink);
+}
+
+.surface-shell [data-slot="button"].bg-muted:hover {
+  background: rgba(23, 27, 18, 0.1);
+}
+
+.surface-shell [data-slot="button"][data-size="icon"] {
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+
+/* Shared utility remap inside the shell -------------------------------------- */
+
+.surface-shell .bg-card {
+  background: var(--s-cream);
+}
+
+.surface-shell .bg-muted {
+  background: var(--s-soft);
+}
+
+.surface-shell .bg-accent {
+  background: var(--s-lime);
+}
+
+.surface-shell .surface-link {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(23, 27, 18, 0.58);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.surface-shell .surface-link:hover {
+  color: var(--s-ink);
+}
+
+/* Community panel and forms --------------------------------------------------- */
+
+.surface-shell .community-panel {
+  border-radius: 34px;
+  background: var(--s-cream);
+  padding: clamp(1.5rem, 3.2vw, 2.9rem);
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .community-panel-head {
+  margin-bottom: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.surface-shell .community-panel-head h1 {
+  margin-top: 0.9rem;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .community-panel-head p:not(.eyebrow) {
+  max-width: 44ch;
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.surface-shell .community-panel-head > .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+.surface-shell .community-panel-head > .eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--s-clay);
+  opacity: 0.7;
+}
+
+.surface-shell .community-switch {
+  gap: 4px;
+  margin-bottom: 1.75rem;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.06);
+  padding: 4px;
+}
+
+.surface-shell .community-switch button {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: rgba(23, 27, 18, 0.56);
+}
+
+@media (max-width: 420px) {
+  .surface-shell .community-switch {
+    display: flex;
+    width: 100%;
+  }
+
+  .surface-shell .community-switch button {
+    flex: 1;
+    justify-content: center;
+    padding: 0 10px;
+  }
+}
+
+.surface-shell .community-switch button[aria-pressed="true"] {
+  background: var(--s-ink);
+  color: var(--s-cream);
+  box-shadow: none;
+}
+
+.surface-shell .community-form {
+  gap: 1.1rem;
+}
+
+.surface-shell .community-field > span,
+.surface-shell .community-type-picker legend {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.48);
+}
+
+.surface-shell .community-field input,
+.surface-shell .community-field textarea,
+.surface-shell .community-field select {
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  padding: 0.95rem 1.05rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--s-ink);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+  transition:
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.surface-shell .community-field input:hover,
+.surface-shell .community-field textarea:hover,
+.surface-shell .community-field select:hover {
+  box-shadow: inset 0 0 0 1px rgba(23, 27, 18, 0.24);
+}
+
+.surface-shell .community-field input:focus,
+.surface-shell .community-field textarea:focus,
+.surface-shell .community-field select:focus {
+  outline: none;
+  background: #fffdf6;
+  box-shadow: inset 0 0 0 1.5px var(--s-ink);
+}
+
+.surface-shell .community-field input::placeholder,
+.surface-shell .community-field textarea::placeholder {
+  color: rgba(23, 27, 18, 0.35);
+}
+
+.surface-shell .community-type-picker {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.surface-shell .community-type-picker label {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1rem;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .community-type-picker label[data-active="true"] {
+  background: var(--s-lime);
+  box-shadow: none;
+}
+
+.surface-shell .community-type-picker strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.surface-shell .community-type-picker small {
+  color: rgba(23, 27, 18, 0.55);
+}
+
+.surface-shell .community-submit {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--s-lime);
+  padding: 0.85rem 1.4rem;
+  color: var(--s-ink);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.surface-shell .community-submit:hover:not(:disabled) {
+  background: #cfe879;
+  transform: translateY(-1px);
+}
+
+.surface-shell .community-submit:disabled {
+  opacity: 0.5;
+}
+
+.surface-shell .community-signout {
+  min-height: 42px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0 1rem;
+  font-size: 11.5px;
+  color: var(--s-ink);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.surface-shell .community-signout:hover:not(:disabled) {
+  background: #fff;
+}
+
+.surface-shell .community-error {
+  border-radius: 14px;
+  background: #f6e2d9;
+  padding: 0.85rem 1rem;
+  font-size: 12px;
+  color: #7a2c17;
+}
+
+.surface-shell .community-saved {
+  border-radius: 14px;
+  background: #e8f0cf;
+  padding: 0.85rem 1rem;
+  font-size: 12px;
+  color: #40521c;
+}
+
+.surface-shell .community-fineprint {
+  font-size: 11px;
+  line-height: 1.6;
+  color: rgba(23, 27, 18, 0.45);
+}
+
+.surface-shell .community-editor {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+  padding: 0 1.3rem;
+}
+
+/* Community cards ------------------------------------------------------------- */
+
+.surface-shell .community-card {
+  border-radius: 26px;
+  background: var(--s-cream);
+  box-shadow: 0 1px 0 rgba(23, 27, 18, 0.03);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.surface-shell .community-card:hover {
+  transform: translateY(-4px);
+  background: #fbfaf2;
+  box-shadow: 0 24px 48px rgba(23, 27, 18, 0.09);
+}
+
+.surface-shell .community-card-media {
+  height: 190px;
+}
+
+.surface-shell .community-card-body {
+  padding: 1.25rem 1.3rem 1.15rem;
+}
+
+.surface-shell .community-card-title {
+  margin: 0.7rem 0 0.45rem;
+  font-size: 1.22rem;
+  font-weight: 450;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.surface-shell .community-card-excerpt {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.surface-shell .community-type {
+  background: var(--s-lime);
+  padding: 0.22rem 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.surface-shell .community-type-idea {
+  background: #dfe6ee;
+}
+
+.surface-shell .community-tag {
+  background: rgba(23, 27, 18, 0.055);
+  padding: 0.24rem 0.6rem;
+}
+
+.surface-shell .community-tag:hover {
+  background: var(--s-lime);
+}
+
+.surface-shell .community-card-foot {
+  padding-top: 1rem;
+}
+
+.surface-shell .community-avatar-fallback {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .community-empty {
+  justify-items: center;
+  gap: 0.7rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.35);
+  padding: 3.5rem 1.5rem;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .community-empty h2,
+.surface-shell .community-empty h3 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+
+.surface-shell .community-empty a {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--s-lime);
+  padding: 0 18px;
+  color: var(--s-ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.surface-shell .community-hint {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 1.35rem;
+  font-size: 12px;
+}
+
+/* Page heads used by saved and other index routes ----------------------------- */
+
+.surface-shell .discover-head {
+  padding: clamp(1rem, 2.5vw, 1.5rem) 0 clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0;
+}
+
+.surface-shell .discover-head h1 {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+/* Post reading experience ------------------------------------------------------ */
+
+.surface-shell .post-back {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  color: rgba(23, 27, 18, 0.62);
+  font-size: 11.5px;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.surface-shell .post-back:hover {
+  background: #fff;
+  color: var(--s-ink);
+}
+
+.surface-shell .post-article {
+  margin-top: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border-radius: 38px;
+  background: var(--s-cream);
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .post-title {
+  max-width: 20ch;
+  margin: 1.15rem 0 1.35rem;
+  font-size: clamp(2.3rem, 4.8vw, 3.9rem);
+  font-weight: 450;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .post-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid var(--s-line);
+}
+
+.surface-shell .post-date {
+  font-size: 11px;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+.surface-shell .community-share {
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  padding: 0.5rem 0.95rem;
+  font-size: 11px;
+}
+
+.surface-shell .community-share:hover {
+  background: var(--s-lime);
+}
+
+.surface-shell .post-hero-image {
+  width: 100%;
+  max-height: 540px;
+  margin-top: 2rem;
+  border-radius: 26px;
+  object-fit: cover;
+}
+
+.surface-shell .post-body {
+  max-width: 64ch;
+  margin-top: 2.2rem;
+  font-size: 1.02rem;
+  line-height: 1.85;
+  color: rgba(23, 27, 18, 0.78);
+}
+
+.surface-shell .post-body p {
+  margin: 0 0 1.35em;
+}
+
+.surface-shell .post-body p:first-child {
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  line-height: 1.6;
+  color: var(--s-ink);
+}
+
+.surface-shell .post-tags {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--s-line);
+}
+
+.surface-shell .post-related {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.surface-shell .post-related h2 {
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 450;
+  letter-spacing: -0.045em;
+}
+
+/* Engagement and comments ------------------------------------------------------ */
+
+.surface-shell .post-engagement,
+.surface-shell .comment-section {
+  margin-top: 1.5rem;
+  padding: clamp(1.35rem, 3vw, 2.2rem);
+  border-radius: 30px;
+  background: var(--s-cream);
+}
+
+.surface-shell .post-action {
+  min-height: 42px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  padding: 0 15px;
+  font-size: 11.5px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.surface-shell .post-action:hover:not(:disabled),
+.surface-shell .post-action[data-active="true"] {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .post-report {
+  border-radius: 22px;
+  background: rgba(23, 27, 18, 0.035);
+}
+
+.surface-shell .comment-heading h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+
+.surface-shell .comment-item {
+  padding: 1.15rem 0;
+  border-top: 1px solid var(--s-line);
+}
+
+.surface-shell .comment-meta strong {
+  font-weight: 500;
+}
+
+.surface-shell .comment-actions button,
+.surface-shell .comment-actions summary {
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  background: rgba(23, 27, 18, 0.05);
+  font-size: 10.5px;
+}
+
+.surface-shell .comment-actions button:hover,
+.surface-shell .comment-actions summary:hover {
+  background: var(--s-lime);
+}
+
+/* Profile ---------------------------------------------------------------------- */
+
+.surface-shell .profile-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  border-radius: 36px;
+  background: var(--s-cream);
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .profile-head .community-avatar {
+  box-shadow: 0 0 0 6px rgba(23, 27, 18, 0.04);
+}
+
+.surface-shell .profile-head h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1.25rem;
+}
+
+.surface-shell .profile-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  padding: 0.4rem 0.8rem;
+  font-size: 10.5px;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.surface-shell .profile-owner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1.25rem;
+}
+
+.surface-shell .profile-owner-row .community-editor {
+  flex: 1 1 320px;
+  margin-top: 0;
+}
+
+@media (max-width: 640px) {
+  .surface-shell .profile-head {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+  }
+}
+
+/* Join, voices and the visitor flow -------------------------------------------- */
+
+.surface-shell .surface-narrow {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2rem)
+    clamp(3rem, 6vw, 5rem);
+}
+
+.surface-shell .surface-narrow-wide {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2rem)
+    clamp(3rem, 6vw, 5rem);
+}
+
+/* The narrow column already supplies the gutter, so an inner hero must not
+   add a second one or it drifts off the cards and closing card below it. */
+.surface-shell .surface-narrow > .surface-hero,
+.surface-shell .surface-narrow-wide > .surface-hero {
+  max-width: none;
+  padding: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.surface-shell .surface-narrow > .surface-hero.is-compact,
+.surface-shell .surface-narrow-wide > .surface-hero.is-compact {
+  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+/* Wide editorial column used by list surfaces such as saved posts. */
+.surface-shell .surface-wide {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(3rem, 6vw, 5rem);
+}
+
+.surface-shell .surface-wide > .surface-hero {
+  max-width: none;
+  padding: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.surface-shell .surface-wide > .surface-hero.is-compact {
+  padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.surface-shell .surface-wide > .surface-closing {
+  width: 100%;
+}
+
+/* Join — an editorial intro beside a focused three-step flow ----------------- */
+
+.surface-shell .surface-join {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(3rem, 6vw, 5rem);
+}
+
+.surface-shell .join-layout {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.surface-shell .join-intro {
+  min-width: 0;
+}
+
+.surface-shell .join-title {
+  margin: 1.1rem 0 0;
+  font-size: clamp(2.35rem, 6.4vw, 3.1rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.surface-shell .join-lede {
+  max-width: 32rem;
+  margin: 1.2rem 0 0;
+  font-size: clamp(0.92rem, 1.4vw, 1rem);
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.66);
+}
+
+.surface-shell .join-notes {
+  display: none;
+  margin: 2.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--s-line);
+}
+
+.surface-shell .join-notes li {
+  position: relative;
+  padding: 1rem 0 1rem 1.5rem;
+  border-bottom: 1px solid var(--s-line);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.surface-shell .join-notes li::before {
+  content: "";
+  position: absolute;
+  top: 1.35rem;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--s-lime);
+  box-shadow: inset 0 0 0 1px rgba(23, 27, 18, 0.16);
+}
+
+.surface-shell .join-notes strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--s-ink);
+}
+
+.surface-shell .join-flow {
+  min-width: 0;
+}
+
+.surface-shell .join-form {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .surface-shell .join-title {
+    font-size: clamp(2.9rem, 4vw, 3.7rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .surface-shell .join-layout {
+    display: grid;
+    max-width: none;
+    margin: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    align-items: start;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .surface-shell .join-intro {
+    position: sticky;
+    top: 6.5rem;
+    padding-top: clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  .surface-shell .join-notes {
+    display: block;
+  }
+}
+
+.surface-shell .visit-choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.75rem 0.9rem;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .visit-choice > div {
+  display: inline-flex;
+  gap: 2px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.06);
+  padding: 3px;
+}
+
+.surface-shell .visit-choice button {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.surface-shell .visit-choice button[aria-pressed="true"] {
+  background: var(--s-ink);
+  color: var(--s-cream);
+}
+
+.surface-shell .visit-choice > a {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+@media (max-width: 520px) {
+  .surface-shell .visit-choice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 12px;
+    padding: 0.85rem;
+  }
+
+  .surface-shell .visit-choice > div {
+    grid-column: 1 / -1;
+    display: flex;
+    width: 100%;
+  }
+
+  .surface-shell .visit-choice button {
+    flex: 1;
+    white-space: nowrap;
+  }
+
+  .surface-shell .visit-choice > a {
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+    white-space: nowrap;
+  }
+}
+
+.surface-shell .visitor-access {
+  border-radius: 26px;
+  background: var(--s-cream);
+  padding: clamp(1.25rem, 3vw, 1.8rem);
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .visitor-lock {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .visitor-input {
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .join-receipt {
+  border-radius: 30px;
+  background: var(--s-cream);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .private-reply {
+  border-radius: 22px;
+  background: rgba(216, 237, 146, 0.32);
+  padding: 1.15rem;
+}
+
+.surface-shell .bi-tree-fact {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0.9rem 1rem;
+}
+
+.surface-shell .surface-join .join-receipt h2 {
+  font-size: clamp(1.65rem, 3vw, 2.05rem);
+  font-weight: 450;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.surface-shell .surface-voices h1 {
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 450;
+  letter-spacing: -0.045em;
+}
+
+.surface-shell .surface-voices {
+  padding-top: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+.surface-shell .surface-voices h1 {
+  margin-top: 0.85rem;
+  line-height: 1.02;
+}
+
+.surface-shell .surface-join .join-step-title {
+  margin-top: 0.35rem;
+  font-size: clamp(1.95rem, 3.6vw, 2.6rem);
+  font-weight: 450;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .surface-join textarea {
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .surface-join textarea:focus {
+  outline: none;
+  background: #fffdf6;
+  box-shadow: inset 0 0 0 1.5px var(--s-ink);
+}
+
+/* Keepsake, guide and receipt tree --------------------------------------------- */
+
+.surface-shell .keepsake {
+  border-radius: 38px;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(216, 237, 146, 0.08), transparent 65%),
+    var(--s-forest);
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 3rem);
+}
+
+.surface-shell .keepsake .eyebrow {
+  color: var(--s-lime);
+  letter-spacing: 0.18em;
+}
+
+.surface-shell .keepsake blockquote {
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+
+.surface-shell .guide-card {
+  border-radius: 26px;
+  background: var(--s-cream);
+  padding: clamp(1.2rem, 3vw, 1.75rem);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .guide-badge {
+  border-radius: 999px;
+  background: var(--s-lime);
+  color: var(--s-ink);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.surface-shell .receipt-tree-card {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+/* Privacy — editorial policy layout -------------------------------------------- */
+
+.surface-shell .surface-prose {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem) clamp(2rem, 5vw, 4rem);
+  counter-reset: policy;
+}
+
+.surface-shell .surface-prose section {
+  position: relative;
+  padding: clamp(1.5rem, 3.5vw, 2.4rem) 0;
+  border-top: 1px solid var(--s-line);
+  counter-increment: policy;
+}
+
+.surface-shell .surface-prose section:first-of-type {
+  border-top: 0;
+}
+
+.surface-shell .surface-prose section::before {
+  content: counter(policy, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--s-clay);
+}
+
+@media (min-width: 900px) {
+  .surface-shell .surface-prose section {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    column-gap: clamp(1rem, 2vw, 2rem);
+    align-items: start;
+  }
+
+  .surface-shell .surface-prose section::before {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding-top: 0.5rem;
+  }
+
+  .surface-shell .surface-prose h2,
+  .surface-shell .surface-prose p {
+    grid-column: 2;
+  }
+
+  .surface-shell .surface-prose p {
+    max-width: 46rem;
+  }
+}
+
+.surface-shell .surface-prose h2 {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+  font-weight: 450;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.surface-shell .surface-prose p {
+  margin: 0 0 1rem;
+  font-size: 0.94rem;
+  line-height: 1.8;
+  color: rgba(23, 27, 18, 0.72);
+}
+
+.surface-shell .surface-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Moderation -------------------------------------------------------------------- */
+
+.surface-shell .moderation-console {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.surface-shell .moderation-loading {
+  border-radius: 24px;
+  background: var(--s-cream);
+  padding: 2rem;
+  font-size: 13px;
+}
+
+.surface-shell .moderation-gate {
+  width: 100%;
+  max-width: 760px;
+  margin: clamp(0.5rem, 2vw, 1.5rem) auto 0;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.surface-shell .moderation-gate > svg {
+  width: 52px;
+  height: 52px;
+  padding: 14px;
+  border-radius: 999px;
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .moderation-gate h1 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .moderation-gate p {
+  max-width: 40ch;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.surface-shell .moderation-gate .community-error {
+  width: 100%;
+  border-radius: 16px;
+  background: rgba(180, 98, 47, 0.14);
+  padding: 0.75rem 1rem;
+  font-size: 12px;
+  color: #7c3f1a;
+}
+
+.surface-shell .moderation-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0.6rem;
+}
+
+.surface-shell .moderation-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  border-radius: 34px;
+  background: var(--s-cream);
+}
+
+.surface-shell .moderation-head h1 {
+  margin-top: 0.8rem;
+  font-size: clamp(2.2rem, 4.4vw, 3.5rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .moderation-head p:not(.eyebrow) {
+  max-width: 52ch;
+  margin-top: 0.9rem;
+  color: rgba(23, 27, 18, 0.6);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.surface-shell .moderation-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.surface-shell .moderation-counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.surface-shell .moderation-counts > div {
+  border-radius: 24px;
+  background: var(--s-cream);
+  padding: 1.35rem 1.5rem;
+}
+
+.surface-shell .moderation-counts > div:first-child {
+  background: var(--s-ink);
+  color: var(--s-cream);
+}
+
+.surface-shell .moderation-counts dt {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.surface-shell .moderation-counts dd {
+  margin: 0.6rem 0 0;
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 450;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .moderation-section {
+  border-radius: 30px;
+  background: var(--s-cream);
+  padding: clamp(1.35rem, 3vw, 2rem);
+}
+
+.surface-shell .moderation-section-head h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+
+.surface-shell .moderation-section-head > span {
+  font-size: 10.5px;
+  color: rgba(23, 27, 18, 0.45);
+}
+
+.surface-shell .moderation-item {
+  padding: 1.15rem 0;
+  border-top: 1px solid var(--s-line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.surface-shell .moderation-list {
+  display: grid;
+  gap: 0;
+}
+
+.surface-shell .moderation-status {
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+}
+
+.surface-shell .moderation-actions button {
+  min-height: 36px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  padding: 0 0.85rem;
+  font-size: 11px;
+}
+
+.surface-shell .moderation-actions button:hover:not(:disabled) {
+  background: var(--s-lime);
+}
+
+.surface-shell .moderation-category {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.45);
+  padding: 1.1rem;
+}
+
+.surface-shell .moderation-activity li {
+  font-size: 11.5px;
+}
+
+/* Staff console — same paper, ink and cream, without touching display ---------- */
+
+.surface-tool {
+  display: contents;
+}
+
+.surface-tool .admin-shell {
+  background: var(--s-paper);
+}
+
+.surface-tool .admin-sidebar {
+  background: var(--s-cream);
+}
+
+.surface-tool .admin-nav-item {
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.surface-tool .admin-nav-item[aria-current="page"] {
+  background: var(--s-ink);
+  color: var(--s-cream);
+}
+
+.surface-tool .admin-nav-item[aria-current="page"] > svg {
+  color: var(--s-lime);
+}
+
+.surface-tool .admin-nav-count {
+  background: rgba(23, 27, 18, 0.08);
+  color: currentColor;
+  border-radius: 999px;
+}
+
+.surface-tool .admin-content h1 {
+  font-weight: 450;
+  letter-spacing: -0.05em;
+}
+
+.surface-tool .admin-stats > div:first-child {
+  background: var(--s-lime);
+}
+
+.surface-tool .admin-content :where(.bg-card, .rounded-3xl) {
+  border-radius: 26px;
+}
+
+.surface-tool .admin-topbar {
+  border-bottom: 1px solid var(--s-line);
+}
+
+/* Tree studio — the tool keeps its dark stage, tuned to the same palette -------- */
+
+.surface-tool .studio-caption h1 {
+  font-weight: 450;
+  letter-spacing: -0.045em;
+}
+
+.surface-tool .studio-panel {
+  border-radius: 30px;
+}
+
+.surface-tool .studio-palettes button[aria-pressed="true"] {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-tool .studio-save {
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-tool .studio-species button[aria-pressed="true"] {
+  background: var(--s-cream);
+  color: var(--s-ink);
+}
+
+.surface-shell .staff-login .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+.surface-shell .staff-login .eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--s-clay);
+  opacity: 0.7;
+}
+
+.surface-shell .staff-login h1 {
+  font-size: clamp(2.3rem, 3.8vw, 3.1rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-shell .staff-login form {
+  box-shadow: var(--s-shadow);
+}
+
+.surface-shell .staff-login input {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+/* Closing card ------------------------------------------------------------------ */
+
+.surface-closing {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: calc(100% - clamp(2.5rem, 8vw, 5rem));
+  max-width: 1180px;
+  margin: clamp(2.5rem, 6vw, 5rem) auto 0;
+  padding: clamp(1.75rem, 4.5vw, 3.5rem);
+  border-radius: clamp(28px, 4vw, 42px);
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .surface-narrow > .surface-closing,
+.surface-shell .surface-narrow-wide > .surface-closing {
+  width: 100%;
+}
+
+.surface-closing-mark {
+  position: absolute;
+  right: -0.35em;
+  bottom: -0.42em;
+  z-index: -1;
+  width: min(42vw, 300px);
+  height: auto;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.surface-closing-copy {
+  position: relative;
+  max-width: 44rem;
+}
+
+.surface-closing .surface-kicker {
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.surface-closing .surface-kicker::before {
+  background: var(--s-ink);
+}
+
+.surface-closing h2 {
+  max-width: 18ch;
+  margin: 1rem 0 0;
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.surface-closing-copy > p:not(.surface-kicker) {
+  max-width: 34rem;
+  margin: 1.1rem 0 0;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.7);
+}
+
+.surface-closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1.75rem;
+}
+
+.surface-closing-primary {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--s-ink);
+  padding: 0 22px;
+  color: var(--s-cream);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.surface-closing-primary:hover {
+  background: #2a3223;
+  transform: translateY(-1px);
+}
+
+.surface-closing-secondary {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  padding: 0 8px;
+  color: rgba(23, 27, 18, 0.7);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.surface-closing-secondary:hover {
+  color: var(--s-ink);
+}
+
+/* Error and empty states --------------------------------------------------------- */
+
+.surface-shell .surface-state {
+  display: grid;
+  min-height: 100svh;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  padding: clamp(2rem, 6vw, 5rem) 20px;
+  text-align: center;
+}
+
+.surface-shell .surface-state-mark {
+  display: flex;
+  width: 72px;
+  height: 72px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--s-lime);
+  color: var(--s-ink);
+}
+
+.surface-shell .surface-state h1 {
+  max-width: 16ch;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.surface-shell .surface-state p {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.surface-shell .surface-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 0.75rem;
+}
+
+/* Small screens -------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .surface-shell .community-panel {
+    border-radius: 26px;
+  }
+
+  .surface-shell .post-article {
+    border-radius: 28px;
+  }
+
+  .surface-shell .profile-head {
+    border-radius: 28px;
+  }
+
+  .surface-shell .moderation-head,
+  .surface-shell .moderation-section {
+    border-radius: 26px;
+  }
+
+  .surface-shell > footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLeaf } from "@/server/db";
 import { SiteHeader, SiteFooter } from "@/components/brand";
+import { SurfaceShell } from "@/components/surface";
 import { LeafResult } from "@/features/leaf/leaf-result";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,12 +14,12 @@ export default async function LeafPage({
     leaf = await getLeaf(id);
   if (!leaf) notFound();
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto max-w-xl px-5 py-12">
+      <main className="surface-narrow">
         <LeafResult leaf={leaf} keepsake />
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

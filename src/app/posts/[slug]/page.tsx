@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
+import { SurfaceShell } from "@/components/surface";
 import { CommentSection } from "@/features/community/comment-section";
 import { PostEngagement } from "@/features/community/post-engagement";
 import { PostOwnerActions } from "@/features/community/post-owner-actions";
@@ -91,9 +92,9 @@ export default async function PostPage({
   };
 
   return (
-    <>
+    <SurfaceShell>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-[900px] px-5 pb-20 pt-6 md:px-10">
+      <main className="mx-auto w-full max-w-[900px] px-5 pb-20 pt-4 md:px-10">
         <Link href="/discover" className="post-back">
           <ArrowLeft size={15} aria-hidden="true" /> Back to discover
         </Link>
@@ -206,6 +207,6 @@ export default async function PostPage({
         />
       </main>
       <SiteFooter />
-    </>
+    </SurfaceShell>
   );
 }

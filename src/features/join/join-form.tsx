@@ -249,7 +249,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
   const themeColor = themeFor(theme).color;
   if (leaf)
     return (
-      <section className="w-full space-y-6 sm:max-w-md sm:mx-auto" aria-label="Your leaf">
+      <section className="join-form w-full space-y-6" aria-label="Your leaf">
         <LeafResult
           leaf={leaf}
           compact
@@ -269,7 +269,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
       </section>
     );
   return (
-    <section ref={section} className="w-full space-y-3 sm:space-y-10 sm:max-w-md sm:mx-auto" aria-label="Add your hope">
+    <section ref={section} className="join-form w-full space-y-3 sm:space-y-10" aria-label="Add your hope">
       <div className="visit-choice" aria-label="Your visit">
         <span className="text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
           Your visit
@@ -360,7 +360,9 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             <p className="mb-1 sm:mb-2 text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
               Step 1 of 3
             </p>
-            <h1 className="text-2xl sm:text-3xl tracking-tight">What matters to you?</h1>
+            <h2 className="join-step-title text-2xl sm:text-3xl tracking-tight">
+              What matters to you?
+            </h2>
             <p className="mt-2 text-sm leading-6 text-foreground/50">
               Choose a branch. Your words come next.
             </p>
@@ -438,7 +440,9 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               Change theme
             </button>
           </div>
-          <h1 className="text-2xl tracking-tight">Share a little hope.</h1>
+          <h2 className="join-step-title text-2xl tracking-tight">
+            Share a little hope.
+          </h2>
           <label htmlFor="aspiration" className="block text-sm font-medium">
             What is your hope for Bhutan?
           </label>
