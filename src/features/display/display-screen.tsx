@@ -583,10 +583,10 @@ export function DisplayScreen() {
                 >
                   <QRCodeSVG
                     value={joinUrl}
-                    size={220}
+                    size={252}
                     marginSize={2}
                     fgColor="#171b12"
-                    bgColor="#ffffff"
+                    bgColor="transparent"
                     title="Scan to add your hope"
                   />
                 </Link>

@@ -2337,8 +2337,8 @@ select:focus-visible {
 }
 
 /* Arrival notice: a community card pinned over the grove, in the home and
-   explore card language — cream surface, ink text, generous radius, a soft
-   drop shadow and a lime pulse. No printed-paper chrome. ------------------- */
+   explore card language — transparent over the live scene, ink text with a
+   soft light halo, a lime pulse. No printed-paper chrome. ------------------- */
 .kiosk-notice {
   position: absolute;
   top: clamp(170px, 24vh, 300px);
@@ -2349,10 +2349,14 @@ select:focus-visible {
   width: min(340px, 82vw);
   padding: clamp(15px, 1.8vmin, 22px) clamp(17px, 2vmin, 24px);
   border-radius: 26px;
-  background: #f6f5ea;
+  background: transparent;
   color: #171b12;
-  box-shadow: 0 26px 60px rgba(20, 25, 16, 0.3);
   pointer-events: none;
+}
+.kiosk-notice-label,
+.kiosk-notice-quote,
+.kiosk-notice-meta {
+  text-shadow: 0 1px 14px rgba(246, 245, 234, 0.9);
 }
 .kiosk-notice-label {
   display: flex;
@@ -2530,17 +2534,20 @@ select:focus-visible {
   gap: clamp(10px, 1.4vmin, 20px);
   padding: clamp(9px, 1.1vmin, 15px) clamp(11px, 1.4vmin, 19px);
   border-radius: 26px;
-  background: #f6f5ea;
+  background: transparent;
   color: #171b12;
-  box-shadow: 0 22px 55px rgba(20, 25, 16, 0.3);
 }
 .kiosk-qr {
   flex: none;
   display: block;
-  width: clamp(72px, 8.4vmin, 124px);
+  width: clamp(92px, 10.6vmin, 158px);
   padding: clamp(6px, 0.7vmin, 10px);
   border-radius: 18px;
-  background: #ffffff;
+  background: transparent;
+}
+.kiosk-qr-label,
+.kiosk-qr-url {
+  text-shadow: 0 1px 14px rgba(246, 245, 234, 0.9);
 }
 .kiosk-qr svg {
   display: block;
@@ -2564,7 +2571,7 @@ select:focus-visible {
   font-size: clamp(8px, 0.85vmin, 11px);
   font-weight: 400;
   letter-spacing: 0.01em;
-  color: rgba(23, 27, 18, 0.5);
+  color: rgba(23, 27, 18, 0.62);
   overflow-wrap: anywhere;
 }
 
@@ -2659,10 +2666,9 @@ select:focus-visible {
   }
   .kiosk-qr-panel {
     padding: 6px;
-    box-shadow: 0 14px 34px rgba(20, 25, 16, 0.3);
   }
   .kiosk-qr {
-    width: clamp(64px, 16vmin, 84px);
+    width: clamp(78px, 19.5vmin, 102px);
     padding: 3px;
   }
   .kiosk-controls .kiosk-zoom {
