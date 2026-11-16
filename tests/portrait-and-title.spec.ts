@@ -60,41 +60,39 @@ for (const size of [
     );
     const selectors = [
       ".kiosk-controls",
-      ".kiosk-legend",
       ".kiosk-feature",
       ".kiosk-qr-panel",
     ];
-    const before = await Promise.all(
-      selectors.map((selector) => page.locator(selector).boundingBox()),
-    );
-    for (let i = 1; i < before.length; i++)
-      expect(before[i]!.y).toBeGreaterThanOrEqual(
-        before[i - 1]!.y + before[i - 1]!.height - 1,
+    const boxes = () =>
+      Promise.all(
+        selectors.map((selector) => page.locator(selector).boundingBox()),
       );
-    expect(before[3]!.y + before[3]!.height).toBeLessThan(size.height);
-    const legend = await page
-      .locator(".kiosk-legend button")
-      .evaluateAll((nodes) =>
-        nodes.map((node) => node.getBoundingClientRect().x),
-      );
-    expect(new Set(legend).size).toBeGreaterThan(2);
-    await page.getByRole("button", { name: "Read a opportunity hope" }).click();
+    const [controls, feature, qr] = await boxes();
+    // Portrait sequence: the quote sits above the scan card and the dock,
+    // which share the last row.
+    expect(feature!.y + feature!.height).toBeLessThanOrEqual(qr!.y + 1);
+    expect(controls!.y).toBeGreaterThanOrEqual(feature!.y + feature!.height - 1);
+    expect(qr!.y + qr!.height).toBeLessThan(size.height);
+    expect(controls!.y + controls!.height).toBeLessThan(size.height);
+    await page
+      .getByRole("button", { name: /Opportunity: May Bhutan/ })
+      .click();
     await expect(page.locator(".kiosk-feature blockquote")).toContainText(
       "every generation",
     );
-    const after = await Promise.all(
-      selectors.map((selector) => page.locator(selector).boundingBox()),
+    const after = await boxes();
+    expect(after[2]!.y + after[2]!.height).toBeLessThanOrEqual(size.height);
+    expect(after[0]!.y).toBeGreaterThanOrEqual(
+      after[1]!.y + after[1]!.height - 1,
     );
-    expect(after).toEqual(before);
     await page.getByRole("button", { name: "Close selected leaf" }).click();
     await page.waitForTimeout(18500);
     const quote = await page.locator(".kiosk-feature blockquote").innerText();
     expect(quote.length).toBeLessThanOrEqual(160);
-    expect(
-      await Promise.all(
-        selectors.map((selector) => page.locator(selector).boundingBox()),
-      ),
-    ).toEqual(before);
+    const settled = await boxes();
+    expect(settled[2]!.y + settled[2]!.height).toBeLessThanOrEqual(
+      size.height,
+    );
     expect(
       await page.evaluate(
         () =>

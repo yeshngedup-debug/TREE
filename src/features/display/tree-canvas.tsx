@@ -18,6 +18,7 @@ export function TreeCanvas({
   sceneRef,
   showControls = true,
   environment = "transparent",
+  composition = "mature",
 }: {
   leaves?: Leaf[];
   activeId?: string;
@@ -30,6 +31,7 @@ export function TreeCanvas({
   sceneRef?: React.RefObject<SceneController | null>;
   showControls?: boolean;
   environment?: "transparent" | "garden";
+  composition?: "mature" | "portrait" | "poster";
 }) {
   const host = useRef<HTMLDivElement>(null),
     root = useRef<HTMLDivElement>(null),
@@ -91,6 +93,7 @@ export function TreeCanvas({
             project,
             fail,
             environment,
+            composition,
           );
           controller.current = scene;
           if (sceneRef) sceneRef.current = scene;
@@ -113,9 +116,10 @@ export function TreeCanvas({
       controller.current = null;
       if (sceneRef) sceneRef.current = null;
     };
-    // Only the environment needs a new WebGL context; other edits reconfigure.
+    // Only the environment and composition need a new WebGL context; other
+    // edits reconfigure.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [environment]);
+  }, [environment, composition]);
   useEffect(() => {
     try {
       controller.current?.configure(settings);

@@ -34,6 +34,7 @@ export function createTreeScene(
   onProject: (items: ProjectedLeaf[], metrics?: GrowthMetrics) => void,
   onFailure: () => void,
   environment: "transparent" | "garden" = "transparent",
+  composition: "mature" | "portrait" | "poster" = "mature",
 ): SceneController {
   // WebGL2 is the minimum three r163+ runs on. Probe first: on kiosks and
   // sandboxed browsers the GPU is policy-disabled, and constructing the
@@ -51,6 +52,7 @@ export function createTreeScene(
     lastFrame = 0,
     lastTick = 0,
     first = true,
+    lastCount = -1,
     userView = false,
     interacting = false,
     lastInteraction = -10000,
@@ -134,7 +136,7 @@ export function createTreeScene(
   const centre = new THREE.Vector3(),
     corner = new THREE.Vector3();
   let fittedDistance = 10;
-  function fit() {
+  function fit(growth = model.metrics.progress) {
     const width = Math.max(1, host.clientWidth),
       height = Math.max(1, host.clientHeight),
       budget = software
@@ -154,30 +156,62 @@ export function createTreeScene(
     renderer.setSize(width, height, false);
     // Keep one continuous sky/ground canvas while framing a portrait tree
     // above its controls and stories. Zoomed branches can still cross them.
-    const framing = getComputedStyle(host);
+    const styles = getComputedStyle(host);
     const frameHeight =
       (height *
-        (parseFloat(framing.getPropertyValue("--tree-frame-height")) || 100)) /
+        (parseFloat(styles.getPropertyValue("--tree-frame-height")) || 100)) /
       100;
     const frameTop =
-      (height *
-        (parseFloat(framing.getPropertyValue("--tree-frame-top")) || 0)) /
+      (height * (parseFloat(styles.getPropertyValue("--tree-frame-top")) || 0)) /
       100;
     camera.clearViewOffset();
     camera.aspect = width / frameHeight;
     if (frameHeight !== height || frameTop)
       camera.setViewOffset(width, frameHeight, 0, -frameTop, width, height);
-    const box = model.bounds
-      .clone()
-      .expandByScalar(0.15)
-      .applyMatrix4(
-        new THREE.Matrix4().makeRotationY(
-          THREE.MathUtils.degToRad(settings.rotation),
-        ),
-      );
-    box.min.multiplyScalar(environment === "garden" ? 1.04 : 1.14);
-    box.max.multiplyScalar(environment === "garden" ? 1.04 : 1.14);
+    const angle = THREE.MathUtils.degToRad(settings.rotation);
+    const box = new THREE.Box3();
+    let compositionLift = 0;
+    if (composition === "portrait") {
+      // Frame the tree as it stands today rather than the mature skeleton.
+      // The meadow is allowed to run past the sides; the vertical crop keeps
+      // the ground line low and the canopy clear of the top edge.
+      model
+        .measure(box, growth)
+        .applyMatrix4(new THREE.Matrix4().makeRotationY(angle));
+      // A bare sapling measures almost nothing; without a floor the camera
+      // would dive into the grass. Keep the youngest tree at meadow scale.
+      const span = Math.max(box.max.y - box.min.y, settings.size * 0.34);
+      // Headroom above the crown, a meadow band below the trunk, and enough
+      // air at the sides for the canopy to sway without touching an edge.
+      box.expandByScalar(span * 0.09);
+      box.min.y = -span * 0.72;
+      box.max.y = span * 1.62;
+    } else if (composition === "poster") {
+      // A gallery print frames the tree as it stands, not the mature skeleton:
+      // the living tree reads large on the wall instead of drowning in sky.
+      // Extra space below the ground line is reserved for the quote and the
+      // QR card, so the scene stays a poster rather than an illustration.
+      model
+        .measure(box, growth)
+        .applyMatrix4(new THREE.Matrix4().makeRotationY(angle));
+      const span = Math.max(box.max.y - box.min.y, settings.size * 0.34);
+      box.expandByScalar(span * 0.08);
+      const portrait = height > width;
+      box.min.y = -span * (portrait ? 0.9 : 0.54);
+      box.max.y = span * (portrait ? 1.48 : 1.38);
+      // Drop the tree below the headline instead of letting branches run
+      // through it. The reserved ground band below keeps this safe.
+      compositionLift = span * (portrait ? 0 : 0.18);
+    } else {
+      box
+        .copy(model.bounds)
+        .expandByScalar(0.15)
+        .applyMatrix4(new THREE.Matrix4().makeRotationY(angle));
+      box.min.multiplyScalar(environment === "garden" ? 1.04 : 1.14);
+      box.max.multiplyScalar(environment === "garden" ? 1.04 : 1.14);
+    }
     box.getCenter(centre);
+    centre.y += compositionLift;
     const tanY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2),
       tanX = tanY * camera.aspect;
     let distance = 1;
@@ -195,7 +229,10 @@ export function createTreeScene(
         corner.z + Math.abs(corner.y) / tanY,
       );
     }
-    fittedDistance = distance * (environment === "garden" ? 0.9 : 1.04);
+    fittedDistance =
+      composition === "portrait" || composition === "poster"
+        ? distance
+        : distance * (environment === "garden" ? 0.9 : 1.04);
     controls.target.copy(centre);
     controls.minDistance = Math.max(1, fittedDistance * 0.25);
     controls.maxDistance = fittedDistance * 2.4;
@@ -326,6 +363,18 @@ export function createTreeScene(
       !first,
     );
     first = false;
+    // The poster and portrait crops follow the tree as it grows; a mature frame
+    // stays put so the display never rescales under a visitor mid-session.
+    // Frame the target growth, not the current one, so the first update does
+    // not size the camera for a sapling and then crop the grown tree.
+    if (
+      (composition === "portrait" || composition === "poster") &&
+      !userView &&
+      count !== lastCount
+    ) {
+      lastCount = count;
+      fit(model.growthTarget());
+    }
     dirty = true;
   }
   const projected = new THREE.Vector3();

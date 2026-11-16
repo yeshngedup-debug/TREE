@@ -597,6 +597,37 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     dirty = false;
     return true;
   }
+  // The mature box is the wrong frame for a sapling: it leaves most of the
+  // window as sky and, once pulled closer, crops the ground. Measuring the
+  // branches at the current progress lets a portrait caller keep the whole
+  // young tree — island included — inside the frame at any age.
+  function measure(out: THREE.Box3, at = progress) {
+    out.makeEmpty();
+    if (!positions?.count || !centers || !roots || !births)
+      return out.copy(bounds);
+    const point = new THREE.Vector3();
+    for (let i = 0; i < positions.count; i++) {
+      const k = smoothGrowth(births.getX(i), at),
+        p = i * 3,
+        reach = k * (0.3 + 0.7 * at);
+      // Ungrown branches sit at their attachment point, high in the mature
+      // skeleton; measuring them would size the frame for wood that is not
+      // there yet.
+      if (k <= 0) continue;
+      point.set(
+        roots.array[p] + (centers.array[p] - roots.array[p]) * k,
+        roots.array[p + 1] + (centers.array[p + 1] - roots.array[p + 1]) * k,
+        roots.array[p + 2] + (centers.array[p + 2] - roots.array[p + 2]) * k,
+      );
+      point.x += (original[p] - centers.array[p]) * reach;
+      point.y += (original[p + 1] - centers.array[p + 1]) * reach;
+      point.z += (original[p + 2] - centers.array[p + 2]) * reach;
+      out.expandByPoint(point);
+    }
+    out.applyMatrix4(new THREE.Matrix4().makeScale(scale, scale, scale));
+    out.min.y = Math.min(out.min.y, 0);
+    return out;
+  }
   function dispose() {
     foliage.dispose();
     geometry.dispose();
@@ -612,6 +643,8 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     bounds,
     known,
     metrics,
+    measure,
+    growthTarget: () => target.progress,
     setContributions,
     step,
     dispose,

@@ -148,11 +148,13 @@ test.describe("Display screen QR panel is scannable from a phone", () => {
     page,
   }) => {
     await page.goto("/display");
+    // The compact phone layout keeps the QR card visual; the scan instruction
+    // lives on the link and inside the code itself rather than as body copy.
     await expect(
       page.getByRole("link", { name: /Scan with your phone/ }),
     ).toBeVisible();
     await expect(
-      page.getByText(/Scan with your phone\. Share a hope\./),
+      page.getByRole("img", { name: "Scan to add your hope" }),
     ).toBeVisible();
   });
 });

@@ -74,7 +74,7 @@ test("garden has visible wind, automatic rotation, cast shadows and working scen
       await page
         .locator(".kiosk-qr-panel")
         .evaluate((element) => getComputedStyle(element).backgroundColor),
-    ).toBe("rgba(0, 0, 0, 0)");
+    ).toBe("rgb(247, 243, 230)");
     await page.getByRole("button", { name: "Reset tree view" }).click();
     await page.screenshot({ path: "test-results/living-scene-landscape.png" });
     await page.getByRole("button", { name: "Resume tree rotation" }).click();

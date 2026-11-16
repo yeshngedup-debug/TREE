@@ -14,11 +14,10 @@ import {
   Plus,
   Minus,
   RotateCcw,
-  Leaf as LeafIcon,
-  MapPin,
+  SlidersHorizontal,
 } from "lucide-react";
 import { TreeCanvas } from "./tree-canvas";
-import { themes, themeFor, pathDetails, type Leaf } from "@/lib/catalog";
+import { themeFor, type Leaf } from "@/lib/catalog";
 import { useTree } from "@/hooks/use-tree";
 import { appUrl } from "@/lib/client";
 import { displayMessage } from "@/lib/display-copy";
@@ -187,6 +186,7 @@ export function DisplayScreen() {
   const contentKey = reflection
     ? `reflection-${tree?.reflection?.body}`
     : active?.id || "first-hope";
+  const headlineWords = settings.headline.trim().split(/\s+/).filter(Boolean);
   return (
     <MotionConfig reducedMotion="user">
       <div
@@ -195,14 +195,14 @@ export function DisplayScreen() {
         data-palette={settings.palette}
         style={
           {
-            background: palette.background,
+            background: `linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 34%, rgba(8,16,12,0.1) 100%), ${palette.background}`,
             "--tree-surface": palette.background,
             color:
-            settings.palette === "night"
-              ? "#f5f8ee"
-              : settings.palette === "frost"
-                ? "#071d2e"
-                : "#243c3a",
+              settings.palette === "night"
+                ? "#f5f8ee"
+                : settings.palette === "frost"
+                  ? "#071d2e"
+                  : "#243c3a",
           } as React.CSSProperties
         }
       >
@@ -215,300 +215,269 @@ export function DisplayScreen() {
           onSelect={setSelected}
           className="kiosk-tree"
           environment="garden"
+          composition="poster"
           sceneRef={scene}
           showControls={false}
         />
+        <div className="kiosk-halo" aria-hidden="true" />
+        <div className="kiosk-grain" aria-hidden="true" />
+        <div className="kiosk-frame" aria-hidden="true" />
         <main className="kiosk-screen">
           <motion.header
             className="kiosk-header"
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <Link href="/" className="kiosk-brand">
-              <Sprout strokeWidth={1.5} />
-              <span>
+            <Link
+              href="/"
+              className="kiosk-brand"
+              aria-label="The living tree, Bhutan"
+            >
+              <Sprout strokeWidth={1.4} aria-hidden="true" />
+              <span className="kiosk-brand-name">
                 The living tree
-                <span className="kiosk-brand-subtitle">
-                  Bhutan
-                </span>
+                <span className="kiosk-brand-subtitle">Bhutan</span>
               </span>
             </Link>
             <div className="kiosk-header-actions">
-              <span className="kiosk-connection">
+              <span className="kiosk-count">
+                <motion.strong
+                  key={lastArrival}
+                  initial={{ scale: 1.18, opacity: 0.4 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                >
+                  {tree?.total ?? 0}
+                </motion.strong>
+                <span>
+                  {tree?.total === 1 ? "hope" : "hopes"} taking root
+                </span>
+              </span>
+              <span className="kiosk-connection" aria-live="polite">
                 <span
-                  className={
+                  aria-hidden="true"
+                  className={`kiosk-connection-dot ${
                     connection === "live" ? "bg-[#55834d]" : "bg-amber-500"
-                  }
+                  }`}
                 />
-                {connection === "live"
-                  ? "A living collection"
-                  : connection === "connecting"
-                    ? "Connecting"
-                    : "Reconnecting"}
+                <span className="kiosk-connection-label">
+                  {connection === "live"
+                    ? "A living collection"
+                    : connection === "connecting"
+                      ? "Connecting"
+                      : "Reconnecting"}
+                </span>
               </span>
               <Link
                 href="/tree"
-                className="kiosk-studio-link"
+                className="kiosk-icon"
                 aria-label="Open interactive Tree Studio"
               >
-                Customize tree
-                <ArrowUpRight size={13} />
+                <SlidersHorizontal size={16} aria-hidden="true" />
               </Link>
               <motion.button
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 onClick={toggleFullscreen}
-                className="kiosk-fullscreen"
+                className="kiosk-icon"
                 aria-label={full ? "Exit fullscreen" : "Enter fullscreen"}
               >
-                {full ? <Minimize size={18} /> : <Maximize size={18} />}
+                {full ? (
+                  <Minimize size={16} aria-hidden="true" />
+                ) : (
+                  <Maximize size={16} aria-hidden="true" />
+                )}
               </motion.button>
             </div>
           </motion.header>
           <motion.div
             className="kiosk-heading"
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15 }}
           >
-            <h1>{settings.headline}</h1>
-            <span>
-              Every leaf is someone's hope. Find a story in the branches.
-            </span>
+            <h1 aria-label={settings.headline}>
+              {headlineWords.map((word, index) => (
+                <span key={word + index} className="kiosk-h1-word" aria-hidden="true">
+                  <motion.span
+                    initial={{ y: "112%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      delay: 0.25 + index * 0.06,
+                      duration: 0.75,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {word}
+                    {index < headlineWords.length - 1 ? "\u00A0" : ""}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
           </motion.div>
-          <div className="kiosk-arrivals" aria-hidden="true">
-            <AnimatePresence>
-              {arrivalIds.length > 0 && (
+          <div className="kiosk-stage" aria-hidden="true" />
+          <div className="kiosk-bottom">
+            <section
+              className="kiosk-feature"
+              aria-label="A hope from the tree"
+              aria-live="polite"
+            >
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  key="arrival-wave"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.35 }}
-                >
-                  <span className="arrival-dots">
-                    {arrivalIds.slice(0, 6).map((id) => (
-                      <motion.i
-                        key={id}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        style={{
-                          background: themeFor(
-                            leaves.find((leaf) => leaf.id === id)?.category ||
-                              "nature",
-                          ).color,
-                        }}
-                      />
-                    ))}
-                  </span>
-                  <span>
-                    {arrivalIds.length === 1
-                      ? "A new hope is taking root"
-                      : `${arrivalIds.length} hopes are taking root together`}
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <section
-            className="kiosk-feature"
-            aria-label="A hope from the tree"
-            aria-live="polite"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={contentKey}
-                initial={{ opacity: 0, y: 22, filter: "blur(5px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{
-                  opacity: 0,
-                  y: -12,
-                  filter: "blur(3px)",
-                  transition: { duration: 0.18 },
-                }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {selected && (
-                  <motion.button
-                    whileHover={{ rotate: 90 }}
-                    onClick={() => setSelected(null)}
-                    className="kiosk-close"
-                    aria-label="Close selected leaf"
-                  >
-                    <X size={17} />
-                  </motion.button>
-                )}
-                <span
-                  className="kiosk-leaf-emblem"
-                  style={{
-                    color: active
-                      ? themeFor(active.category).color
-                      : palette.leaves[0],
+                  key={contentKey}
+                  initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{
+                    opacity: 0,
+                    y: -10,
+                    filter: "blur(3px)",
+                    transition: { duration: 0.18 },
                   }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <LeafIcon size={26} strokeWidth={1.2} />
-                </span>
-                <p className="kiosk-feature-label">
-                  {reflection
-                    ? "A reflection from our branches"
-                    : active?.is_demo
-                      ? "Illustrative demo leaf"
-                      : selected
-                        ? themeFor(selected.category).label
-                        : active
-                          ? "A hope taking root"
-                          : "A little possibility"}
-                </p>
-                <blockquote>
-                  {reflection
-                    ? displayMessage(tree!.reflection!.body)
-                    : active
-                      ? `“${displayMessage(active.leaf_message, 100)}”`
-                      : "Every future begins with a hope."}
-                </blockquote>
-                <p className="kiosk-leaf-code">
-                  {active && !reflection
-                    ? `Leaf #${active.id.slice(0, 6)} · ${themeFor(active.category).short}`
-                    : "Scan to grow a new leaf."}
-                </p>
-                {active?.post_slug && !reflection ? (
-                  <Link
-                    href={`/posts/${active.post_slug}`}
-                    className="kiosk-post-link"
-                  >
-                    Read the full post{" "}
-                    <ArrowUpRight size={13} aria-hidden="true" />
-                  </Link>
-                ) : null}
-                {active && !reflection && (
-                  <p className="kiosk-guide">
-                    <MapPin size={13} />
-                    Guide path {active.chamber_id} ·{" "}
-                    {pathDetails[active.chamber_id].short}
+                  <p className="kiosk-feature-label">
+                    {reflection
+                      ? "A reflection from our branches"
+                      : active?.is_demo
+                        ? "Illustrative demo leaf"
+                        : selected
+                          ? themeFor(selected.category).label
+                          : active
+                            ? "A hope taking root"
+                            : "A little possibility"}
                   </p>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </section>
-          <motion.section
-            className="kiosk-qr-panel"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            {joinUrl && (
-              <Link
-                href="/join"
-                className="kiosk-qr"
-                aria-label="Scan with your phone to add your hope"
-              >
-                {" "}
-                <QRCodeSVG
-                  value={joinUrl}
-                  size={220}
-                  marginSize={6}
-                  title="Scan to add your hope"
-                />
-              </Link>
-            )}
-            <div className="kiosk-qr-copy">
-              <h2>
-                {settings.acceptingContributions
-                  ? "Grow your leaf."
-                  : "A moment to reflect."}
-              </h2>
-              <p>
-                {settings.acceptingContributions
-                  ? "Scan with your phone. Share a hope. Watch it grow."
-                  : "The tree is resting. Come back shortly."}
-              </p>
-              <span>{joinUrl.replace(/^https?:\/\//, "")}</span>
-            </div>
-          </motion.section>
-          <div className="kiosk-legend" aria-label="Explore hopes by theme">
-            {themes.map((theme) => (
-              <motion.button
-                key={theme.id}
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={!leaves.some((leaf) => leaf.category === theme.id)}
-                onClick={() =>
-                  setSelected(
-                    leaves.find((leaf) => leaf.category === theme.id) || null,
-                  )
-                }
-                aria-label={`Read a ${theme.short.toLowerCase()} hope`}
-              >
-                <i style={{ background: theme.color }} />
-                {theme.short}
-              </motion.button>
-            ))}
-          </div>
-          <div className="kiosk-controls" aria-label="Tree controls">
-            <span>Drag to explore · Scroll to zoom</span>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Send a breeze through the tree"
-              onClick={() => scene.current?.breeze()}
-            >
-              <Wind size={18} />
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label={
-                rotating ? "Pause tree rotation" : "Resume tree rotation"
-              }
-              aria-pressed={!rotating}
-              onClick={() => setRotating((value) => !value)}
-            >
-              {rotating ? <Pause size={17} /> : <Play size={17} />}
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Zoom in on tree"
-              onClick={() => scene.current?.zoom(0.85)}
-            >
-              <Plus size={19} />
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Zoom out of tree"
-              onClick={() => scene.current?.zoom(1.15)}
-            >
-              <Minus size={19} />
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Reset tree view"
-              onClick={() => scene.current?.resetView()}
-            >
-              <RotateCcw size={17} />
-            </motion.button>
-          </div>
-          <footer className="kiosk-footer">
-            <span className="kiosk-count">
-              <strong>{tree?.total ?? 0}</strong>
-              {tree?.total === 1 ? "hope" : "hopes"} taking root
-            </span>
-            <p role="status" className="kiosk-status">
-              {connection === "reconnecting"
-                ? "Connection paused. Keeping the tree while we reconnect."
-                : pending
-                  ? `${pending} ${pending === 1 ? "leaf is" : "leaves are"} finding a branch…`
-                  : "Anonymous voices. Shared possibilities."}
-              {Boolean(tree?.stats.demo) && (
-                <span>
-                  Includes {tree!.stats.demo} illustrative demo leaves.
-                </span>
+                  <blockquote>
+                    {reflection
+                      ? displayMessage(tree!.reflection!.body)
+                      : active
+                        ? `“${displayMessage(active.leaf_message, 100)}”`
+                        : "Every future begins with a hope."}
+                  </blockquote>
+                  <div className="kiosk-feature-meta">
+                    <span className="kiosk-leaf-code">
+                      {active && !reflection
+                        ? `Leaf #${active.id.slice(0, 6)} · ${themeFor(active.category).short}`
+                        : "Scan to grow a new leaf."}
+                    </span>
+                    {active?.post_slug && !reflection ? (
+                      <Link
+                        href={`/posts/${active.post_slug}`}
+                        className="kiosk-post-link"
+                      >
+                        Read the post{" "}
+                        <ArrowUpRight size={12} aria-hidden="true" />
+                      </Link>
+                    ) : null}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+              {selected && (
+                <motion.button
+                  whileHover={{ rotate: 90 }}
+                  onClick={() => setSelected(null)}
+                  className="kiosk-close"
+                  aria-label="Close selected leaf"
+                >
+                  <X size={14} aria-hidden="true" />
+                </motion.button>
               )}
-            </p>
-          </footer>
+            </section>
+            <div className="kiosk-controls" aria-label="Tree controls">
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label="Send a breeze through the tree"
+                onClick={() => scene.current?.breeze()}
+              >
+                <Wind size={17} aria-hidden="true" />
+              </motion.button>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label={
+                  rotating ? "Pause tree rotation" : "Resume tree rotation"
+                }
+                aria-pressed={!rotating}
+                onClick={() => setRotating((value) => !value)}
+              >
+                {rotating ? (
+                  <Pause size={16} aria-hidden="true" />
+                ) : (
+                  <Play size={16} aria-hidden="true" />
+                )}
+              </motion.button>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="kiosk-zoom"
+                aria-label="Zoom in on tree"
+                onClick={() => scene.current?.zoom(0.85)}
+              >
+                <Plus size={18} aria-hidden="true" />
+              </motion.button>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="kiosk-zoom"
+                aria-label="Zoom out of tree"
+                onClick={() => scene.current?.zoom(1.15)}
+              >
+                <Minus size={18} aria-hidden="true" />
+              </motion.button>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label="Reset tree view"
+                onClick={() => scene.current?.resetView()}
+              >
+                <RotateCcw size={16} aria-hidden="true" />
+              </motion.button>
+            </div>
+            <motion.section
+              className="kiosk-qr-panel"
+              aria-label="Add your hope"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.35 }}
+            >
+              <div className="kiosk-qr-copy">
+                <p className="kiosk-qr-label">
+                  {settings.acceptingContributions
+                    ? "Scan to add your hope"
+                    : "The tree is resting"}
+                </p>
+                <span className="kiosk-qr-url">
+                  {settings.acceptingContributions
+                    ? joinUrl.replace(/^https?:\/\//, "")
+                    : "Come back shortly"}
+                </span>
+              </div>
+              {joinUrl && (
+                <Link
+                  href="/join"
+                  className="kiosk-qr"
+                  aria-label="Scan with your phone to add your hope"
+                >
+                  <QRCodeSVG
+                    value={joinUrl}
+                    size={220}
+                    marginSize={2}
+                    title="Scan to add your hope"
+                  />
+                </Link>
+              )}
+            </motion.section>
+          </div>
+          <p role="status" className="sr-only">
+            {connection === "reconnecting"
+              ? "Connection paused. Keeping the tree while we reconnect."
+              : pending
+                ? `${pending} ${pending === 1 ? "leaf is" : "leaves are"} finding a branch…`
+                : "Anonymous voices. Shared possibilities."}
+            {Boolean(tree?.stats.demo) &&
+              ` Includes ${tree!.stats.demo} illustrative demo leaves.`}
+          </p>
         </main>
       </div>
     </MotionConfig>
