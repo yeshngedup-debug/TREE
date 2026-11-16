@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import { SurfaceShell } from "@/components/surface";
 import { PostComposer } from "@/features/community/post-composer";
@@ -30,6 +32,9 @@ export default async function EditPostPage({
     <SurfaceShell>
       <SiteHeader />
       <main className="surface-narrow-wide">
+        <Link href={`/posts/${slug}`} className="page-back">
+          <ArrowLeft size={15} aria-hidden="true" /> Back to post
+        </Link>
         <PostComposer categories={categories} post={post} />
       </main>
       <SiteFooter />

@@ -25,6 +25,7 @@ async function loadHighlights() {
       listCategories(),
     ]);
     return {
+      failed: false as const,
       stats,
       ideas: ideas.posts,
       aspirations: aspirations.posts,
@@ -33,6 +34,7 @@ async function loadHighlights() {
     };
   } catch {
     return {
+      failed: true as const,
       stats: { posts: 0, aspirations: 0, ideas: 0, members: 0 },
       ideas: [],
       aspirations: [],
@@ -43,12 +45,18 @@ async function loadHighlights() {
 }
 
 export default async function Home() {
-  const highlights = await loadHighlights();
+  const { failed, ...highlights } = await loadHighlights();
   return (
     <>
-      <SiteHeader variant="home" />
+      <SiteHeader />
       <main className="home-shell">
         <HomeExperience />
+        {failed && (
+          <p className="community-error home-data-error" role="alert">
+            The community grove is not loading right now. Check your connection
+            and try again in a moment.
+          </p>
+        )}
         <CommunityHighlights {...highlights} />
         <HomeClosing />
       </main>

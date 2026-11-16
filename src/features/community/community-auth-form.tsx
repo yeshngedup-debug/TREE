@@ -57,11 +57,11 @@ export function CommunityAuthForm({
   return (
     <section className="community-panel" aria-labelledby="community-auth-title">
       <div className="community-panel-head">
-        <p className="eyebrow text-foreground/45">A free community account</p>
+        <p className="eyebrow text-soft">A free community account</p>
         <h1 id="community-auth-title" className="text-3xl tracking-tight md:text-4xl">
           {mode === "signup" ? "Join the grove." : "Welcome back."}
         </h1>
-        <p className="mt-3 max-w-md text-sm leading-6 text-foreground/60">
+        <p className="mt-3 max-w-md text-sm leading-6 text-soft">
           An account lets you publish aspirations and ideas, keep them together
           on your profile, and be credited for what you grow. Sharing a leaf at
           an event stays anonymous and needs no account.

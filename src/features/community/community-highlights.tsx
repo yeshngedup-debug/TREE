@@ -90,7 +90,7 @@ export function CommunityHighlights({
               <div className="lg:col-span-2">
                 <div className="mb-5 flex items-end justify-between gap-4">
                   <div>
-                    <p className="eyebrow text-foreground/45">
+                    <p className="eyebrow text-soft">
                       Curated by moderators
                     </p>
                     <h2 className="mt-2 text-2xl md:text-3xl">
@@ -114,7 +114,7 @@ export function CommunityHighlights({
             <div>
               <div className="mb-5 flex items-end justify-between gap-4">
                 <div>
-                  <p className="eyebrow text-foreground/45">Practical paths</p>
+                  <p className="eyebrow text-soft">Practical paths</p>
                   <h2 className="mt-2 text-2xl md:text-3xl">Latest ideas</h2>
                 </div>
                 <Link
@@ -135,7 +135,7 @@ export function CommunityHighlights({
             <div>
               <div className="mb-5 flex items-end justify-between gap-4">
                 <div>
-                  <p className="eyebrow text-foreground/45">Futures imagined</p>
+                  <p className="eyebrow text-soft">Futures imagined</p>
                   <h2 className="mt-2 text-2xl md:text-3xl">
                     Recent aspirations
                   </h2>
@@ -167,7 +167,7 @@ export function CommunityHighlights({
         <div className="rounded-[28px] bg-card p-6 md:p-8">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="eyebrow text-foreground/45">Browse by theme</p>
+              <p className="eyebrow text-soft">Browse by theme</p>
               <h2 className="mt-2 text-2xl">Popular categories</h2>
             </div>
             <Link href="/discover" className="flex min-h-11 items-center gap-2 text-xs">

@@ -120,7 +120,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
       <div className="flex items-start justify-between gap-3 px-4 pt-4">
         <div>
           <h2 className="text-lg">A little more life, because of you.</h2>
-          <p className="mt-1 text-[11px] text-foreground/60">
+          <p className="mt-1 text-xs text-soft">
             The tree’s current growth · your leaf #{leaf.id.slice(0, 6)} is
             highlighted.
           </p>
@@ -140,7 +140,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 pb-4">
-        <p className="text-[11px] text-foreground/55">
+        <p className="text-xs text-soft">
           {tree
             ? `${tree.stats.total} shared ${tree.stats.total === 1 ? "hope" : "hopes"}`
             : "Opening the living tree…"}

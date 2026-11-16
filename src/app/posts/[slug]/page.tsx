@@ -129,9 +129,12 @@ export default async function PostPage({
           {post.imageUrl ? (
             <img
               src={post.imageUrl}
-              alt=""
+              alt={`Cover image for ${post.title}`}
               className="post-hero-image"
               referrerPolicy="no-referrer"
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
             />
           ) : null}
 
@@ -177,7 +180,7 @@ export default async function PostPage({
           <section className="post-related" aria-labelledby="related-title">
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p className="eyebrow text-foreground/45">
+                <p className="eyebrow text-soft">
                   More from {post.category.label}
                 </p>
                 <h2 id="related-title" className="mt-2 text-2xl">

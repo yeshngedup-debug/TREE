@@ -78,7 +78,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
         <h2 id="tree-settings-title" className="mb-2 text-3xl">
           Shape the living tree
         </h2>
-        <p className="mb-7 text-sm text-foreground/60">
+        <p className="mb-7 text-sm text-soft">
           Preview a new appearance, then save to update the reception display.
         </p>
         <Button asChild variant="secondary" className="mb-6 w-full">
@@ -89,7 +89,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
         <fieldset disabled={!loaded || busy} className="space-y-6">
           <section className="rounded-3xl bg-muted p-5">
             <h3 className="text-2xl">Display title</h3>
-            <p className="mb-4 mt-2 text-xs leading-5 text-foreground/60">
+            <p className="mb-4 mt-2 text-xs leading-5 text-soft">
               Change the title shown above the reception tree. Connected
               displays update automatically.
             </p>
@@ -104,7 +104,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
               />
             </label>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <span className="text-[10px] text-foreground/55">
+              <span className="text-xs text-soft">
                 {settings.headline.length} / 90
               </span>
               <Button
@@ -198,7 +198,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
                   )
                 }
               />
-              <span className="block text-foreground/55">
+              <span className="block text-soft">
                 An empty tree starts as a bare sapling. Each approved hope grows
                 its branches.
               </span>
@@ -221,7 +221,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
               <label key={key} className="block space-y-3 text-xs">
                 <span className="flex justify-between">
                   <span>{label}</span>
-                  <span className="text-foreground/55">
+                  <span className="text-soft">
                     {key === "rotation"
                       ? `${settings[key]} degrees`
                       : settings[key].toFixed(2)}
@@ -347,13 +347,13 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
             settings={preview}
             className="admin-tree-preview"
           />
-          <p className="mb-4 text-center text-[10px] text-white/55">
+          <p className="mb-4 text-center text-xs text-white/55">
             A preview only until you save.
           </p>
         </div>
         <Card>
           <h3 className="mb-3 text-2xl">Display-ready layout</h3>
-          <p className="text-xs leading-relaxed text-foreground/65">
+          <p className="text-xs leading-relaxed text-soft">
             The display fills the viewport in portrait or landscape, reframes
             the whole tree, and keeps the scan code clear of the canopy. Set the
             screen to portrait in its display settings and enter browser
@@ -364,7 +364,7 @@ export function TreeSettingsPanel({ leaves }: { leaves: Leaf[] }) {
               Open reception display <ExternalLink size={14} />
             </Link>
           </Button>
-          <p className="mt-4 text-[10px] text-foreground/50">
+          <p className="mt-4 text-xs text-soft">
             Procedural branches adapted from Mike Fernandez's just-a-simple-tree
             (MIT). Visitor leaves remain linked to your local database.
           </p>

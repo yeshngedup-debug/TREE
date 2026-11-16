@@ -21,17 +21,17 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 /* Real, freely licensed Bhutan photography (Wikimedia Commons). */
 const photo = {
   tigersNest:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Taktsang_Monastery%2C_Bhutan_01.jpg/960px-Taktsang_Monastery%2C_Bhutan_01.jpg",
+    "/images/bhutan/taktsang-monastery.jpg",
   punakha:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Punakha_Dzong%2C_Bhutan_02.jpg/960px-Punakha_Dzong%2C_Bhutan_02.jpg",
+    "/images/bhutan/punakha-dzong.jpg",
   phobjikha:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Phobjika_Valley_view%2C_Bhutan.jpg/960px-Phobjika_Valley_view%2C_Bhutan.jpg",
+    "/images/bhutan/phobjikha-valley.jpg",
   dochula:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Dachula_pass_108_stupas.jpg/960px-Dachula_pass_108_stupas.jpg",
+    "/images/bhutan/dochula-pass.jpg",
   khamsum:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg/960px-Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg",
+    "/images/bhutan/khamsum-chorten.jpg",
   rinpung:
-    "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Rinpung_Dzong%2C_Bhutan_01.jpg/960px-Rinpung_Dzong%2C_Bhutan_01.jpg",
+    "/images/bhutan/rinpung-dzong.jpg",
 };
 
 const themePhoto: Record<string, string> = {
@@ -246,7 +246,14 @@ export function HomeExperience() {
         <div className="home-bento">
           <article className="bento-card bento-a" data-reveal>
             <div className="bento-media">
-              <img src={photo.tigersNest} alt="" loading="lazy" />
+              <img
+                src={photo.tigersNest}
+                alt="Paro Taktsang (Tiger's Nest) monastery above the Paro Valley"
+                loading="lazy"
+                onError={(event) => {
+                  event.currentTarget.style.display = "none";
+                }}
+              />
             </div>
             <div className="bento-shade" aria-hidden="true" />
             <span className="bento-icon">

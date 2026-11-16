@@ -9,13 +9,13 @@
    --------------------------------------------------------------------------- */
 
 .discover-shell {
-  --discover-ink: #171b12;
-  --discover-forest: #141910;
-  --discover-paper: #eaeae3;
-  --discover-cream: #f6f5ea;
-  --discover-lime: #d8ed92;
-  --discover-clay: #b4622f;
-  --discover-line: rgba(23, 27, 18, 0.12);
+  --discover-ink: var(--ink);
+  --discover-forest: var(--forest);
+  --discover-paper: var(--paper);
+  --discover-cream: var(--cream);
+  --discover-lime: var(--lime);
+  --discover-clay: var(--clay);
+  --discover-line: var(--line);
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -25,13 +25,13 @@
 
 .discover-main {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
 }
 
 .discover-shell :where(a, button, input, select, [tabindex], summary):focus-visible {
-  outline: 2px solid var(--discover-lime);
-  outline-offset: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -40,137 +40,11 @@
   }
 }
 
-/* Navigation — floating glass pill, matching home and explore --------------- */
-
-.discover-shell .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: calc(100% - 24px);
-  max-width: 1440px;
-  margin: 10px auto 0;
-  padding: 8px 8px 8px 16px;
-  border-radius: 26px;
-  background: rgba(242, 242, 235, 0.74);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  box-shadow: 0 18px 44px rgba(24, 30, 18, 0.07);
-}
-
-.discover-shell .site-header nav[aria-label="Main navigation"] {
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(23, 27, 18, 0.05);
-  color: var(--discover-ink);
-  font-size: 11px;
-}
-
-.discover-shell .site-header nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 999px;
-  color: rgba(23, 27, 18, 0.62);
-  white-space: nowrap;
-  background: transparent;
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
-}
-
-.discover-shell .site-header nav a:hover {
-  color: var(--discover-ink);
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.discover-shell .site-header nav a[aria-current="page"] {
-  background: var(--discover-ink);
-  color: var(--discover-cream);
-}
-
-.discover-shell .site-header nav a > svg {
-  opacity: 0.6;
-}
-
-.discover-shell .site-header a[aria-label="Share an idea"] {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--discover-ink);
-  color: var(--discover-cream);
-  font-size: 12px;
-  font-weight: 500;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
-}
-
-.discover-shell .site-header a[aria-label="Share an idea"]:hover {
-  background: #2a3223;
-  transform: translateY(-1px);
-}
-
-.discover-shell .site-header > div:last-child :is(a, summary) {
-}
-
-.discover-shell .site-header > div:last-child :is(a, summary):hover {
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.discover-shell footer {
-}
-
-@media (min-width: 768px) {
-  .discover-shell .site-header {
-    width: calc(100% - 40px);
-    padding: 8px 10px 8px 20px;
-    border-radius: 999px;
-  }
-
-  .discover-shell .site-header nav[aria-label="Main navigation"] {
-    font-size: 12px;
-  }
-
-  .discover-shell .site-header nav a {
-    padding: 0 18px;
-  }
-}
-
-@media (max-width: 767px) {
-  .discover-shell .site-header nav a {
-    flex: 1;
-    justify-content: center;
-    min-height: 38px;
-    padding: 0 6px;
-    font-size: 10px;
-  }
-
-  .discover-shell .site-header a[aria-label="Share an idea"] {
-    min-height: 42px;
-    padding: 0 12px;
-  }
-
-  .discover-shell .site-header a[aria-label="Share an idea"] span {
-    display: none;
-  }
-}
-
 /* Hero — split editorial intro with the live grove ledger ------------------- */
 
 .discover-hero {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(1.5rem, 3vw, 2.5rem) 20px clamp(2.5rem, 5vw, 4rem);
 }
@@ -196,10 +70,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 .discover-kicker::before {
@@ -275,10 +149,10 @@
   letter-spacing: -0.01em;
   text-decoration: none;
   transition:
-    background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease,
+    transform var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
 }
 
 .discover-cta-primary {
@@ -302,7 +176,7 @@
 }
 
 .discover-cta svg {
-  transition: transform 0.35s ease;
+  transition: transform var(--dur-base) ease;
 }
 
 .discover-cta-primary:hover svg,
@@ -385,7 +259,7 @@
 }
 
 .grove-stats dt {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(246, 245, 234, 0.5);
@@ -405,7 +279,7 @@
 }
 
 .grove-latest-label {
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.02em;
   color: rgba(246, 245, 234, 0.5);
 }
@@ -425,8 +299,8 @@
   background: rgba(246, 245, 234, 0.05);
   text-decoration: none;
   transition:
-    background 0.3s ease,
-    transform 0.3s ease;
+    background var(--dur-base) ease,
+    transform var(--dur-base) ease;
 }
 
 .grove-latest a:hover {
@@ -447,13 +321,13 @@
 .grove-latest-meta {
   display: block;
   margin-top: 0.2rem;
-  font-size: 9.5px;
+  font-size: 12px;
   color: rgba(246, 245, 234, 0.45);
 }
 
 .grove-fallback {
   margin: 0.9rem 0 0;
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.6;
   color: rgba(246, 245, 234, 0.5);
 }
@@ -493,7 +367,7 @@
   white-space: nowrap;
   text-decoration: none;
   color: rgba(23, 27, 18, 0.62);
-  transition: color 0.25s ease;
+  transition: color var(--dur-base) ease;
 }
 
 .discover-tags-item:hover {
@@ -523,7 +397,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: 0.55rem;
   border-radius: 22px;
@@ -561,11 +435,13 @@
 }
 
 .discover-search input::placeholder {
-  color: rgba(23, 27, 18, 0.38);
+  color: rgba(23, 27, 18, 0.5);
 }
 
 .discover-search input:focus-visible {
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .discover-select {
@@ -592,8 +468,8 @@
   font-weight: 500;
   cursor: pointer;
   transition:
-    background 0.3s ease,
-    transform 0.3s ease;
+    background var(--dur-base) ease,
+    transform var(--dur-base) ease;
 }
 
 .discover-apply:hover {
@@ -609,17 +485,17 @@
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 1rem auto 0;
   padding: 0 20px;
-  font-size: 11px;
-  color: rgba(23, 27, 18, 0.5);
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 .discover-active > span {
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 .discover-active a {
@@ -630,10 +506,10 @@
   padding: 0 0.75rem;
   border-radius: 999px;
   background: rgba(23, 27, 18, 0.07);
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--discover-ink);
   text-decoration: none;
-  transition: background 0.25s ease;
+  transition: background var(--dur-base) ease;
 }
 
 .discover-active a:hover {
@@ -647,7 +523,7 @@
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 2.5rem);
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(2rem, 4vw, 3rem) 20px 0;
 }
@@ -677,7 +553,7 @@
 
 .discover-results-count {
   font-size: 12px;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 .discover-grid {
@@ -705,8 +581,8 @@
   background: var(--discover-cream);
   box-shadow: 0 2px 10px rgba(23, 27, 18, 0.04);
   transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
+    transform var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
 }
 
 .discover-shell .community-card:hover {
@@ -716,7 +592,7 @@
 
 .discover-shell .community-card-media {
   height: 180px;
-  transition: transform 0.5s ease;
+  transition: transform var(--dur-slow) ease;
 }
 
 .discover-shell .community-card:hover .community-card-media {
@@ -728,7 +604,7 @@
 }
 
 .discover-shell .community-card-meta {
-  color: rgba(23, 27, 18, 0.52);
+  color: var(--ink-soft);
 }
 
 .discover-shell .community-type {
@@ -787,8 +663,8 @@
   color: rgba(23, 27, 18, 0.62);
   text-decoration: none;
   transition:
-    background 0.25s ease,
-    color 0.25s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease;
 }
 
 .discover-pagination a:hover {
@@ -832,8 +708,8 @@
 
 .discover-aside > p {
   margin: 0.15rem 0 0;
-  font-size: 10.5px;
-  color: rgba(23, 27, 18, 0.45);
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 .discover-category-list {
@@ -856,8 +732,8 @@
   color: rgba(23, 27, 18, 0.72);
   text-decoration: none;
   transition:
-    background 0.25s ease,
-    color 0.25s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease;
 }
 
 .discover-category-list a:hover {
@@ -871,9 +747,9 @@
 }
 
 .discover-category-list span {
-  font-size: 10.5px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
-  color: rgba(23, 27, 18, 0.42);
+  color: var(--ink-soft);
 }
 
 .discover-category-list a[aria-current="true"] span {
@@ -930,7 +806,7 @@
   max-width: 62rem;
   margin: 0 auto;
   padding: clamp(2.5rem, 5vw, 4rem) 20px 0;
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.7;
   text-align: center;
   color: rgba(23, 27, 18, 0.5);
@@ -940,7 +816,7 @@
 
 .discover-closing {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(2.5rem, 5vw, 4rem) 20px clamp(3rem, 6vw, 5rem);
 }
@@ -1006,9 +882,9 @@
   letter-spacing: -0.01em;
   text-decoration: none;
   transition:
-    background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease,
+    transform var(--dur-base) ease;
 }
 
 .discover-shell .closing-primary {
@@ -1022,7 +898,7 @@
 }
 
 .discover-shell .closing-primary svg {
-  transition: transform 0.35s ease;
+  transition: transform var(--dur-base) ease;
 }
 
 .discover-shell .closing-primary:hover svg {

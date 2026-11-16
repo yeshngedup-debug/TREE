@@ -271,7 +271,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
   return (
     <section ref={section} className="join-form w-full space-y-3 sm:space-y-10" aria-label="Add your hope">
       <div className="visit-choice" aria-label="Your visit">
-        <span className="text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
+        <span className="text-xs font-semibold tracking-wider uppercase text-soft">
           Your visit
         </span>
         <div role="group" aria-label="First or returning visitor">
@@ -302,7 +302,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
         </div>
         <Link
           href="/voices"
-          className="text-[10px] underline underline-offset-4 text-foreground/50"
+          className="text-xs underline underline-offset-4 text-soft"
         >
           My voices
         </Link>
@@ -312,15 +312,15 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           <VisitorAccess onDismiss={() => setShowHistory(false)} />
         </div>
       )}
-      <ol aria-label="Your progress" className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wider">
+      <ol aria-label="Your progress" className="flex items-center justify-between gap-2 text-xs uppercase tracking-wider">
         {["Theme", "Your note", "Your leaf"].map((label, index) => (
           <li key={label} className="flex flex-col items-center gap-1">
             <span
               className={cn(
-                "flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-medium",
+                "flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full text-xs font-medium",
                 step === index
                   ? "bg-accent text-primary-foreground"
-                  : "text-foreground/40",
+                  : "text-soft",
               )}
             >
               {index + 1}
@@ -330,7 +330,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
                 "leading-4",
                 step === index
                   ? "font-medium text-foreground"
-                  : "text-foreground/40",
+                  : "text-soft",
               )}
             >
               {label}
@@ -339,31 +339,31 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
         ))}
       </ol>
       {!online && (
-        <p role="status" className="rounded-xl bg-muted p-3 text-sm leading-6 text-foreground/60">
+        <p role="status" className="rounded-xl bg-muted p-3 text-sm leading-6 text-soft">
           You're offline. Your note is saved in this tab; reconnect to send it.
         </p>
       )}
       {paused && (
-        <p role="status" className="rounded-xl bg-muted p-3 text-sm leading-6 text-foreground/60">
+        <p role="status" className="rounded-xl bg-muted p-3 text-sm leading-6 text-soft">
           The tree is resting for a moment. Keep your hope here and try again
           shortly.
         </p>
       )}
       {recovered && aspiration && (
-        <p className="mb-3 text-[10px] leading-5 text-foreground/50">
+        <p className="mb-3 text-xs leading-5 text-soft">
           Your unfinished note is back.
         </p>
       )}
       {step === 0 ? (
         <div className="space-y-6">
           <div>
-            <p className="mb-1 sm:mb-2 text-[10px] font-semibold tracking-wider uppercase text-foreground/45">
+            <p className="mb-1 sm:mb-2 text-xs font-semibold tracking-wider uppercase text-soft">
               Step 1 of 3
             </p>
             <h2 className="join-step-title text-2xl sm:text-3xl tracking-tight">
               What matters to you?
             </h2>
-            <p className="mt-2 text-sm leading-6 text-foreground/50">
+            <p className="mt-2 text-sm leading-6 text-soft">
               Choose a branch. Your words come next.
             </p>
           </div>
@@ -400,7 +400,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
                     <span className="block text-sm font-medium leading-5">
                       {item.label}
                     </span>
-                    <span className="block text-[10px] text-foreground/45">
+                    <span className="block text-xs text-soft">
                       {item.short}
                     </span>
                   </div>
@@ -422,20 +422,20 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             <span
               className={cn(
                 "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                "text-foreground/40",
+                "text-soft",
               )}
               style={{ backgroundColor: themeColor }}
             >
               <ThemeIcon theme={theme} size={14} className="text-foreground" />
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-wider text-foreground/40">
+            <span className="text-xs font-medium uppercase tracking-wider text-soft">
               {themeFor(theme).short}
             </span>
             <button
               type="button"
               disabled={busy}
               onClick={() => setStep(0)}
-              className="min-h-10 text-[11px] text-foreground/60 hover:underline"
+              className="min-h-10 text-xs text-soft hover:underline"
             >
               Change theme
             </button>
@@ -461,7 +461,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           />
           <div
             id="aspiration-help"
-            className="flex justify-between gap-3 text-[10px] text-foreground/45"
+            className="flex justify-between gap-3 text-xs text-soft"
           >
             <span>Leave out names, contact details and links.</span>
             <span className="shrink-0">{aspiration.length} / 200</span>
@@ -470,7 +470,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             type="button"
             disabled={busy}
             onClick={() => edit(themeFor(theme).prompt)}
-            className="inline-flex min-h-10 items-center gap-2 text-[11px] text-foreground/60 hover:underline"
+            className="inline-flex min-h-10 items-center gap-2 text-xs text-soft hover:underline"
           >
             <Sparkles size={13} />
             Try an example
@@ -489,7 +489,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               privately review my note.
             </span>
           </label>
-          <details className="text-[10px] text-foreground/55">
+          <details className="text-xs text-soft">
             <summary className="cursor-pointer min-h-[36px] py-1.5">
               Privacy &amp; how this works
             </summary>
@@ -507,10 +507,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             </p>
           </details>
           {error && (
-            <p
-              role="alert"
-              className="rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-800"
-            >
+            <p role="alert" className="community-error">
               {error}
             </p>
           )}
@@ -540,7 +537,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           {busy && (
             <p
               role="status"
-              className="text-center text-[10px] leading-5 text-foreground/50"
+              className="text-center text-xs leading-5 text-soft"
             >
               Reflecting on your note and making room on the tree.
             </p>

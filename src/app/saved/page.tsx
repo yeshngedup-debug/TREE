@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Bookmark, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Bookmark, Sprout } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import { SurfaceClosing, SurfaceHero, SurfaceShell } from "@/components/surface";
 import { PostCard } from "@/features/community/post-card";
@@ -21,6 +21,9 @@ export default async function SavedPage() {
       <SurfaceShell>
         <SiteHeader />
         <main className="surface-narrow">
+          <Link href="/discover" className="page-back">
+            <ArrowLeft size={15} aria-hidden="true" /> Back to Discover
+          </Link>
           <SurfaceHero
             kicker="Your reading list"
             title="Saved posts"
@@ -55,6 +58,9 @@ export default async function SavedPage() {
     <SurfaceShell>
       <SiteHeader />
       <main className="surface-wide">
+        <Link href="/discover" className="page-back">
+          <ArrowLeft size={15} aria-hidden="true" /> Back to Discover
+        </Link>
         <SurfaceHero
           kicker="Your reading list"
           title="Saved posts"

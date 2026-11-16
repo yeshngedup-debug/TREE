@@ -8,13 +8,13 @@
    --------------------------------------------------------------------------- */
 
 .explore-shell {
-  --explore-ink: #171b12;
-  --explore-forest: #141910;
-  --explore-paper: #eaeae3;
-  --explore-cream: #f6f5ea;
-  --explore-lime: #d8ed92;
-  --explore-clay: #b4622f;
-  --explore-line: rgba(23, 27, 18, 0.12);
+  --explore-ink: var(--ink);
+  --explore-forest: var(--forest);
+  --explore-paper: var(--paper);
+  --explore-cream: var(--cream);
+  --explore-lime: var(--lime);
+  --explore-clay: var(--clay);
+  --explore-line: var(--line);
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
@@ -24,14 +24,13 @@
 
 .explore-main {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
 }
 
 .explore-shell :where(a, button, input, [tabindex], summary):focus-visible {
-  outline: 2px solid var(--explore-lime);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(23, 27, 18, 0.28);
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .explore-shell ::selection {
@@ -39,134 +38,11 @@
   color: var(--explore-ink);
 }
 
-/* Navigation — the home floating glass pill, restyled in place ------------- */
-
-.explore-shell .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: calc(100% - 24px);
-  max-width: 1440px;
-  margin: 10px auto 0;
-  padding: 8px 8px 8px 16px;
-  border-radius: 26px;
-  background: rgba(242, 242, 235, 0.74);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  box-shadow: 0 18px 44px rgba(24, 30, 18, 0.07);
-}
-
-.explore-shell .site-header nav[aria-label="Main navigation"] {
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(23, 27, 18, 0.05);
-  color: var(--explore-ink);
-  font-size: 11px;
-}
-
-.explore-shell .site-header nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 999px;
-  color: rgba(23, 27, 18, 0.62);
-  white-space: nowrap;
-  background: transparent;
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
-}
-
-.explore-shell .site-header nav a:hover {
-  color: var(--explore-ink);
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.explore-shell .site-header nav a[aria-current="page"] {
-  background: var(--explore-ink);
-  color: var(--explore-cream);
-}
-
-.explore-shell .site-header nav a > svg {
-  opacity: 0.6;
-}
-
-.explore-shell .site-header a[aria-label="Share an idea"] {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--explore-ink);
-  color: var(--explore-cream);
-  font-size: 12px;
-  font-weight: 500;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
-}
-
-.explore-shell .site-header a[aria-label="Share an idea"]:hover {
-  background: #2a3223;
-  transform: translateY(-1px);
-}
-
-.explore-shell .site-header > div:last-child :is(a, summary) {
-}
-
-.explore-shell .site-header > div:last-child :is(a, summary):hover {
-  background: rgba(255, 255, 255, 0.6);
-}
-
-@media (min-width: 768px) {
-  .explore-shell .site-header {
-    width: calc(100% - 40px);
-    padding: 8px 10px 8px 20px;
-    border-radius: 999px;
-  }
-
-  .explore-shell .site-header nav[aria-label="Main navigation"] {
-    font-size: 12px;
-  }
-
-  .explore-shell .site-header nav a {
-    padding: 0 18px;
-  }
-}
-
-@media (max-width: 767px) {
-  .explore-shell .site-header nav a {
-    flex: 1;
-    justify-content: center;
-    min-height: 38px;
-    padding: 0 6px;
-    font-size: 10px;
-  }
-
-  .explore-shell .site-header a[aria-label="Share an idea"] {
-    min-height: 42px;
-    padding: 0 12px;
-  }
-
-  .explore-shell .site-header a[aria-label="Share an idea"] span {
-    display: none;
-  }
-}
-
 /* Hero --------------------------------------------------------------------- */
 
 .explore-hero {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(1.5rem, 3vw, 2.5rem) 20px clamp(3rem, 6vw, 6rem);
 }
@@ -193,10 +69,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 .explore-kicker::before {
@@ -211,9 +87,9 @@
 .explore-title {
   margin: 26px 0 0;
   font-size: clamp(2.7rem, 5.2vw, 4.85rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 0.98;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.03em;
   color: var(--explore-ink);
 }
 
@@ -248,7 +124,7 @@
   margin: 30px 0 0;
   font-size: clamp(0.9rem, 1.1vw, 1.02rem);
   line-height: 1.65;
-  color: rgba(23, 27, 18, 0.72);
+  color: var(--ink-soft);
 }
 
 .explore-actions {
@@ -272,10 +148,10 @@
   letter-spacing: -0.01em;
   text-decoration: none;
   transition:
-    background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease,
+    transform var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
 }
 
 .explore-cta-primary {
@@ -313,15 +189,15 @@
   padding: 0 18px;
   border-radius: 999px;
   background: transparent;
-  color: rgba(23, 27, 18, 0.72);
+  color: var(--ink-soft);
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: -0.01em;
   cursor: pointer;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease,
+    transform var(--dur-base) ease;
 }
 
 .explore-chip:hover {
@@ -383,7 +259,7 @@
   filter: grayscale(0.85) contrast(1.08) brightness(0.85);
   transform: scale(1.03);
   transition:
-    transform 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.4s var(--ease-out),
     filter 1s ease;
 }
 
@@ -417,7 +293,7 @@
   border-radius: 999px;
   background: rgba(23, 27, 18, 0.74);
   color: var(--explore-cream);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.01em;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -453,21 +329,21 @@
   align-items: center;
   gap: clamp(10px, 1.4vw, 18px);
   padding-right: clamp(10px, 1.4vw, 18px);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.01em;
   white-space: nowrap;
-  color: rgba(23, 27, 18, 0.58);
+  color: var(--ink-soft);
 }
 
 .explore-credits-item svg {
   flex: none;
-  color: var(--explore-clay);
+  color: var(--clay-strong);
   opacity: 0.8;
 }
 
 .explore-credits-item:nth-child(even) {
   color: transparent;
-  -webkit-text-stroke: 0.5px rgba(23, 27, 18, 0.55);
+  -webkit-text-stroke: 0.5px rgba(23, 27, 18, 0.72);
 }
 
 @keyframes explore-credits-scroll {
@@ -480,7 +356,7 @@
 
 .explore-section {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(3.5rem, 7.5vw, 7.5rem) 20px;
 }
@@ -503,9 +379,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
-  color: rgba(23, 27, 18, 0.5);
+  color: var(--ink-soft);
 }
 
 .explore-eyebrow::before {
@@ -518,16 +394,16 @@
 }
 
 .explore-eyebrow--clay {
-  color: rgba(246, 245, 234, 0.6);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .explore-h2 {
   margin: 16px 0 0;
   max-width: 20ch;
   font-size: clamp(2.1rem, 4.5vw, 3.9rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 1.02;
-  letter-spacing: -0.052em;
+  letter-spacing: -0.03em;
   color: var(--explore-ink);
 }
 
@@ -535,7 +411,7 @@
   padding-bottom: 6px;
   font-size: 12.5px;
   letter-spacing: 0.01em;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 /* Guide-paths bento ------------------------------------------------------- */
@@ -583,8 +459,8 @@
   border-radius: 30px;
   text-decoration: none;
   transition:
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.6s var(--ease-out),
+    box-shadow 0.6s var(--ease-out);
 }
 
 .path-card:hover {
@@ -623,7 +499,7 @@
   filter: grayscale(0.85) contrast(1.08) brightness(0.82);
   transform: scale(1.03);
   transition:
-    transform 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.3s var(--ease-out),
     filter 1s ease;
 }
 
@@ -663,9 +539,9 @@
   border-radius: 50%;
   color: var(--explore-cream);
   transition:
-    background 0.4s ease,
-    color 0.4s ease,
-    transform 0.4s ease;
+    background var(--dur-slow) ease,
+    color var(--dur-slow) ease,
+    transform var(--dur-slow) ease;
 }
 
 .path-card:hover .path-arrow {
@@ -682,7 +558,7 @@
 }
 
 .path-card-label {
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.09em;
   color: #e2a175;
 }
@@ -690,9 +566,9 @@
 .path-card-title {
   margin-top: 10px;
   font-size: clamp(1.5rem, 2.4vw, 2.15rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 1.1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   color: var(--explore-cream);
 }
 
@@ -707,7 +583,7 @@
   max-width: 36ch;
   margin-top: 14px;
   padding-top: 12px;
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.55;
   color: rgba(246, 245, 234, 0.62);
 }
@@ -716,7 +592,7 @@
 
 .explore-kind {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(2.5rem, 5vw, 5rem) 20px 0;
 }
@@ -733,16 +609,16 @@
 .kind-title {
   margin: 0;
   font-size: clamp(1.7rem, 3vw, 2.6rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 1.05;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
   color: var(--explore-ink);
 }
 
 .kind-note {
   padding-bottom: 4px;
   font-size: 12px;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 .explore-shell .bi-tree-fact.kind-tip {
@@ -795,8 +671,8 @@
   border-radius: 24px;
   background: var(--explore-cream);
   transition:
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.6s var(--ease-out),
+    box-shadow 0.6s var(--ease-out);
 }
 
 .place-card:hover {
@@ -817,7 +693,7 @@
   filter: grayscale(0.85) contrast(1.08) brightness(0.9);
   transform: scale(1.03);
   transition:
-    transform 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.3s var(--ease-out),
     filter 1s ease;
 }
 
@@ -829,10 +705,10 @@
 .place-credit {
   margin: 0;
   padding: 6px 12px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
   letter-spacing: 0.01em;
-  color: rgba(23, 27, 18, 0.5);
+  color: var(--ink-soft);
 }
 
 .place-note {
@@ -845,11 +721,11 @@
   padding: 24px;
   text-align: center;
   background: rgba(23, 27, 18, 0.05);
-  color: rgba(23, 27, 18, 0.6);
+  color: var(--ink-soft);
 }
 
 .place-note svg {
-  color: var(--explore-clay);
+  color: var(--clay-strong);
 }
 
 .place-note p {
@@ -875,25 +751,25 @@
 }
 
 .place-region {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
 }
 
 .place-source {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.01em;
-  color: rgba(23, 27, 18, 0.55);
+  color: var(--ink-soft);
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 4px;
   text-decoration-thickness: 1px;
   transition:
-    color 0.3s ease,
-    text-decoration-color 0.3s ease;
+    color var(--dur-base) ease,
+    text-decoration-color var(--dur-base) ease;
 }
 
 .place-source:hover {
@@ -913,7 +789,7 @@
   margin: 0;
   font-size: 12px;
   line-height: 1.6;
-  color: rgba(23, 27, 18, 0.72);
+  color: var(--ink-soft);
 }
 
 /* Folktales ---------------------------------------------------------------- */
@@ -937,6 +813,7 @@
 }
 
 .tale-slice {
+  display: block;
   position: relative;
   min-height: 240px;
   flex: none;
@@ -945,8 +822,9 @@
   border-radius: 24px;
   background: var(--explore-forest);
   color: var(--explore-cream);
+  text-decoration: none;
   outline: none;
-  transition: flex-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: flex-grow 0.9s var(--ease-out);
 }
 
 @media (min-width: 900px) {
@@ -976,7 +854,7 @@
   filter: grayscale(1) contrast(1.1) brightness(0.8);
   transform: scale(1.02);
   transition:
-    transform 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.4s var(--ease-out),
     filter 0.9s ease;
 }
 
@@ -1010,7 +888,7 @@
   letter-spacing: 0.04em;
   white-space: nowrap;
   color: rgba(246, 245, 234, 0.85);
-  transition: opacity 0.3s ease;
+  transition: opacity var(--dur-base) ease;
 }
 
 .tale-slice:hover .tale-tradition,
@@ -1029,8 +907,8 @@
   transform: none;
   pointer-events: none;
   transition:
-    opacity 0.45s ease 0.12s,
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+    opacity var(--dur-slow) ease 0.12s,
+    transform 0.55s var(--ease-out) 0.1s;
 }
 
 @media (min-width: 900px) {
@@ -1047,14 +925,13 @@
   .tale-slice:focus-within .tale-panel {
     opacity: 1;
     transform: none;
-    pointer-events: auto;
   }
 }
 
 .tale-title {
   display: block;
   font-size: clamp(1.15rem, 1.6vw, 1.45rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 1.15;
   letter-spacing: -0.03em;
   color: var(--explore-cream);
@@ -1083,7 +960,7 @@
 
 .tale-moral {
   margin: 10px 0 0;
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.55;
   color: rgba(246, 245, 234, 0.85);
 }
@@ -1098,7 +975,7 @@
   gap: 5px;
   margin-top: 10px;
   padding-bottom: 2px;
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.01em;
   color: rgba(246, 245, 234, 0.75);
   text-decoration: underline;
@@ -1106,11 +983,12 @@
   text-underline-offset: 4px;
   text-decoration-thickness: 1px;
   transition:
-    color 0.3s ease,
-    text-decoration-color 0.3s ease;
+    color var(--dur-base) ease,
+    text-decoration-color var(--dur-base) ease;
 }
 
-.tale-source:hover {
+.tale-slice:hover .tale-source,
+.tale-slice:focus-visible .tale-source {
   color: var(--explore-lime);
   text-decoration-color: var(--explore-lime);
 }
@@ -1164,9 +1042,9 @@
 
 .wisdom-credit {
   margin: 8px 2px 0;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
-  color: rgba(246, 245, 234, 0.5);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .wisdom-body {
@@ -1179,7 +1057,7 @@
 }
 
 .wisdom-tradition {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   color: #e2a175;
 }
@@ -1196,7 +1074,7 @@
 
 .wisdom-title {
   font-size: 12.5px;
-  color: rgba(246, 245, 234, 0.6);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .wisdom-controls {
@@ -1216,241 +1094,15 @@
   color: var(--explore-cream);
   cursor: pointer;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
+    background var(--dur-base) ease,
+    color var(--dur-base) ease,
+    transform var(--dur-base) ease;
 }
 
 .wisdom-prev:hover,
 .wisdom-next:hover {
   background: var(--explore-lime);
   color: var(--explore-ink);
-  transform: translateY(-2px);
-}
-
-/* Guide panel ------------------------------------------------------------ */
-
-.guide-panel {
-  width: calc(100% - clamp(24px, 4vw, 48px));
-  max-width: 1440px;
-  margin-inline: auto;
-}
-
-.guide-panel-card {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(20px, 3vw, 44px);
-  align-items: center;
-  overflow: hidden;
-  border-radius: 36px;
-  padding: clamp(1.6rem, 3.5vw, 3.5rem);
-  background:
-    radial-gradient(
-      80% 100% at 0% 100%,
-      rgba(216, 237, 146, 0.14),
-      transparent 55%
-    ),
-    var(--explore-forest);
-  color: var(--explore-cream);
-}
-
-.guide-panel-copy {
-  min-width: 0;
-}
-
-.guide-panel-copy .explore-eyebrow {
-  color: rgba(246, 245, 234, 0.55);
-}
-
-.guide-panel-copy .explore-eyebrow--clay {
-  color: var(--explore-lime);
-}
-
-.guide-panel-copy .explore-eyebrow::before {
-  background: currentColor;
-  opacity: 0.6;
-}
-
-.guide-panel-text {
-  margin: 16px 0 0;
-  max-width: 34rem;
-  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
-  line-height: 1.65;
-  color: rgba(246, 245, 234, 0.72);
-}
-
-.guide-panel-chat {
-  min-width: 0;
-}
-
-/* The chat card, re-themed for the dark panel. The base .guide-card and
-   .visitor-input rules live in globals.css; these overrides win because this
-   sheet loads after globals and sits outside Tailwind's @layer utilities. */
-.guide-panel .explore-guide {
-  background: rgba(246, 245, 234, 0.07);
-  color: var(--explore-cream);
-}
-
-.guide-panel .explore-guide h2 {
-  color: var(--explore-cream);
-}
-
-.guide-panel .explore-guide-badge {
-  width: 42px;
-  height: 42px;
-  font-size: 20px;
-  border-radius: 13px;
-  background: var(--explore-lime);
-  color: var(--explore-ink);
-}
-
-.guide-panel .explore-guide-list {
-  background: rgba(20, 25, 16, 0.45);
-}
-
-.guide-panel .explore-guide-list .bg-card {
-  background: rgba(246, 245, 234, 0.1) !important;
-}
-
-.guide-panel .explore-input {
-  background: rgba(246, 245, 234, 0.1);
-  color: var(--explore-cream);
-}
-
-.guide-panel .explore-input::placeholder {
-  color: rgba(246, 245, 234, 0.45);
-}
-
-.guide-panel .explore-send {
-  background: var(--explore-lime);
-  color: var(--explore-ink);
-}
-
-.guide-panel .explore-prompt {
-  color: rgba(246, 245, 234, 0.8);
-}
-
-.guide-panel .explore-prompt:hover {
-  background: rgba(246, 245, 234, 0.1);
-}
-
-/* Sourcing note ---------------------------------------------------------- */
-
-.explore-sourcing {
-  max-width: 62rem;
-  margin: 0 auto;
-  padding: 0 20px clamp(2rem, 4vw, 3.5rem);
-  font-size: 10.5px;
-  line-height: 1.7;
-  text-align: center;
-  color: rgba(23, 27, 18, 0.5);
-}
-
-/* Closing ---------------------------------------------------------------- */
-
-.explore-closing {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 20px clamp(3rem, 6vw, 5rem);
-}
-
-.explore-closing-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 36px;
-  padding: clamp(2.8rem, 6.5vw, 6.5rem) clamp(1.4rem, 5vw, 5.5rem);
-  background:
-    radial-gradient(
-      80% 100% at 100% 0%,
-      rgba(255, 255, 255, 0.5),
-      transparent 55%
-    ),
-    var(--explore-lime);
-  color: var(--explore-ink);
-}
-
-.explore-closing-sprout {
-  position: absolute;
-  right: -4%;
-  bottom: -18%;
-  opacity: 0.12;
-  transform: rotate(-10deg);
-  pointer-events: none;
-}
-
-.explore-closing-title {
-  position: relative;
-  z-index: 1;
-  max-width: 14ch;
-  margin: 0;
-  font-size: clamp(2.4rem, 6.2vw, 5.6rem);
-  font-weight: 450;
-  line-height: 0.96;
-  letter-spacing: -0.058em;
-}
-
-.explore-shell .closing-copy {
-  position: relative;
-  z-index: 1;
-  max-width: 32rem;
-  margin: 22px 0 0;
-  font-size: 14px;
-  line-height: 1.65;
-  color: rgba(23, 27, 18, 0.66);
-}
-
-.explore-shell .closing-actions {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 32px;
-}
-
-.explore-shell .closing-primary,
-.explore-shell .closing-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  padding: 0 26px;
-  border-radius: 999px;
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-  transition:
-    background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease;
-}
-
-.explore-shell .closing-primary {
-  background: var(--explore-ink);
-  color: var(--explore-cream);
-}
-
-.explore-shell .closing-primary:hover {
-  background: #2a3223;
-  transform: translateY(-2px);
-}
-
-.explore-shell .closing-primary svg {
-  transition: transform 0.35s ease;
-}
-
-.explore-shell .closing-primary:hover svg {
-  transform: translate(3px, -3px);
-}
-
-.explore-shell .closing-secondary {
-  color: var(--explore-ink);
-}
-
-.explore-shell .closing-secondary:hover {
-  background: rgba(23, 27, 18, 0.06);
   transform: translateY(-2px);
 }
 
@@ -1469,7 +1121,9 @@
   .explore-closing {
     padding-inline: 40px;
   }
+}
 
+@media (min-width: 768px) and (max-width: 899px) {
   .explore-bento {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-auto-rows: minmax(0, 1fr);
@@ -1508,14 +1162,27 @@
 }
 
 @media (max-width: 767px) {
+  .explore-hero {
+    padding: clamp(1rem, 4vw, 2rem) 16px clamp(2.5rem, 8vw, 4rem);
+  }
+
   .explore-title {
     font-size: clamp(2rem, 8.4vw, 2.9rem);
+  }
+
+  .explore-photo {
+    min-height: 240px;
+    max-height: 340px;
+  }
+
+  .explore-photo-frame {
+    aspect-ratio: 4 / 3.4;
   }
 
   .explore-inline-photo {
     width: 2.2rem;
     height: 0.52em;
-    margin-right: 0.14em;
+    margin-right: 0.16em;
   }
 
   .explore-cta {
@@ -1524,8 +1191,13 @@
     font-size: 12px;
   }
 
-  .explore-photo-frame {
-    aspect-ratio: 4 / 3.4;
+  .explore-section,
+  .explore-kind {
+    padding-inline: 16px;
+  }
+
+  .explore-closing {
+    padding-inline: 12px;
   }
 
   .explore-bento {
@@ -1554,11 +1226,21 @@
   }
 
   .wisdom {
+    border-radius: 28px;
     grid-template-columns: minmax(0, 1fr);
   }
 
   .tale-slice {
     height: 400px;
+  }
+
+  .explore-closing-card {
+    border-radius: 28px;
+  }
+
+  .explore-closing-sprout {
+    right: -28%;
+    bottom: -12%;
   }
 
   .guide-panel {
@@ -1570,14 +1252,8 @@
     border-radius: 28px;
   }
 
-  .explore-closing-card,
-  .guide-panel-card {
-    border-radius: 28px;
-  }
-
-  .explore-closing-sprout {
-    right: -28%;
-    bottom: -10%;
+  .wisdom-photo {
+    max-height: 260px;
   }
 }
 
@@ -1589,34 +1265,16 @@
   .explore-cta {
     min-height: 42px;
     padding: 0 14px;
-    font-size: 11px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .explore-credits-track {
-    animation: none;
-    transform: none;
-  }
-
-  .path-card,
-  .path-img,
-  .place-card,
-  .tale-img,
-  .explore-cta,
-  .explore-chip,
-  .path-arrow,
-  .wisdom-prev,
-  .wisdom-next,
-  .closing-primary,
-  .closing-secondary {
-    transition: none;
+    font-size: 12px;
   }
 }
 
 /* Guide panel — mirrors the statement card around the restyled GuideChat --- */
 
 .guide-panel {
+  width: calc(100% - clamp(24px, 4vw, 48px));
+  max-width: var(--shell-max);
+  margin-inline: auto;
   padding-top: clamp(2.5rem, 5vw, 5rem);
 }
 
@@ -1662,6 +1320,23 @@
   min-width: 0;
 }
 
+.guide-panel-copy {
+  min-width: 0;
+}
+
+.guide-panel-copy .explore-eyebrow {
+  color: rgba(246, 245, 234, 0.72);
+}
+
+.guide-panel-copy .explore-eyebrow--clay {
+  color: var(--explore-lime);
+}
+
+.guide-panel-copy .explore-eyebrow::before {
+  background: currentColor;
+  opacity: 0.6;
+}
+
 /* Scoped GuideChat overrides (globals.css stays untouched) */
 
 .explore-shell .guide-card.explore-guide {
@@ -1673,11 +1348,11 @@
 
 .explore-shell .guide-card.explore-guide h2 {
   color: var(--explore-cream);
-  font-weight: 450;
+  font-weight: 440;
 }
 
 .explore-shell .guide-card .text-foreground\/60 {
-  color: rgba(246, 245, 234, 0.55);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .explore-shell .explore-guide-list {
@@ -1695,7 +1370,7 @@
 }
 
 .explore-shell .explore-guide-list .text-foreground\/55 {
-  color: rgba(246, 245, 234, 0.5);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .explore-shell .guide-card .text-red-600 {
@@ -1714,7 +1389,7 @@
 
 .explore-shell .explore-guide span.rounded-full.bg-muted {
   background: rgba(246, 245, 234, 0.08);
-  color: rgba(246, 245, 234, 0.65);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .explore-shell .explore-input {
@@ -1726,7 +1401,7 @@
 }
 
 .explore-shell .explore-input::placeholder {
-  color: rgba(246, 245, 234, 0.4);
+  color: rgba(246, 245, 234, 0.72);
 }
 
 .explore-shell .explore-input:focus,
@@ -1761,19 +1436,20 @@
 /* Sourcing note ------------------------------------------------------------ */
 
 .explore-sourcing {
-  max-width: 1440px;
+  max-width: 62rem;
   margin: 0 auto;
   padding: 26px 20px 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.75;
-  color: rgba(23, 27, 18, 0.55);
+  text-align: center;
+  color: var(--ink-soft);
 }
 
 /* Closing — mirrors the home lime closing card ------------------------------ */
 
 .explore-closing {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: clamp(3rem, 6vw, 6rem) 20px;
 }
@@ -1799,9 +1475,9 @@
   max-width: 15ch;
   margin: 0;
   font-size: clamp(2.4rem, 6.2vw, 5.6rem);
-  font-weight: 450;
+  font-weight: 440;
   line-height: 0.96;
-  letter-spacing: -0.058em;
+  letter-spacing: -0.03em;
 }
 
 .explore-closing-sprout {
@@ -1822,7 +1498,7 @@
   margin: 22px 0 0;
   font-size: 14px;
   line-height: 1.65;
-  color: rgba(23, 27, 18, 0.66);
+  color: var(--ink-soft);
 }
 
 .closing-actions {
@@ -1845,7 +1521,7 @@
 }
 
 .explore-shell .closing-primary svg {
-  transition: transform 0.35s ease;
+  transition: transform var(--dur-base) ease;
 }
 
 .explore-shell .closing-primary:hover svg {
@@ -1866,56 +1542,7 @@
 
 .explore-shell footer {
   background: var(--explore-paper);
-  color: rgba(23, 27, 18, 0.55);
-}
-
-/* Responsive ------------------------------------------------------------------*/
-
-@media (max-width: 767px) {
-  .explore-hero {
-    padding: clamp(1rem, 4vw, 2rem) 16px clamp(2.5rem, 8vw, 4rem);
-  }
-
-  .explore-photo {
-    min-height: 240px;
-    max-height: 340px;
-  }
-
-  .explore-inline-photo {
-    width: 2.2rem;
-    height: 0.52em;
-    margin-right: 0.16em;
-  }
-
-  .explore-section,
-  .explore-kind {
-    padding-inline: 16px;
-  }
-
-  .explore-closing {
-    padding-inline: 12px;
-  }
-
-  .explore-closing-card {
-    border-radius: 28px;
-  }
-
-  .explore-closing-sprout {
-    right: -28%;
-    bottom: -12%;
-  }
-
-  .wisdom {
-    border-radius: 28px;
-  }
-
-  .guide-panel-card {
-    border-radius: 28px;
-  }
-
-  .wisdom-photo {
-    max-height: 260px;
-  }
+  color: var(--ink-soft);
 }
 
 /* Reduced motion --------------------------------------------------------------*/
@@ -1941,7 +1568,9 @@
   .explore-chip,
   .explore-photo,
   .guide-panel-card,
-  .explore-closing-card {
+  .explore-closing-card,
+  .closing-primary,
+  .closing-secondary {
     transition: none;
   }
 }

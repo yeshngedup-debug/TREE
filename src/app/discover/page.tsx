@@ -310,6 +310,7 @@ export default async function DiscoverPage({
                   <Link
                     href={hrefFor({ page: Math.max(1, query.page - 1) })}
                     aria-disabled={query.page === 1}
+                    tabIndex={query.page === 1 ? -1 : undefined}
                     className={query.page === 1 ? "is-disabled" : undefined}
                   >
                     Previous
@@ -326,6 +327,7 @@ export default async function DiscoverPage({
                   <Link
                     href={hrefFor({ page: Math.min(result.pages, query.page + 1) })}
                     aria-disabled={query.page >= result.pages}
+                    tabIndex={query.page >= result.pages ? -1 : undefined}
                     className={
                       query.page >= result.pages ? "is-disabled" : undefined
                     }

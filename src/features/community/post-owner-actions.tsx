@@ -14,15 +14,10 @@ export function PostOwnerActions({
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState("");
 
   async function remove() {
-    if (
-      !window.confirm(
-        "Remove this post? It will disappear from Discover and leave the Living Tree.",
-      )
-    )
-      return;
     setPending(true);
     setError("");
     try {
@@ -47,15 +42,38 @@ export function PostOwnerActions({
       <Link href={`/posts/${slug}/edit`} className="post-owner-link">
         <Pencil size={14} aria-hidden="true" /> Edit post
       </Link>
-      <button
-        type="button"
-        className="post-owner-link post-owner-remove"
-        onClick={remove}
-        disabled={pending}
-      >
-        <Trash2 size={14} aria-hidden="true" />
-        {pending ? "Removing…" : "Remove"}
-      </button>
+      {confirming ? (
+        <span className="post-owner-confirm" aria-live="polite">
+          Remove this post? It leaves Discover and the Living Tree.
+          <button
+            type="button"
+            className="post-owner-link post-owner-remove"
+            onClick={remove}
+            disabled={pending}
+          >
+            <Trash2 size={14} aria-hidden="true" />
+            {pending ? "Removing…" : "Yes, remove"}
+          </button>
+          <button
+            type="button"
+            className="post-owner-link"
+            onClick={() => setConfirming(false)}
+            disabled={pending}
+          >
+            Keep it
+          </button>
+        </span>
+      ) : (
+        <button
+          type="button"
+          className="post-owner-link post-owner-remove"
+          onClick={() => setConfirming(true)}
+          disabled={pending}
+        >
+          <Trash2 size={14} aria-hidden="true" />
+          Remove
+        </button>
+      )}
       {error ? (
         <p className="community-error" role="alert">
           {error}

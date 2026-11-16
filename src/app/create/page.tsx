@@ -58,7 +58,7 @@ export default async function CreatePage({
           ) : (
             <section className="community-panel">
               <h1 className="text-2xl">Categories are unavailable.</h1>
-              <p className="mt-3 text-sm leading-6 text-foreground/60">
+              <p className="mt-3 text-sm leading-6 text-soft">
                 The community database is still waking up. Please refresh in a
                 moment.
               </p>

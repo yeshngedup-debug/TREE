@@ -10,6 +10,7 @@ import {
   EyeOff,
   LoaderCircle,
   RefreshCw,
+  ShieldAlert,
   ShieldCheck,
   Star,
   Trash2,
@@ -38,6 +39,7 @@ export function ModerationConsole() {
   );
   const [actor, setActor] = useState<Payload["actor"] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [gate, setGate] = useState<"auth" | "error" | null>(null);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -46,15 +48,26 @@ export function ModerationConsole() {
     return fetch("/api/community/moderation", { cache: "no-store" })
       .then(async (response) => {
         const result = (await response.json().catch(() => ({}))) as Payload;
-        if (!response.ok || !result.overview)
+        if (!response.ok || !result.overview) {
+          const status = response.status;
+          if (status === 401 || status === 403) {
+            setGate("auth");
+            throw new Error(
+              result.error || "Sign in with a moderator or staff account.",
+            );
+          }
+          setGate("error");
           throw new Error(
-            result.error || "Sign in with a moderator or staff account.",
+            result.error || "The moderation queue could not be loaded.",
           );
+        }
         setOverview(result.overview);
         setActor(result.actor ?? null);
+        setGate(null);
         setError("");
       })
       .catch((caught: unknown) => {
+        setGate((previous) => previous ?? "error");
         setError(
           caught instanceof Error ? caught.message : "Something went wrong.",
         );
@@ -65,6 +78,13 @@ export function ModerationConsole() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  function retry() {
+    setLoading(true);
+    setError("");
+    setNotice("");
+    void load();
+  }
 
   async function send(action: ModerationAction, key: string) {
     setBusy(key);
@@ -99,7 +119,28 @@ export function ModerationConsole() {
     );
 
   if (!overview)
-    return (
+    return gate === "error" ? (
+      <section className="community-panel moderation-gate">
+        <ShieldAlert size={24} aria-hidden="true" />
+        <h1>The moderation queue did not load</h1>
+        <p className="community-error" role="alert">
+          {error || "Check your connection and try again in a moment."}
+        </p>
+        <div className="moderation-gate-actions">
+          <button
+            type="button"
+            className="community-submit inline-flex items-center justify-center gap-2"
+            onClick={retry}
+            disabled={loading}
+          >
+            <RefreshCw size={14} aria-hidden="true" /> Try again
+          </button>
+          <Link href="/admin" className="community-signout inline-flex items-center">
+            Staff console
+          </Link>
+        </div>
+      </section>
+    ) : (
       <section className="community-panel moderation-gate">
         <ShieldCheck size={24} aria-hidden="true" />
         <h1>Moderation workspace</h1>
@@ -130,10 +171,10 @@ export function ModerationConsole() {
   const canManage = actor?.kind === "staff" || actor?.role === "admin";
 
   return (
-    <div className="moderation-console">
+    <div className="moderation-console" aria-busy={loading}>
       <header className="moderation-head">
         <div>
-          <p className="eyebrow text-foreground/45">Community care</p>
+          <p className="eyebrow text-foreground/70">Community care</p>
           <h1>Moderation workspace</h1>
           <p>
             Signed in as {actor?.label || "a moderator"}. Published posts appear
@@ -147,11 +188,7 @@ export function ModerationConsole() {
           <button
             type="button"
             className="community-signout inline-flex items-center gap-2"
-            onClick={() => {
-              setLoading(true);
-              setNotice("");
-              void load();
-            }}
+            onClick={retry}
             disabled={loading}
           >
             <RefreshCw size={14} aria-hidden="true" /> Refresh

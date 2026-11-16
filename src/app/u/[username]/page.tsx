@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays } from "lucide-react";
+import { ArrowLeft, CalendarDays } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import {
   SurfaceClosing,
@@ -76,16 +77,19 @@ export default async function ProfilePage({
     <SurfaceShell>
       <SiteHeader />
       <main className="mx-auto w-full max-w-[1100px] px-5 pb-20 pt-4 md:px-10">
+        <Link href="/discover" className="page-back">
+          <ArrowLeft size={15} aria-hidden="true" /> Back to Discover
+        </Link>
         <header className="profile-head">
           <CommunityAvatar author={account} size={88} />
           <div className="min-w-0">
-            <p className="eyebrow text-foreground/45">Community member</p>
+            <p className="eyebrow text-soft">Community member</p>
             <h1 className="mt-2 text-3xl tracking-tight md:text-4xl">
               {account.displayName}
             </h1>
-            <p className="mt-1 text-sm text-foreground/50">@{account.username}</p>
+            <p className="mt-1 text-sm text-soft">@{account.username}</p>
             {account.bio ? (
-              <p className="mt-4 max-w-xl text-sm leading-6 text-foreground/65">
+              <p className="mt-4 max-w-xl text-sm leading-6 text-soft">
                 {account.bio}
               </p>
             ) : null}
@@ -111,7 +115,7 @@ export default async function ProfilePage({
         <section className="mt-10" aria-labelledby="profile-posts">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="eyebrow text-foreground/45">Published work</p>
+              <p className="eyebrow text-soft">Published work</p>
               <h2 id="profile-posts" className="mt-2 text-2xl md:text-3xl">
                 {isOwner ? "Your aspirations and ideas" : "Aspirations and ideas"}
               </h2>

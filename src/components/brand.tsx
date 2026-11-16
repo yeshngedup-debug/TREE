@@ -27,7 +27,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
           BI Tree
         </span>
         {!compact && (
-          <span className="mt-1.5 block whitespace-nowrap text-[6px] tracking-[.18em] opacity-55 sm:text-[8px]">
+          <span className="mt-1.5 block whitespace-nowrap text-xs tracking-[.14em] opacity-70">
             Bhutanese Idea Tree
           </span>
         )}
@@ -35,11 +35,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
     </Link>
   );
 }
-export function SiteHeader({
-  variant = "default",
-}: {
-  variant?: "default" | "home";
-}) {
+export function SiteHeader() {
   const pathname = usePathname();
   const items = [
     {
@@ -66,70 +62,36 @@ export function SiteHeader({
       active: pathname.startsWith("/display"),
     },
   ];
-  if (variant === "home") {
-    return (
-      <header className="home-nav">
-        <div className="home-nav-bar">
-          <Brand />
-          <nav aria-label="Main navigation" className="home-nav-links">
-            {items.map(({ href, label, active }) => (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className="home-nav-link"
-              >
-                {label}
-                {href === "/display" && (
-                  <ArrowUpRight size={13} aria-hidden="true" />
-                )}
-              </Link>
-            ))}
-          </nav>
-          <div className="home-nav-actions">
-            <Link
-              href="/create"
-              aria-label="Share an idea"
-              className="home-nav-share"
-            >
-              <span>Share an idea</span>
-              <ArrowUpRight size={15} aria-hidden="true" />
-            </Link>
-            <AccountMenu />
-          </div>
-        </div>
-      </header>
-    );
-  }
   return (
-    <header className="site-header mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-5 py-6 md:flex-nowrap md:px-10">
-      <Brand />
-      <nav
-        aria-label="Main navigation"
-        className="order-last mt-2 flex w-full items-center justify-center gap-1 rounded-full bg-primary p-1.5 text-[10px] text-primary-foreground md:order-none md:mt-0 md:w-auto md:text-xs"
-      >
-        {items.map(({ href, label, active }) => (
+    <header className="site-header">
+      <div className="site-header-bar">
+        <Brand />
+        <nav aria-label="Main navigation" className="site-header-nav">
+          {items.map(({ href, label, active }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className="site-header-link"
+            >
+              {label}
+              {href === "/display" && (
+                <ArrowUpRight size={13} aria-hidden="true" />
+              )}
+            </Link>
+          ))}
+        </nav>
+        <div className="site-header-actions">
           <Link
-            key={href}
-            href={href}
-            aria-current={active ? "page" : undefined}
-            className={`flex min-h-10 items-center gap-2 whitespace-nowrap rounded-full px-2.5 py-2 md:px-5 md:py-3 ${active ? "bg-card text-foreground" : "hover:bg-white/10"}`}
+            href="/create"
+            aria-label="Share an idea"
+            className="site-header-share"
           >
-            {label}
-            {href === "/display" && <ArrowUpRight size={14} />}
+            <span>Share an idea</span>
+            <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
-        ))}
-      </nav>
-      <div className="flex shrink-0 items-center gap-2">
-        <Link
-          href="/create"
-          aria-label="Share an idea"
-          className="flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-card px-3 text-xs font-medium sm:px-4 lg:px-5"
-        >
-          <span className="hidden lg:inline">Share an idea</span>
-          <ArrowUpRight size={15} />
-        </Link>
-        <AccountMenu />
+          <AccountMenu />
+        </div>
       </div>
     </header>
   );
@@ -247,7 +209,7 @@ function AccountMenu() {
         ) : (
           <span
             aria-hidden="true"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
           >
             {initialsOf(account.displayName)}
           </span>
@@ -260,7 +222,7 @@ function AccountMenu() {
       <div className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl bg-card p-2 shadow-xl">
         <div className="px-3 py-2">
           <p className="truncate text-xs font-semibold">{account.displayName}</p>
-          <p className="truncate text-[10px] text-foreground/55">
+          <p className="truncate text-xs text-soft">
             @{account.username}
             {account.role !== "member" ? ` · ${account.role}` : ""}
           </p>
@@ -302,7 +264,7 @@ function AccountMenu() {
 }
 export function SiteFooter() {
   return (
-    <footer className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-4 px-6 py-8 text-[11px] text-foreground/55 md:px-10">
+    <footer className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-4 px-6 py-8 text-[12px] text-soft md:px-10">
       <span>Rooted in values. Growing through people.</span>
       <div className="flex flex-wrap gap-x-5 gap-y-3">
         <Link href="/discover">Discover</Link>

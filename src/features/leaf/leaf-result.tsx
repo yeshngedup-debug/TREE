@@ -95,7 +95,7 @@ export function LeafResult({
           </span>
           <div>
             <h2 className="text-2xl">Your leaf is growing.</h2>
-            <p className="mt-1 text-[10px] text-foreground/55">
+            <p className="mt-1 text-xs text-soft">
               Look for leaf #{leaf.id.slice(0, 6)} on the big screen.
             </p>
           </div>
@@ -106,7 +106,7 @@ export function LeafResult({
               <span className="flex items-center gap-2 text-xs font-medium">
                 <MessageCircle size={15} />A little reflection for you
               </span>
-              <span className="text-[9px] text-foreground/45">
+              <span className="text-xs text-soft">
                 {replyMode === "openai" ? "AI reply" : "Offline reply"}
               </span>
             </div>
@@ -115,25 +115,25 @@ export function LeafResult({
             </p>
             <aside className="bi-tree-fact">
               <p className="text-xs font-medium">A little about Bhutan</p>
-              <p className="mt-1 text-xs leading-5 text-foreground/65">
+              <p className="mt-1 text-xs leading-5 text-soft">
                 {bhutanFacts[leaf.category].text}
               </p>
               <a
                 href={bhutanFacts[leaf.category].source}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 inline-flex min-h-8 items-center text-[10px] underline underline-offset-4"
+                className="mt-1 inline-flex min-h-8 items-center text-xs underline underline-offset-4"
               >
                 From documented sources <ArrowUpRight size={11} />
               </a>
             </aside>
             {original && (
-              <details className="mt-3 text-xs text-foreground/55">
+              <details className="mt-3 text-xs text-soft">
                 <summary className="cursor-pointer">Your original note</summary>
                 <p className="mt-2 leading-5">{original}</p>
               </details>
             )}
-            <p className="mt-3 text-[9px] text-foreground/45">
+            <p className="mt-3 text-xs text-soft">
               This reply is not shown on the public tree.
             </p>
           </section>
@@ -145,14 +145,14 @@ export function LeafResult({
         >
           <Sprout size={26} className="shrink-0 text-accent" />
           <div>
-            <p className="mb-1 text-[9px] text-white/45">On the shared tree</p>
+            <p className="mb-1 text-xs text-white/45">On the shared tree</p>
             <blockquote className="text-sm leading-5">
               “{leaf.leaf_message}”
             </blockquote>
             {leaf.post_slug ? (
               <Link
                 href={`/posts/${leaf.post_slug}`}
-                className="mt-2 inline-flex items-center gap-1 text-[10px] underline underline-offset-4"
+                className="mt-2 inline-flex items-center gap-1 text-xs underline underline-offset-4"
               >
                 Read the full post <ArrowUpRight size={11} />
               </Link>
@@ -182,7 +182,7 @@ export function LeafResult({
           </Button>
           <Link
             href={`/leaf/${leaf.id}`}
-            className="w-full sm:w-auto flex min-h-10 items-center justify-center gap-1 rounded-full bg-muted px-2 text-center text-[10px]"
+            className="w-full sm:w-auto flex min-h-10 items-center justify-center gap-1 rounded-full bg-muted px-2 text-center text-xs"
           >
             Open your keepsake page
             <ArrowUpRight size={12} className="shrink-0" />
@@ -191,7 +191,7 @@ export function LeafResult({
         {notice && (
           <p
             role="status"
-            className="break-all text-center text-[10px] text-foreground/60"
+            className="break-all text-center text-xs text-soft"
           >
             {notice}
           </p>
@@ -204,7 +204,7 @@ export function LeafResult({
         <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-accent/50">
           <Check size={21} />
         </span>
-        <p className="eyebrow mb-3 text-foreground/45">
+        <p className="eyebrow mb-3 text-soft">
           {keepsake
             ? "A hope to carry with you"
             : "Your voice is part of the canopy"}
@@ -212,14 +212,14 @@ export function LeafResult({
         <h1 className="text-4xl tracking-tight">
           {keepsake ? "One leaf. A shared future." : "Your leaf is growing."}
         </h1>
-        <p className="mt-3 text-sm text-foreground/60">
+        <p className="mt-3 text-sm text-soft">
           {keepsake
             ? "A little keepsake from the BI Tree."
             : `Look for leaf #${leaf.id.slice(0, 6)} on the big screen. You've helped the tree grow.`}
         </p>
       </div>
       <section className="keepsake forest grain relative overflow-hidden rounded-[32px] px-7 pb-8 pt-9 text-center">
-        <p className="eyebrow text-[8px] text-accent">
+        <p className="eyebrow text-xs text-accent">
           BI Tree
         </p>
         <svg
@@ -243,12 +243,12 @@ export function LeafResult({
           &ldquo;{leaf.leaf_message}&rdquo;
         </blockquote>
         <p
-          className="mt-6 text-[10px] tracking-[.15em]"
+          className="mt-6 text-xs tracking-[.15em]"
           style={{ color: theme.color }}
         >
           {theme.label}
         </p>
-        <p className="mt-5 rounded-full bg-white/5 px-3 py-3 text-[9px] text-white/45">
+        <p className="mt-5 rounded-full bg-white/5 px-3 py-3 text-xs text-white/45">
           {leaf.is_demo ? "Illustrative demo leaf · " : ""}Anonymous hope ·{" "}
           {new Date(leaf.created_at).toLocaleDateString("en-GB", {
             timeZone: "Asia/Thimphu",
@@ -278,12 +278,12 @@ export function LeafResult({
       </div>
       <p
         role="status"
-        className="break-all text-center text-xs text-foreground/60"
+        className="break-all text-center text-xs text-soft"
       >
         {notice}
       </p>
       <GuideRecommendation path={leaf.chamber_id} reason={leaf.chamber_reason} />
-      <p className="text-center text-[10px] leading-relaxed text-foreground/50">
+      <p className="text-center text-xs leading-relaxed text-soft">
         {leaf.mode === "offline"
           ? "Your leaf uses a curated offline response inspired by your theme and keywords."
           : "Your leaf was interpreted by the BI Tree AI and checked before publication."}{" "}

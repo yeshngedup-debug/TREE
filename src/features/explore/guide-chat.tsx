@@ -78,12 +78,12 @@ export function GuideChat() {
           </span>
           <div>
             <h2 className="text-xl leading-tight">Ask the BI Tree guide</h2>
-            <p className="mt-1 text-xs text-foreground/60">
+            <p className="mt-1 text-xs text-soft">
               Agentic AI over real, sourced Bhutan places and stories
             </p>
           </div>
         </div>
-        <span className="rounded-full bg-muted px-3 py-1 text-[10px] font-medium text-foreground/65">
+        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-soft">
           Stateless · no account needed
         </span>
       </div>
@@ -103,14 +103,14 @@ export function GuideChat() {
           >
             <p>{entry.content}</p>
             {entry.mode === "offline" && (
-              <p className="mt-1 text-[10px] font-medium opacity-60">
+              <p className="mt-1 text-xs font-medium opacity-60">
                 Offline guide · curated picks
               </p>
             )}
           </div>
         ))}
         {pending && (
-          <p className="self-start text-xs text-foreground/55">
+          <p className="self-start text-xs text-soft">
             The guide is checking the Bhutan guidebook…
           </p>
         )}
@@ -153,7 +153,7 @@ export function GuideChat() {
             type="button"
             onClick={() => void send(prompt)}
             disabled={pending}
-            className="rounded-full bg-muted/60 px-3 py-1.5 text-[11px] text-foreground/70 transition hover:bg-muted disabled:opacity-50 explore-prompt"
+            className="rounded-full bg-muted/60 px-3 py-1.5 text-xs text-foreground/70 transition hover:bg-muted disabled:opacity-50 explore-prompt"
           >
             {prompt}
           </button>

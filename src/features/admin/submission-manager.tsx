@@ -102,11 +102,11 @@ export function SubmissionManager() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-3xl">Visitor voices</h2>
-          <p className="mt-2 text-sm text-foreground/60">
+          <p className="mt-2 text-sm text-soft">
             Original messages, public interpretations, and moderation outcomes.
           </p>
         </div>
-        <p className="flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-[10px]">
+        <p className="flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-xs">
           <LockKeyhole size={12} />
           Private · staff access only
         </p>
@@ -148,7 +148,7 @@ export function SubmissionManager() {
         {history?.submissions.map((item) => (
           <article key={item.id} className="rounded-xl bg-card p-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-[10px]">
+              <div className="flex items-center gap-2 text-xs">
                 <span
                   className={`rounded-full px-2 py-1 ${item.outcome === "rejected" ? "bg-amber-100 text-amber-900" : "bg-accent/50"}`}
                 >
@@ -167,7 +167,7 @@ export function SubmissionManager() {
                   </span>
                 )}
               </div>
-              <time className="text-[10px] text-foreground/50">
+              <time className="text-xs text-soft">
                 {new Date(item.created_at).toLocaleString("en-GB", {
                   timeZone: "Asia/Thimphu",
                   day: "numeric",
@@ -179,7 +179,7 @@ export function SubmissionManager() {
             </div>
             <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <p className="eyebrow mb-2 text-[8px] text-foreground/45">
+                <p className="eyebrow mb-2 text-xs text-soft">
                   Visitor's original words
                 </p>
                 <p className="break-words text-sm leading-relaxed">
@@ -187,12 +187,12 @@ export function SubmissionManager() {
                 </p>
               </div>
               <div className="rounded-2xl bg-muted p-4">
-                <p className="eyebrow mb-2 text-[8px] text-foreground/45">
+                <p className="eyebrow mb-2 text-xs text-soft">
                   {item.outcome === "approved"
                     ? "Approved leaf"
                     : "Moderation outcome"}
                 </p>
-                <p className="text-sm leading-relaxed text-foreground/65">
+                <p className="text-sm leading-relaxed text-soft">
                   {item.leaf_message || item.reason || "Not shared publicly."}
                 </p>
               </div>
@@ -253,7 +253,7 @@ export function SubmissionManager() {
           </article>
         ))}
         {history && !history.submissions.length && (
-          <div className="rounded-xl bg-card p-10 text-center text-sm text-foreground/60">
+          <div className="rounded-xl bg-card p-10 text-center text-sm text-soft">
             No visitor messages match. New messages appear here after
             submission.
           </div>
@@ -284,7 +284,7 @@ export function SubmissionManager() {
           </Button>
         </div>
       </div>
-      <p className="mt-6 max-w-3xl text-[10px] leading-relaxed text-foreground/50">
+      <p className="mt-6 max-w-3xl text-xs leading-relaxed text-soft">
         Original words are encrypted in the local database. Email addresses,
         phone-like numbers and links are redacted before storage. Earlier
         contributions from before private history was enabled have no

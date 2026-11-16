@@ -78,6 +78,9 @@ function PlaceCard({ place }: { place: GuidePlace }) {
               alt={place.name}
               loading="lazy"
               data-image-scale
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
             />
           </div>
           <p className="place-credit">{place.image_credit}</p>
@@ -295,6 +298,9 @@ export function ExploreClient() {
                 src={taktsangPhoto}
                 alt="Paro Taktsang at dusk, taken from the Paro Valley"
                 loading="eager"
+                onError={(event) => {
+                  event.currentTarget.style.display = "none";
+                }}
               />
               <span className="explore-photo-shade" aria-hidden="true" />
               <figcaption className="explore-photo-caption">
@@ -355,6 +361,9 @@ export function ExploreClient() {
                       src={card.photo}
                       alt=""
                       loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
                     />
                     <span className="path-shade" aria-hidden="true" />
                     <span className="path-arrow" aria-hidden="true">
@@ -433,12 +442,13 @@ export function ExploreClient() {
         </div>
         <div className="tale-rail">
           {bhutanFolktales.map((item) => (
-            <div
+            <a
               key={item.id}
               className="tale-slice"
-              role="group"
-              aria-label={item.title}
-              tabIndex={0}
+              href={item.source_url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${item.title} — open the source`}
             >
               <div
                 className="tale-img"
@@ -453,17 +463,12 @@ export function ExploreClient() {
                 <p className="tale-moral">
                   <em>Moral:</em> {item.moral}
                 </p>
-                <a
-                  className="tale-source"
-                  href={item.source_url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <span className="tale-source">
                   {item.source_label}{" "}
                   <ExternalLink size={12} aria-hidden="true" />
-                </a>
+                </span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
         <div className="wisdom">
@@ -473,6 +478,9 @@ export function ExploreClient() {
               src={tale.image_url}
               alt={tale.title}
               loading="lazy"
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
             />
             <p className="wisdom-credit">{tale.image_credit}</p>
           </div>

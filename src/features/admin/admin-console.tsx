@@ -190,11 +190,11 @@ export function AdminConsole() {
       <main className="staff-login mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-7 px-6 py-12">
         <Brand />
         <div>
-          <p className="eyebrow mb-4 text-foreground/45">
+          <p className="eyebrow mb-4 text-soft">
             Experience Centre staff
           </p>
           <h1 className="text-4xl">Care for the canopy.</h1>
-          <p className="mt-4 text-sm leading-relaxed text-foreground/60">
+          <p className="mt-4 text-sm leading-relaxed text-soft">
             Manage the shared tree, review public leaves and prepare your
             demonstration.
           </p>
@@ -236,7 +236,7 @@ export function AdminConsole() {
             Sign in
           </Button>
         </form>
-        <p className="text-[10px] leading-relaxed text-foreground/50">
+        <p className="text-xs leading-relaxed text-soft">
           The host laptop's .env.local file contains your staff password. Your
           session expires after eight hours.
         </p>
@@ -283,7 +283,7 @@ export function AdminConsole() {
             <PanelLeftClose size={18} />
           </button>
         </div>
-        <p className="eyebrow mb-3 mt-12 px-3 text-foreground/35">Workspace</p>
+        <p className="eyebrow mb-3 mt-12 px-3 text-soft">Workspace</p>
         <nav aria-label="Staff sections" className="space-y-2">
           {(
             [
@@ -311,7 +311,7 @@ export function AdminConsole() {
             </button>
           ))}
         </nav>
-        <p className="eyebrow mb-3 mt-9 px-3 text-foreground/35">Experience</p>
+        <p className="eyebrow mb-3 mt-9 px-3 text-soft">Experience</p>
         <nav aria-label="Experience links" className="space-y-2">
           <Link href="/tree" className="admin-nav-item">
             <SlidersHorizontal size={18} strokeWidth={1.5} />
@@ -350,7 +350,7 @@ export function AdminConsole() {
             <LogOut size={17} />
             Sign out
           </button>
-          <p className="px-3 pt-3 text-[9px] text-foreground/35">
+          <p className="px-3 pt-3 text-xs text-soft">
             Bhutanese Idea Tree · Staff workspace
           </p>
         </div>
@@ -367,8 +367,8 @@ export function AdminConsole() {
             >
               <Menu size={20} />
             </button>
-            <span className="text-xs text-foreground/45">
-              Workspace <span className="mx-3 text-foreground/25">/</span>
+            <span className="text-xs text-soft">
+              Workspace <span className="mx-3 text-soft">/</span>
               <span className="font-medium text-foreground">
                 {tab === "tree"
                   ? "Tree & display"
@@ -379,7 +379,7 @@ export function AdminConsole() {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden items-center gap-2 rounded-full bg-card px-3 py-2 text-[10px] sm:flex">
+            <span className="hidden items-center gap-2 rounded-full bg-card px-3 py-2 text-xs sm:flex">
               <span className="h-1.5 w-1.5 rounded-full bg-[#7b914d]" />
               Local workspace
             </span>
@@ -394,13 +394,13 @@ export function AdminConsole() {
         <main className="admin-content">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="eyebrow mb-3 text-foreground/40">
+              <p className="eyebrow mb-3 text-soft">
                 BI Tree · Staff console
               </p>
               <h1 className="text-3xl tracking-tight lg:text-4xl">
                 A little care helps it grow.
               </h1>
-              <p className="mt-3 text-sm text-foreground/50">
+              <p className="mt-3 text-sm text-soft">
                 A space for every voice, and a view of everything taking root.
               </p>
             </div>
@@ -446,14 +446,14 @@ export function AdminConsole() {
                   ],
                 ].map(([label, value]) => (
                   <Card key={label} className="p-5">
-                    <p className="text-[10px] tracking-wider text-foreground/50">
+                    <p className="text-xs tracking-wider text-soft">
                       {label}
                     </p>
                     <p className="mt-4 text-2xl font-medium tracking-tight lg:text-3xl">
                       {value}
                     </p>
                     {label === "Interpretation" && (
-                      <p className="mt-2 text-[10px] text-foreground/50">
+                      <p className="mt-2 text-xs text-soft">
                         {data?.ai === "openai"
                           ? data.model
                           : "Add an AI provider key to enable interpretation"}
@@ -466,7 +466,7 @@ export function AdminConsole() {
                 <section className="min-w-0 rounded-3xl bg-card p-4 sm:p-5">
                   <div className="mb-5 flex items-center justify-between gap-3">
                     <h2 className="text-xl">The collective canopy</h2>
-                    <span className="shrink-0 rounded-full bg-muted px-3 py-1.5 text-[10px] text-foreground/50">
+                    <span className="shrink-0 rounded-full bg-muted px-3 py-1.5 text-xs text-soft">
                       {visible.length}{" "}
                       {visible.length === 1 ? "leaf" : "leaves"}
                     </span>
@@ -477,7 +477,7 @@ export function AdminConsole() {
                         <button
                           key={item}
                           onClick={() => setFilter(item)}
-                          className={`min-h-10 rounded-md px-3 text-xs capitalize ${filter === item ? "bg-white shadow-sm" : "text-foreground/60"}`}
+                          className={`min-h-10 rounded-md px-3 text-xs capitalize ${filter === item ? "bg-white shadow-sm" : "text-soft"}`}
                         >
                           {item === "approved" ? "Public" : item}
                         </button>
@@ -496,7 +496,7 @@ export function AdminConsole() {
                   </div>
                   <div className="overflow-hidden rounded-2xl">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-muted text-[9px] tracking-wide text-foreground/60">
+                      <thead className="bg-muted text-xs tracking-wide text-soft">
                         <tr>
                           <th className="p-4 font-normal">The hope</th>
                           <th className="hidden p-4 font-normal sm:table-cell">
@@ -512,7 +512,7 @@ export function AdminConsole() {
                               <p className="max-w-lg text-sm leading-relaxed">
                                 {leaf.leaf_message}
                               </p>
-                              <p className="mt-2 text-[9px] text-foreground/55">
+                              <p className="mt-2 text-xs text-soft">
                                 <span
                                   className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full"
                                   style={{
@@ -535,7 +535,7 @@ export function AdminConsole() {
                             </td>
                             <td className="hidden p-4 sm:table-cell">
                               <span
-                                className={`rounded-full px-2 py-1 text-[9px] ${leaf.status === "approved" ? "bg-accent/50" : "bg-[#eae5dc]"}`}
+                                className={`rounded-full px-2 py-1 text-xs ${leaf.status === "approved" ? "bg-accent/50" : "bg-[#eae5dc]"}`}
                               >
                                 {leaf.status === "approved"
                                   ? "Public"
@@ -592,7 +592,7 @@ export function AdminConsole() {
                       </div>
                     )}
                   </div>
-                  <p className="mt-3 text-[10px] text-foreground/45">
+                  <p className="mt-3 text-xs text-soft">
                     Showing up to 500 recent leaves. Hidden leaves disappear
                     from public pages and connected displays.
                   </p>
@@ -600,7 +600,7 @@ export function AdminConsole() {
                 <aside className="space-y-5">
                   <Card className="space-y-4">
                     <h2 className="text-xl">Prepare the demo</h2>
-                    <p className="text-xs leading-relaxed text-foreground/60">
+                    <p className="text-xs leading-relaxed text-soft">
                       Load a varied canopy for rehearsal. Every sample is
                       visibly labelled.
                     </p>
@@ -667,7 +667,7 @@ export function AdminConsole() {
                     <div className="space-y-4">
                       {themes.map((theme) => (
                         <div key={theme.id}>
-                          <div className="mb-1.5 flex justify-between text-[10px]">
+                          <div className="mb-1.5 flex justify-between text-xs">
                             <span>{theme.short}</span>
                             <span>{data?.stats.categories[theme.id] ?? 0}</span>
                           </div>
@@ -697,7 +697,7 @@ export function AdminConsole() {
                         ["Offline fallbacks", data?.metrics?.ai_fallback || 0],
                       ].map(([label, count]) => (
                         <div key={label} className="flex justify-between">
-                          <dt className="text-foreground/55">{label}</dt>
+                          <dt className="text-soft">{label}</dt>
                           <dd>{count}</dd>
                         </div>
                       ))}

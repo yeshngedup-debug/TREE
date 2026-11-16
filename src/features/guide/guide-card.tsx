@@ -13,13 +13,15 @@ export function GuideRecommendation({
     <section className="guide-card" aria-label="Suggested place to explore">
       <div className="flex items-start gap-3">
         <span className="guide-badge">
-          <Compass size={20} strokeWidth={1.6} />
+          <Compass size={20} strokeWidth={1.6} aria-hidden="true" />
         </span>
         <div className="min-w-0">
-          <p className="mb-1 text-xs font-medium text-foreground/65">
+          <p className="mb-1 text-xs font-medium text-soft">
             Your next step · Guide path {path} of 4
           </p>
-          <h2 className="text-2xl leading-tight">{guidePaths[path]}</h2>
+          <p className="serif text-2xl font-normal leading-tight">
+            {guidePaths[path]}
+          </p>
         </div>
       </div>
       <p className="mt-3 text-sm leading-relaxed text-foreground/70">
@@ -30,7 +32,7 @@ export function GuideRecommendation({
         className="mt-2 inline-flex min-h-9 items-center gap-2 text-xs font-medium"
       >
         Explore this in Bhutan
-        <ArrowUpRight size={13} />
+        <ArrowUpRight size={13} aria-hidden="true" />
       </Link>
     </section>
   );

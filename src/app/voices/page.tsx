@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import { SurfaceClosing, SurfaceShell } from "@/components/surface";
 import { VisitorVoices } from "@/features/join/visitor-voices";
@@ -12,6 +14,9 @@ export default function VoicesPage() {
     <SurfaceShell>
       <SiteHeader />
       <main className="surface-narrow surface-voices">
+        <Link href="/join" className="page-back">
+          <ArrowLeft size={15} aria-hidden="true" /> Back to Add your hope
+        </Link>
         <VisitorVoices />
         <SurfaceClosing
           kicker="The tree is still growing"

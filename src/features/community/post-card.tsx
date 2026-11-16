@@ -45,10 +45,13 @@ export function PostCard({ post }: { post: CommunityPostSummary }) {
       {post.imageUrl ? (
         <img
           src={post.imageUrl}
-          alt=""
+          alt={`Cover image for ${post.title}`}
           loading="lazy"
           referrerPolicy="no-referrer"
           className="community-card-media"
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
         />
       ) : null}
       <div className="community-card-body">

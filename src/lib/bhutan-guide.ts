@@ -66,7 +66,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Bhutan's best-known monastery, clinging to a cliff above the Paro Valley where Guru Rinpoche is said to have meditated in the 8th century. About a 2–3 hour uphill hike from the parking lot.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Taktsang_Monastery%2C_Bhutan_01.jpg/960px-Taktsang_Monastery%2C_Bhutan_01.jpg",
+      "/images/bhutan/taktsang-monastery.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Paro_Taktsang",
     source_label: "Wikipedia: Paro Taktsang",
@@ -80,7 +80,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "One of the 108 temples said to have been built overnight by King Songtsen Gampo in the 7th century to subdue a demoness and plant Buddhism across the Himalayas.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Kyichu_Lhakhang-060701.JPG/960px-Kyichu_Lhakhang-060701.JPG",
+      "/images/bhutan/kyichu-lhakhang.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY 2.5",
     source_url: "https://en.wikipedia.org/wiki/Kyichu_Lhakhang",
     source_label: "Wikipedia: Kyichu Lhakhang",
@@ -94,7 +94,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Among the oldest surviving temples in Bhutan, part of the 7th-century circuit attributed to King Songtsen Gampo. Famous for the annual fire ceremony (Mewang) held inside its walls.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Bumthang-Jambay_Lhakhang-06-2015-gje.jpg/960px-Bumthang-Jambay_Lhakhang-06-2015-gje.jpg",
+      "/images/bhutan/jambay-lhakhang.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Jampa_Lhakhang",
     source_label: "Wikipedia: Jampa (Jambay) Lhakhang",
@@ -108,7 +108,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "The “fertility temple” founded by the Divine Madman, Drukpa Kunley; marked by painted wooden phalluses and thrumming with visitors seeking a blessing for children.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Chimi_Lhakhang%2C_Bhutan_01.jpg/960px-Chimi_Lhakhang%2C_Bhutan_01.jpg",
+      "/images/bhutan/chimi-lhakhang.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Chimi_Lhakhang",
     source_label: "Wikipedia: Chimi Lhakhang",
@@ -122,7 +122,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "A hilltop temple dating to the 15th century above Thimphu; a cherished place for naming newborns, visited by locals for generations.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Changangkha_Lhakhang_2021-11-04_a.jpg/960px-Changangkha_Lhakhang_2021-11-04_a.jpg",
+      "/images/bhutan/changangkha-lhakhang.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Changangkha_Lhakhang",
     source_label: "Wikipedia: Changangkha Lhakhang",
@@ -136,7 +136,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Built in 1974 in memory of the third king, Jigme Dorji Wangchuck. Residents circumambulate it daily with prayer wheels; inside, superb tanka paintings depict the stages to enlightenment.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/National_Memorial_Chorten%2C_Thimphu_01.jpg/960px-National_Memorial_Chorten%2C_Thimphu_01.jpg",
+      "/images/bhutan/thimphu-chorten.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/National_Memorial_Chorten",
     source_label: "Wikipedia: National Memorial Chorten",
@@ -150,7 +150,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "A 51.5-metre bronze Buddha high above the Thimphu Valley, completed in 2015; one of the largest seated Buddha statues in the world. Popular at sunset.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Buddha_Dordenma_Panoramic.jpg/960px-Buddha_Dordenma_Panoramic.jpg",
+      "/images/bhutan/buddha-dordenma.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikivoyage.org/wiki/Thimphu#Do",
     source_label: "Wikivoyage: Thimphu",
@@ -164,7 +164,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Bhutan’s first dzong, built in 1629 by Zhabdrung Ngawang Namgyal. Today it houses the National Institute for Zorig Chusum, preserving the 13 traditional arts and crafts.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Simtokha_Dzong%2C_Bhutan_01.jpg/960px-Simtokha_Dzong%2C_Bhutan_01.jpg",
+      "/images/bhutan/simtokha-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Simtokha_Dzong",
     source_label: "Wikipedia: Simtokha Dzong",
@@ -178,7 +178,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Raised without nails at the confluence of the Pho Chhu and Mo Chhu rivers; Bhutan’s government seat until 1955 and winter home of the monastic body.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Punakha_Dzong%2C_Bhutan_02.jpg/960px-Punakha_Dzong%2C_Bhutan_02.jpg",
+      "/images/bhutan/punakha-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Punakha_Dzong",
     source_label: "Wikipedia: Punakha Dzong",
@@ -192,7 +192,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Seat of the Bhutanese government, its massive white walls and golden spires dominating the Thimphu riverbank. The throne room hosts the annual National Day celebrations.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Tashichho_Dzong%2C_Bhutan_02.jpg/960px-Tashichho_Dzong%2C_Bhutan_02.jpg",
+      "/images/bhutan/tashichho-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Tashichho_Dzong",
     source_label: "Wikipedia: Tashichho Dzong",
@@ -206,7 +206,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "“Fortress of jewels”, built 1646 on a bluff above the Paro River. Its great courtyard hosts the Paro Tshechu, one of Bhutan’s most atmospheric festivals.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Rinpung_Dzong%2C_Bhutan_01.jpg/960px-Rinpung_Dzong%2C_Bhutan_01.jpg",
+      "/images/bhutan/rinpung-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Rinpung_Dzong",
     source_label: "Wikipedia: Rinpung Dzong",
@@ -220,7 +220,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "Bhutan’s largest dzong, draped along a forested ridge. Ancestral seat of the first two kings; the Trongsa Penlop (governor) stepped up from here to the throne.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Trongsa_dzong.jpg/960px-Trongsa_dzong.jpg",
+      "/images/bhutan/trongsa-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 3.0",
     source_url: "https://en.wikipedia.org/wiki/Trongsa_Dzong",
     source_label: "Wikipedia: Trongsa Dzong",
@@ -234,7 +234,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "“Castle of the White Bird”, perched above Chokhor Valley. Legend says a white bird alighted where its foundations should rise — a divine sign for the first temple-fortress.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Jakar_Dzong_2021-10-19.jpg/960px-Jakar_Dzong_2021-10-19.jpg",
+      "/images/bhutan/jakar-dzong.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Jakar_Dzong",
     source_label: "Wikipedia: Jakar Dzong",
@@ -248,7 +248,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "A three-storey chorten built by the Queen Mother to dispel negative energies and bring peace to the world. An easy hike rewards visitors with sweeping valley views.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg/960px-Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg",
+      "/images/bhutan/khamsum-chorten.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY 3.0",
     source_url: "https://en.wikivoyage.org/wiki/Punakha#Do",
     source_label: "Wikivoyage: Punakha",
@@ -262,7 +262,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "A glacial trough ringed by forest — winter roost of the rare black-necked cranes, with Gangtey Goenba monastery overlooking the valley floor.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Phobjika_Valley_view%2C_Bhutan.jpg/960px-Phobjika_Valley_view%2C_Bhutan.jpg",
+      "/images/bhutan/phobjikha-valley.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY 2.0",
     source_url: "https://en.wikipedia.org/wiki/Phobjikha_Valley",
     source_label: "Wikipedia: Phobjikha Valley",
@@ -276,7 +276,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "A hillside enclosure at the edge of Thimphu sheltering the takin, Bhutan’s national animal — the beloved “gnu goat” of the Divine Madman’s tale.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Takin_Bhutan_1.jpg/960px-Takin_Bhutan_1.jpg",
+      "/images/bhutan/takin.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Takin",
     source_label: "Wikipedia: Takin",
@@ -290,7 +290,7 @@ export const bhutanPlaces: GuidePlace[] = [
     blurb:
       "At 3,100 m, this mountain pass holds 108 whitewashed chortens built by the Queen Mother in 2004 to honor soldiers who fell in 2003. On clear days the Himalayas fill the horizon.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Dachula_pass_108_stupas.jpg/960px-Dachula_pass_108_stupas.jpg",
+      "/images/bhutan/dochula-pass.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Dochula",
     source_label: "Wikipedia: Dochula",
@@ -516,7 +516,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "What looks impossible from the valley floor becomes a place of refuge once you make the climb.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Taktsang_Monastery%2C_Bhutan_03.jpg/960px-Taktsang_Monastery%2C_Bhutan_03.jpg",
+      "/images/bhutan/taktsang-monastery-03.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Paro_Taktsang",
     source_label: "Wikipedia: Paro Taktsang",
@@ -531,7 +531,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "Holiness can wear a fool’s face; wonder often arrives dressed as something absurd.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Takin_Bhutan_1.jpg/960px-Takin_Bhutan_1.jpg",
+      "/images/bhutan/takin.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Takin",
     source_label: "Wikipedia: Takin — national animal of Bhutan",
@@ -546,7 +546,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "No one is tallest or smallest for long; the tree bears fruit only when all four work together.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Four_friends_from_Jataka_Tales_Punakha_Dzong.jpg/960px-Four_friends_from_Jataka_Tales_Punakha_Dzong.jpg",
+      "/images/bhutan/jataka-four-friends.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Punakha_Dzong",
     source_label: "Mural at Punakha Dzong; tale collected in Kunzang Choden, Folktales of Bhutan",
@@ -561,7 +561,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "A valley that protects its winter guests is itself protected in turn.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/0/0a/Black-necked_Crane_Phobjika_Bhutan_November_2018.jpg",
+      "/images/bhutan/black-necked-crane.jpg",
     image_credit: "Photo: Wikimedia Commons · CC BY 4.0",
     source_url: "https://en.wikipedia.org/wiki/Black-necked_cranes_in_Bhutan",
     source_label: "Wikipedia: Black-necked cranes in Bhutan",
@@ -576,7 +576,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "Storms are not the mountain’s enemy — they are the mountain speaking.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Bhutanese_dragon_%28%27druk%27%29.svg/960px-Bhutanese_dragon_%28%27druk%27%29.svg.png",
+      "/images/bhutan/druk-dragon.png",
     image_credit: "Image: Wikimedia Commons · CC0",
     source_url: "https://en.wikipedia.org/wiki/Druk",
     source_label: "Wikipedia: Druk",
@@ -591,7 +591,7 @@ export const bhutanFolktales: GuideFolktale[] = [
     moral:
       "Respect what you cannot explain; the mountains keep their own counsel.",
     image_url:
-      "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Himalayan_brown_bear_at_Kufri_Zoo_01.jpg/960px-Himalayan_brown_bear_at_Kufri_Zoo_01.jpg",
+      "/images/bhutan/himalayan-brown-bear.jpg",
     image_credit:
       "Photo: Himalayan brown bear, not a migoi — Wikimedia Commons · CC BY-SA 4.0",
     source_url: "https://en.wikipedia.org/wiki/Migoi",

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { SiteHeader, SiteFooter } from "@/components/brand";
+import { ExploreSkeleton } from "@/components/skeletons";
 import { ExploreClient } from "@/features/explore/explore-client";
 import "./explore.css";
 
@@ -14,7 +15,7 @@ export default function ExplorePage() {
     <div className="explore-shell">
       <SiteHeader />
       <main className="explore-main">
-        <Suspense fallback={<div className="h-40" />}>
+        <Suspense fallback={<ExploreSkeleton />}>
           <ExploreClient />
         </Suspense>
       </main>
