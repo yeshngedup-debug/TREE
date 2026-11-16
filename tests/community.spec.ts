@@ -65,24 +65,34 @@ test.describe.serial("community publishing flow", () => {
 
     // Discovery finds the post by keyword, type filter and category filter.
     await page.goto(`/discover?q=${searchToken}`);
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
     await page.goto(`/discover?q=${searchToken}&type=aspiration`);
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
     await page.goto(`/discover?q=${searchToken}&category=education`);
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
     await page.goto(`/discover?q=${searchToken}&type=idea`);
     await expect(
       page.getByRole("heading", { name: "Nothing has grown here yet." }),
     ).toBeVisible();
     await page.goto(`/discover?tag=learning`);
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
 
     // The public profile shows the published work and lets the owner edit it.
     await page.goto(`/u/${member.username}`);
     await expect(
       page.getByRole("heading", { name: member.displayName, level: 1 }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
     await expect(page.getByText(/1 published/)).toBeVisible();
 
     await page.getByText("Edit profile").click();
@@ -135,7 +145,9 @@ test.describe.serial("community publishing flow", () => {
     await expect(page.locator(".comment-heading")).toContainText("1 comment");
 
     await page.goto("/saved");
-    await expect(page.getByRole("link", { name: title })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: title, exact: true }),
+    ).toBeVisible();
   });
 });
 

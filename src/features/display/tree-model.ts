@@ -601,7 +601,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
   // window as sky and, once pulled closer, crops the ground. Measuring the
   // branches at the current progress lets a portrait caller keep the whole
   // young tree — island included — inside the frame at any age.
-  function measure(out: THREE.Box3, at = progress) {
+  function measure(out: THREE.Box3, at = progress, atScale = scale) {
     out.makeEmpty();
     if (!positions?.count || !centers || !roots || !births)
       return out.copy(bounds);
@@ -624,7 +624,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       point.z += (original[p + 2] - centers.array[p + 2]) * reach;
       out.expandByPoint(point);
     }
-    out.applyMatrix4(new THREE.Matrix4().makeScale(scale, scale, scale));
+    out.applyMatrix4(new THREE.Matrix4().makeScale(atScale, atScale, atScale));
     out.min.y = Math.min(out.min.y, 0);
     return out;
   }
@@ -645,6 +645,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     metrics,
     measure,
     growthTarget: () => target.progress,
+    targetScale: () => target.scale,
     setContributions,
     step,
     dispose,

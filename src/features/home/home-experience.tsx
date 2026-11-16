@@ -1,171 +1,433 @@
 "use client";
 import Link from "next/link";
+import { useRef, type CSSProperties } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  ArrowUpRight,
   ArrowRight,
-  Sprout,
-  Sparkles,
+  ArrowUpRight,
   Compass,
+  Leaf,
+  Sprout,
 } from "lucide-react";
 import { useTree } from "@/hooks/use-tree";
 import { TreeCanvas } from "@/features/display/tree-canvas";
-import { Button } from "@/components/ui/button";
 import { ThemeIcon } from "@/components/theme-icon";
 import { themes } from "@/lib/catalog";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+/* Real, freely licensed Bhutan photography (Wikimedia Commons). */
+const photo = {
+  tigersNest:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Taktsang_Monastery%2C_Bhutan_01.jpg/960px-Taktsang_Monastery%2C_Bhutan_01.jpg",
+  punakha:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Punakha_Dzong%2C_Bhutan_02.jpg/960px-Punakha_Dzong%2C_Bhutan_02.jpg",
+  phobjikha:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Phobjika_Valley_view%2C_Bhutan.jpg/960px-Phobjika_Valley_view%2C_Bhutan.jpg",
+  dochula:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Dachula_pass_108_stupas.jpg/960px-Dachula_pass_108_stupas.jpg",
+  khamsum:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg/960px-Khamsum_Yulley_Namgyal_Chorten_Punakha_Valley_-_Bhutan_-_panoramio.jpg",
+  rinpung:
+    "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Rinpung_Dzong%2C_Bhutan_01.jpg/960px-Rinpung_Dzong%2C_Bhutan_01.jpg",
+};
+
+const themePhoto: Record<string, string> = {
+  nature: photo.phobjikha,
+  innovation: photo.dochula,
+  education: photo.tigersNest,
+  community: photo.punakha,
+  wellbeing: photo.khamsum,
+  culture: photo.rinpung,
+};
+
+const places = [
+  "Paro Taktsang",
+  "Punakha Dzong",
+  "Phobjikha Valley",
+  "Dochula Pass",
+  "Rinpung Dzong",
+  "Jakar Dzong",
+  "Chimi Lhakhang",
+  "Royal Takin Preserve",
+];
+
+const statement: { word: string; accent?: boolean }[] = [
+  { word: "A" },
+  { word: "country" },
+  { word: "is" },
+  { word: "not" },
+  { word: "only" },
+  { word: "the" },
+  { word: "land" },
+  { word: "it" },
+  { word: "keeps." },
+  { word: "It" },
+  { word: "is" },
+  { word: "the" },
+  { word: "future" },
+  { word: "its" },
+  { word: "people" },
+  { word: "choose" },
+  { word: "to" },
+  { word: "imagine", accent: true },
+  { word: "together.", accent: true },
+];
+
 export function HomeExperience() {
   const { tree } = useTree();
+  const scope = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+        intro
+          .from(".hero-kicker", { y: 16, opacity: 0, duration: 0.7 }, 0.05)
+          .from(
+            ".hero-line > span",
+            { yPercent: 112, duration: 1.05, stagger: 0.1 },
+            0.1,
+          )
+          .from(
+            ".hero-description",
+            { y: 18, opacity: 0, duration: 0.8 },
+            0.42,
+          )
+          .from(
+            ".hero-actions > *",
+            { y: 16, opacity: 0, duration: 0.8, stagger: 0.08 },
+            0.52,
+          )
+          .from(".hero-note", { opacity: 0, duration: 0.6 }, 0.7)
+          .from(
+            ".hero-tree-frame",
+            { scale: 0.965, opacity: 0, duration: 1.15, ease: "power2.out" },
+            0.25,
+          )
+          .from(".hero-tree-link", { y: 10, opacity: 0, duration: 0.6 }, 0.9);
+
+        gsap.from(".home-marquee-item", {
+          opacity: 0,
+          y: 18,
+          duration: 1,
+          stagger: 0.03,
+          ease: "power2.out",
+          scrollTrigger: { trigger: ".home-marquee", start: "top 94%" },
+        });
+
+        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
+          gsap.from(element, {
+            y: 36,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: { trigger: element, start: "top 90%" },
+          });
+        });
+
+        gsap.fromTo(
+          ".statement-word",
+          { opacity: 0.14 },
+          {
+            opacity: 1,
+            ease: "none",
+            stagger: 0.5,
+            scrollTrigger: {
+              trigger: ".statement-card",
+              start: "top 78%",
+              end: "bottom 58%",
+              scrub: 0.4,
+            },
+          },
+        );
+      });
+      return () => mm.revert();
+    },
+    { scope },
+  );
+
   return (
-    <>
-      <section className="home-hero mx-auto max-w-[1440px] px-5 pb-5 pt-2 md:px-10">
-        <div className="home-hero-card grid gap-4 rounded-[32px] bg-card p-3 md:grid-cols-[.95fr_1.05fr] md:p-4 lg:p-6">
-          <div className="hero-copy flex flex-col justify-center px-2 py-4 md:px-6 md:py-7 lg:px-8">
-            <p className="hero-kicker mb-5 flex items-center gap-2 text-[11px] text-foreground/65">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent">
-                <Sprout size={13} />
-              </span>
-              A shared future. One hope at a time.
+    <div ref={scope}>
+      <section className="home-hero">
+        <div className="home-hero-card">
+          <div className="hero-copy">
+            <p className="hero-kicker">
+              <span className="hero-kicker-dot" aria-hidden="true" />
+              A living tree of Bhutanese hopes
             </p>
-            <h1 className="text-[clamp(2.2rem,5vw,5.3rem)] leading-[1.05] tracking-[-.065em]">
-              Bhutan grows.
-              <br />
-              So do our <span className="hero-highlight">hopes.</span>
-            </h1>
-            <p className="hero-description mt-5 max-w-sm text-sm leading-6 text-foreground/60 lg:text-base">
-              What future do you imagine for Bhutan? Add your
-              voice to a living tree of possibility.
-            </p>
-            <div className="hero-actions mt-6 flex flex-wrap items-center gap-4">
-              <Button asChild>
-                <Link href="/join">
-                  Grow your leaf <ArrowUpRight size={18} />
-                </Link>
-              </Button>
-              <span className="hero-note text-[11px] text-foreground/50">
-                No account. Just your imagination.
-              </span>
-            </div>
-            <div className="hero-community mt-7 flex items-center gap-4">
-              <div className="flex -space-x-2" aria-hidden="true">
-                {themes.slice(0, 3).map((theme) => (
+            <h1 className="hero-title">
+              <span className="hero-line">
+                <span>
                   <span
-                    key={theme.id}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-muted ring-4 ring-card"
-                  >
-                    <ThemeIcon theme={theme.id} size={16} />
-                  </span>
-                ))}
-              </div>
-              <p className="text-xs leading-5 text-foreground/55">
-                <strong className="font-semibold text-foreground">
-                  {tree?.total ?? "—"} {tree?.total === 1 ? "hope" : "hopes"}
-                </strong>{" "}
-                taking root. <br />
-                Every voice makes it grow.
-              </p>
+                    className="hero-inline-photo"
+                    style={{ backgroundImage: `url(${photo.phobjikha})` }}
+                    aria-hidden="true"
+                  />{" "}
+                  Bhutan grows.
+                </span>
+              </span>
+              <span className="hero-line">
+                <span>
+                  So do our <span className="hero-highlight">hopes.</span>
+                </span>
+              </span>
+            </h1>
+            <p className="hero-description">
+              This is a shared tree of aspirations for Bhutan. Pick what you
+              care about, leave one honest hope, and watch it take its place in
+              the canopy.
+            </p>
+            <div className="hero-actions">
+              <Link className="hero-cta hero-cta-primary" href="/join">
+                Grow your leaf <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+              <Link className="hero-cta hero-cta-secondary" href="/explore">
+                Wander Bhutan <Compass size={16} aria-hidden="true" />
+              </Link>
             </div>
+            <p className="hero-note">
+              No account. Just a minute and one honest hope.
+            </p>
           </div>
-          <div className="home-tree">
+          <div className="home-tree hero-tree-frame">
             <TreeCanvas
-              leaves={tree?.leaves || []}
-              settings={tree?.settings}
-              contributionCount={tree?.total || 0}
-              className="home-tree-canvas"
+              leaves={tree.leaves}
+              settings={tree.settings}
+              contributionCount={tree.total}
+              className="hero-tree-canvas"
               showControls={false}
               environment="garden"
+              composition="portrait"
             />
+            <div className="hero-tree-atmosphere" aria-hidden="true" />
+            <Link href="/display" className="hero-tree-link">
+              See the tree up close <ArrowUpRight size={13} aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-[1440px] px-5 py-12 md:px-10 md:py-16">
-        <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <p className="eyebrow mb-3 text-foreground/45">
-              A moment for tomorrow
-            </p>
-            <h2 className="text-3xl tracking-tight md:text-4xl">
-              Your hope has a place here.
-            </h2>
-          </div>
-          <Link
-            href="/join"
-            className="flex min-h-11 items-center gap-3 text-xs"
-          >
-            Make it part of the story <ArrowRight size={15} />
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              number: "01",
-              title: "Pause & imagine",
-              body: "Choose what matters to you. Share one hope for Bhutan's future.",
-              Icon: Sparkles,
-            },
-            {
-              number: "02",
-              title: "Watch it take root",
-              body: "Your approved hope becomes a glowing leaf on our shared tree.",
-              Icon: Sprout,
-            },
-            {
-              number: "03",
-              title: "Follow your curiosity",
-              body: "Explore a guide path that connects with your vision of tomorrow.",
-              Icon: Compass,
-            },
-          ].map(({ number, title, body, Icon }) => (
-            <div key={number} className="rounded-3xl bg-card p-7">
-              <div className="mb-9 flex items-center justify-between">
-                <span
-                  className={`flex h-11 w-11 items-center justify-center rounded-full ${number === "01" ? "bg-primary text-accent" : "bg-muted"}`}
-                >
-                  <Icon size={20} strokeWidth={1.5} />
+
+      <div className="home-marquee" aria-hidden="true">
+        <div className="home-marquee-track">
+          {[0, 1].map((group) => (
+            <div className="home-marquee-group" key={group}>
+              {places.map((place) => (
+                <span className="home-marquee-item" key={`${group}-${place}`}>
+                  {place}
+                  <Leaf
+                    className="home-marquee-leaf"
+                    size={22}
+                    strokeWidth={1.4}
+                  />
                 </span>
-                <span className="text-[11px] text-foreground/35">
-                  /{number}
-                </span>
-              </div>
-              <h3 className="mb-3 text-xl">{title}</h3>
-              <p className="max-w-xs text-sm leading-6 text-foreground/55">
-                {body}
-              </p>
+              ))}
             </div>
           ))}
         </div>
-      </section>
-      <section className="mx-auto mb-12 max-w-[1440px] px-5 md:px-10">
-        <div className="rounded-[28px] bg-[#e0e3d5] p-6 md:p-9">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow mb-3 text-foreground/45">
-                Many branches. One shared future.
-              </p>
-              <h2 className="text-2xl md:text-3xl">What matters to you?</h2>
-            </div>
-            <p className="max-w-xs text-xs leading-5 text-foreground/55">
-              A thriving Bhutan starts with the things we care about.
-            </p>
+      </div>
+
+      <section className="home-section">
+        <div className="home-heading-row">
+          <div>
+            <p className="home-eyebrow">From a single voice</p>
+            <h2 className="home-h2">
+              A wish becomes a leaf. A leaf becomes a trail.
+            </h2>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {themes.map((theme) => (
-              <Link
-                href={`/join?theme=${theme.id}`}
-                key={theme.id}
-                className="group flex flex-col justify-between gap-6 rounded-2xl bg-card/80 p-4 transition-colors hover:bg-card"
-              >
-                <div className="flex items-center justify-between">
-                  <ThemeIcon theme={theme.id} size={22} />
-                  <ArrowUpRight
-                    size={14}
-                    className="text-foreground/35 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  />
-                </div>
-                <span className="text-xs leading-5">{theme.label}</span>
+          <Link href="/join" className="home-text-link">
+            Make it part of the story{" "}
+            <ArrowUpRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="home-bento">
+          <article className="bento-card bento-a" data-reveal>
+            <div className="bento-media">
+              <img src={photo.tigersNest} alt="" loading="lazy" />
+            </div>
+            <div className="bento-shade" aria-hidden="true" />
+            <span className="bento-icon">
+              <Sprout size={20} strokeWidth={1.6} aria-hidden="true" />
+            </span>
+            <div className="bento-content">
+              <h3>One tree, grown by everyone.</h3>
+              <p>
+                Every approved hope becomes a leaf on a living 3D tree, carried
+                from phones to festivals across the kingdom.
+              </p>
+              <span className="bento-live">
+                <span className="bento-live-dot" aria-hidden="true" />
+                {tree.total > 0 ? (
+                  <>
+                    <strong>{tree.total}</strong>{" "}
+                    {tree.total === 1 ? "hope" : "hopes"} taking root
+                  </>
+                ) : (
+                  "The first hope is waiting"
+                )}
+              </span>
+            </div>
+          </article>
+          <Link href="/explore" className="bento-card bento-b" data-reveal>
+            <span className="bento-top">
+              <span className="bento-icon">
+                <Compass size={20} strokeWidth={1.6} aria-hidden="true" />
+              </span>
+              <span className="bento-arrow">
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </span>
+            </span>
+            <div>
+              <h3>A leaf becomes a trail.</h3>
+              <p>
+                Your theme opens a guide through cliffside monasteries, crane
+                valleys, kitchens and folktales.
+              </p>
+            </div>
+          </Link>
+          <div className="bento-card bento-c" data-reveal>
+            <span className="bento-top">
+              <span className="bento-icon">
+                <Leaf size={20} strokeWidth={1.6} aria-hidden="true" />
+              </span>
+              <span className="bento-arrow" aria-hidden="true">
+                <ArrowUpRight size={16} />
+              </span>
+            </span>
+            <div>
+              <h3>A trail becomes tomorrow.</h3>
+              <p>
+                Add one hope in under a minute. No account, no noise — just your
+                voice in the canopy.
+              </p>
+              <Link href="/join" className="home-text-link bento-link">
+                Start with one hope <ArrowRight size={14} aria-hidden="true" />
               </Link>
-            ))}
+            </div>
           </div>
         </div>
       </section>
-    </>
+
+      <section className="home-section home-section-tight">
+        <p className="home-eyebrow">Six branches</p>
+        <h2 className="home-h2">Begin where your hope already lives.</h2>
+        <div className="theme-rail">
+          {themes.map((theme) => (
+            <Link
+              key={theme.id}
+              href={`/join?theme=${theme.id}`}
+              className="theme-slice"
+              style={{ "--tone": theme.color } as CSSProperties}
+              data-reveal
+            >
+              <span
+                className="theme-slice-img"
+                style={{
+                  backgroundImage: `url(${themePhoto[theme.id] ?? photo.punakha})`,
+                }}
+                aria-hidden="true"
+              />
+              <span className="theme-slice-tint" aria-hidden="true" />
+              <span className="theme-slice-shade" aria-hidden="true" />
+              <span className="theme-slice-icon">
+                <ThemeIcon theme={theme.id} size={17} />
+              </span>
+              <span className="theme-slice-vertical">{theme.short}</span>
+              <div className="theme-slice-panel">
+                <h3>{theme.label}</h3>
+                <p>{theme.message}</p>
+                <span className="theme-slice-cta">
+                  Choose this branch <ArrowRight size={13} aria-hidden="true" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-statement">
+        <div className="statement-card">
+          <p className="statement-text">
+            {statement.map(({ word, accent }, index) => (
+              <span
+                key={`${word}-${index}`}
+                className={
+                  accent ? "statement-word statement-accent" : "statement-word"
+                }
+              >
+                {word}
+                {index < statement.length - 1 ? " " : ""}
+              </span>
+            ))}
+          </p>
+          <p className="statement-foot">
+            Rooted in values. Growing through people.
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export function HomeClosing() {
+  const scope = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(".closing-card > *", {
+          y: 30,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: { trigger: ".closing-card", start: "top 84%" },
+        });
+        gsap.to(".closing-sprout", {
+          rotate: 10,
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".closing-card",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope },
+  );
+
+  return (
+    <section className="home-closing" ref={scope}>
+      <div className="closing-card">
+        <Sprout
+          className="closing-sprout"
+          size={460}
+          strokeWidth={0.5}
+          aria-hidden="true"
+        />
+        <p className="home-eyebrow">Your turn</p>
+        <h2>One leaf. One hope. One Bhutan.</h2>
+        <p className="closing-copy">
+          The canopy is still growing. Add the future you want to see, then
+          follow the hopes of people you have never met.
+        </p>
+        <div className="closing-actions">
+          <Link className="closing-primary" href="/join">
+            Add your hope <ArrowUpRight size={17} aria-hidden="true" />
+          </Link>
+          <Link className="closing-secondary" href="/discover">
+            Read the community <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

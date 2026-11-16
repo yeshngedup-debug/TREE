@@ -1,0 +1,1085 @@
+/* ---------------------------------------------------------------------------
+   Discover experience
+   The /discover index for the community grove, in the BI Tree editorial
+   language shared with the home and explore pages: a split hero around the
+   real "grove ledger" panel, a tag marquee, the filter bar, scoped community
+   card treatments, an aside of themes and the lime closing call. Everything
+   is scoped to .discover-shell so the shared community-* base tokens and
+   globals.css stay untouched for /posts, /saved and /u routes.
+   --------------------------------------------------------------------------- */
+
+.discover-shell {
+  --discover-ink: #171b12;
+  --discover-forest: #141910;
+  --discover-paper: #eaeae3;
+  --discover-cream: #f6f5ea;
+  --discover-lime: #d8ed92;
+  --discover-clay: #b4622f;
+  --discover-line: rgba(23, 27, 18, 0.12);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: var(--discover-paper);
+  color: var(--discover-ink);
+}
+
+.discover-main {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.discover-shell :where(a, button, input, select, [tabindex], summary):focus-visible {
+  outline: 2px solid var(--discover-lime);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .discover-shell {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Navigation — floating glass pill, matching home and explore --------------- */
+
+.discover-shell .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: calc(100% - 24px);
+  max-width: 1440px;
+  margin: 10px auto 0;
+  padding: 8px 8px 8px 16px;
+  border-radius: 26px;
+  border: 1px solid rgba(37, 38, 32, 0.08);
+  background: rgba(242, 242, 235, 0.74);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 18px 44px rgba(24, 30, 18, 0.07);
+}
+
+.discover-shell .site-header nav[aria-label="Main navigation"] {
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  color: var(--discover-ink);
+  font-size: 11px;
+}
+
+.discover-shell .site-header nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: rgba(23, 27, 18, 0.62);
+  white-space: nowrap;
+  background: transparent;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.discover-shell .site-header nav a:hover {
+  color: var(--discover-ink);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.discover-shell .site-header nav a[aria-current="page"] {
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+}
+
+.discover-shell .site-header nav a > svg {
+  opacity: 0.6;
+}
+
+.discover-shell .site-header a[aria-label="Share an idea"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+  font-size: 12px;
+  font-weight: 500;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.discover-shell .site-header a[aria-label="Share an idea"]:hover {
+  background: #2a3223;
+  transform: translateY(-1px);
+}
+
+.discover-shell .site-header > div:last-child :is(a, summary) {
+  border-color: rgba(23, 27, 18, 0.16);
+}
+
+.discover-shell .site-header > div:last-child :is(a, summary):hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.discover-shell footer {
+  border-top: 1px solid var(--discover-line);
+}
+
+@media (min-width: 768px) {
+  .discover-shell .site-header {
+    width: calc(100% - 40px);
+    padding: 8px 10px 8px 20px;
+    border-radius: 999px;
+  }
+
+  .discover-shell .site-header nav[aria-label="Main navigation"] {
+    font-size: 12px;
+  }
+
+  .discover-shell .site-header nav a {
+    padding: 0 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  .discover-shell .site-header nav a {
+    flex: 1;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  .discover-shell .site-header a[aria-label="Share an idea"] {
+    min-height: 42px;
+    padding: 0 12px;
+  }
+
+  .discover-shell .site-header a[aria-label="Share an idea"] span {
+    display: none;
+  }
+}
+
+/* Hero — split editorial intro with the live grove ledger ------------------- */
+
+.discover-hero {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 20px clamp(2.5rem, 5vw, 4rem);
+}
+
+.discover-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+@media (min-width: 900px) {
+  .discover-hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  }
+}
+
+.discover-copy {
+  min-width: 0;
+}
+
+.discover-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(23, 27, 18, 0.55);
+}
+
+.discover-kicker::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--discover-clay);
+  opacity: 0.7;
+}
+
+.discover-title {
+  margin: 26px 0 0;
+  font-size: clamp(2.7rem, 5.2vw, 4.85rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: var(--discover-ink);
+}
+
+.discover-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.09em;
+  margin-bottom: -0.09em;
+}
+
+.discover-line > span {
+  display: block;
+  will-change: transform;
+}
+
+.discover-inline-photo {
+  display: inline-block;
+  width: clamp(2.8rem, 5.2vw, 4.55rem);
+  height: 0.55em;
+  margin: 0 0.22em 0 0.02em;
+  border-radius: 999px;
+  vertical-align: 0.02em;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    inset 0 0 0 1px rgba(23, 27, 18, 0.15),
+    0 10px 24px rgba(23, 27, 18, 0.18);
+}
+
+.discover-lede {
+  max-width: 34rem;
+  margin: 30px 0 0;
+  font-size: clamp(0.9rem, 1.1vw, 1.02rem);
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.72);
+}
+
+.discover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.discover-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 26px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.discover-cta-primary {
+  background: var(--discover-lime);
+  color: var(--discover-ink);
+}
+
+.discover-cta-primary:hover {
+  background: #c9e377;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(216, 237, 146, 0.45);
+}
+
+.discover-cta-secondary {
+  border: 1px solid rgba(23, 27, 18, 0.28);
+  color: var(--discover-ink);
+}
+
+.discover-cta-secondary:hover {
+  background: rgba(23, 27, 18, 0.06);
+  transform: translateY(-2px);
+}
+
+.discover-cta svg {
+  transition: transform 0.35s ease;
+}
+
+.discover-cta-primary:hover svg,
+.discover-cta-secondary:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* Grove ledger — the live community panel ----------------------------------- */
+
+.grove-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 30px;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+  background:
+    radial-gradient(
+      70% 55% at 82% 8%,
+      rgba(216, 237, 146, 0.16),
+      transparent 60%
+    ),
+    radial-gradient(
+      60% 60% at 8% 100%,
+      rgba(180, 98, 47, 0.3),
+      transparent 62%
+    ),
+    var(--discover-forest);
+  color: var(--discover-cream);
+  box-shadow:
+    inset 0 0 0 1px rgba(246, 245, 234, 0.1),
+    0 30px 80px rgba(0, 0, 0, 0.28);
+  transform: translateZ(0);
+}
+
+.grove-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    rgba(20, 25, 16, 0) 55%,
+    rgba(20, 25, 16, 0.5) 100%
+  );
+}
+
+.grove-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.grove-ledger-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--discover-cream);
+}
+
+.grove-ledger-label svg {
+  color: var(--discover-lime);
+}
+
+.grove-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 1.1rem 0 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(246, 245, 234, 0.14);
+}
+
+.grove-stats > div {
+  padding: 0.85rem 0.9rem;
+  background: rgba(20, 25, 16, 0.55);
+}
+
+.grove-stats dt {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(246, 245, 234, 0.5);
+}
+
+.grove-stats dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.55rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--discover-lime);
+}
+
+.grove-latest {
+  margin-top: 1.3rem;
+}
+
+.grove-latest-label {
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: rgba(246, 245, 234, 0.5);
+}
+
+.grove-latest ul {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.grove-latest a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 14px;
+  background: rgba(246, 245, 234, 0.05);
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.grove-latest a:hover {
+  background: rgba(246, 245, 234, 0.11);
+  transform: translateX(3px);
+}
+
+.grove-latest-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--discover-cream);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.grove-latest-meta {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 9.5px;
+  color: rgba(246, 245, 234, 0.45);
+}
+
+.grove-fallback {
+  margin: 0.9rem 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: rgba(246, 245, 234, 0.5);
+}
+
+/* Tag marquee ---------------------------------------------------------------- */
+
+.discover-tags {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid var(--discover-line);
+  padding: 15px 0;
+}
+
+.discover-tags-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: discover-tags-scroll 40s linear infinite;
+}
+
+.discover-tags:hover .discover-tags-track {
+  animation-play-state: paused;
+}
+
+.discover-tags-group {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.discover-tags-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-inline: clamp(12px, 1.6vw, 20px);
+  border-right: 1px solid var(--discover-line);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgba(23, 27, 18, 0.62);
+  transition: color 0.25s ease;
+}
+
+.discover-tags-item:hover {
+  color: var(--discover-ink);
+}
+
+.discover-tags-item:nth-child(3n) {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--discover-ink);
+}
+
+.discover-tags-item .hash {
+  color: var(--discover-clay);
+}
+
+@keyframes discover-tags-scroll {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Filter bar ------------------------------------------------------------------ */
+
+.discover-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.55rem;
+  border: 1px solid var(--discover-line);
+  border-radius: 22px;
+  background: var(--discover-cream);
+  scroll-margin-top: 96px;
+}
+
+.discover-shell .discover-filters-wrap {
+  padding: 0 20px;
+}
+
+.discover-search {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 15px;
+  background: var(--discover-paper);
+  padding: 0 0.75rem;
+}
+
+.discover-search svg {
+  flex: none;
+  color: rgba(23, 27, 18, 0.4);
+}
+
+.discover-search input {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  padding: 0.72rem 0;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--discover-ink);
+}
+
+.discover-search input::placeholder {
+  color: rgba(23, 27, 18, 0.38);
+}
+
+.discover-search input:focus-visible {
+  outline: none;
+}
+
+.discover-select {
+  min-height: 46px;
+  border: 1px solid var(--discover-line);
+  border-radius: 15px;
+  background: var(--discover-paper);
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 13px;
+  color: rgba(23, 27, 18, 0.75);
+}
+
+.discover-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 1.4rem;
+  border: 0;
+  border-radius: 15px;
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.discover-apply:hover {
+  background: #2a3223;
+  transform: translateY(-1px);
+}
+
+/* Active filter chips --------------------------------------------------------- */
+
+.discover-active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 1rem auto 0;
+  padding: 0 20px;
+  font-size: 11px;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+.discover-active > span {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 9.5px;
+}
+
+.discover-active a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.07);
+  font-size: 11.5px;
+  color: var(--discover-ink);
+  text-decoration: none;
+  transition: background 0.25s ease;
+}
+
+.discover-active a:hover {
+  background: var(--discover-lime);
+}
+
+/* Results layout -------------------------------------------------------------- */
+
+.discover-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3rem) 20px 0;
+}
+
+@media (min-width: 1024px) {
+  .discover-layout {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+}
+
+.discover-results-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.15rem;
+}
+
+.discover-results-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+  font-weight: 450;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.discover-results-count {
+  font-size: 12px;
+  color: rgba(23, 27, 18, 0.55);
+}
+
+.discover-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .discover-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .discover-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Scoped community-card language — the shared PostCard, restyled in place --- */
+
+.discover-shell .community-card {
+  border: 1px solid var(--discover-line);
+  border-radius: 26px;
+  background: var(--discover-cream);
+  box-shadow: 0 2px 10px rgba(23, 27, 18, 0.04);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.discover-shell .community-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 48px rgba(23, 27, 18, 0.1);
+}
+
+.discover-shell .community-card-media {
+  height: 180px;
+  transition: transform 0.5s ease;
+}
+
+.discover-shell .community-card:hover .community-card-media {
+  transform: scale(1.02);
+}
+
+.discover-shell .community-card-body {
+  padding: 1rem 1.1rem 0.95rem;
+}
+
+.discover-shell .community-card-meta {
+  color: rgba(23, 27, 18, 0.52);
+}
+
+.discover-shell .community-type {
+  background: rgba(23, 27, 18, 0.08);
+  color: var(--discover-ink);
+}
+
+.discover-shell .community-type-idea {
+  background: rgba(180, 98, 47, 0.18);
+  color: #6f3a18;
+}
+
+.discover-shell .community-type-aspiration {
+  background: rgba(216, 237, 146, 0.6);
+  color: #3d5222;
+}
+
+.discover-shell .community-card-title {
+  font-size: 1.02rem;
+  letter-spacing: -0.03em;
+}
+
+.discover-shell .community-card-excerpt {
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.discover-shell .community-tag {
+  background: rgba(23, 27, 18, 0.07);
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.discover-shell .community-tag:hover {
+  background: var(--discover-lime);
+  color: var(--discover-ink);
+}
+
+/* Pagination ------------------------------------------------------------------ */
+
+.discover-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.75rem;
+}
+
+.discover-pagination a {
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.8rem;
+  border-radius: 13px;
+  font-size: 12.5px;
+  color: rgba(23, 27, 18, 0.62);
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.discover-pagination a:hover {
+  background: rgba(23, 27, 18, 0.07);
+  color: var(--discover-ink);
+}
+
+.discover-pagination a[aria-current="page"] {
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+}
+
+.discover-pagination a.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Aside — themes to walk ------------------------------------------------------ */
+
+.discover-aside {
+  align-self: start;
+  border: 1px solid var(--discover-line);
+  border-radius: 26px;
+  background: var(--discover-cream);
+  padding: 1.15rem;
+}
+
+@media (min-width: 1024px) {
+  .discover-aside {
+    position: sticky;
+    top: 96px;
+  }
+}
+
+.discover-aside h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--discover-ink);
+}
+
+.discover-aside > p {
+  margin: 0.15rem 0 0;
+  font-size: 10.5px;
+  color: rgba(23, 27, 18, 0.45);
+}
+
+.discover-category-list {
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.discover-category-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 42px;
+  padding: 0 0.7rem;
+  border-radius: 12px;
+  font-size: 12.5px;
+  color: rgba(23, 27, 18, 0.72);
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.discover-category-list a:hover {
+  background: rgba(23, 27, 18, 0.05);
+  color: var(--discover-ink);
+}
+
+.discover-category-list a[aria-current="true"] {
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+}
+
+.discover-category-list span {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(23, 27, 18, 0.42);
+}
+
+.discover-category-list a[aria-current="true"] span {
+  color: rgba(246, 245, 234, 0.6);
+}
+
+/* Empty state ----------------------------------------------------------------- */
+
+.discover-shell .community-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  border: 1px dashed rgba(23, 27, 18, 0.28);
+  border-radius: 30px;
+  background:
+    radial-gradient(
+      60% 60% at 100% 0%,
+      rgba(216, 237, 146, 0.3),
+      transparent 62%
+    ),
+    var(--discover-cream);
+  padding: clamp(2rem, 5vw, 3.5rem);
+}
+
+.discover-shell .community-empty svg {
+  color: var(--discover-clay);
+}
+
+.discover-shell .community-empty h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+
+.discover-shell .community-empty p {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(23, 27, 18, 0.6);
+}
+
+.discover-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0.35rem;
+}
+
+/* Sourcing note ---------------------------------------------------------------- */
+
+.discover-sourcing {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) 20px 0;
+  font-size: 10.5px;
+  line-height: 1.7;
+  text-align: center;
+  color: rgba(23, 27, 18, 0.5);
+}
+
+/* Closing call ------------------------------------------------------------------ */
+
+.discover-closing {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) 20px clamp(3rem, 6vw, 5rem);
+}
+
+.discover-closing-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 36px;
+  padding: clamp(2.8rem, 6.5vw, 6.5rem) clamp(1.4rem, 5vw, 5.5rem);
+  background: var(--discover-lime);
+  color: var(--discover-ink);
+}
+
+.discover-closing-sprout {
+  position: absolute;
+  right: -4%;
+  bottom: -18%;
+  opacity: 0.12;
+  transform: rotate(-10deg);
+  pointer-events: none;
+}
+
+.discover-closing-title {
+  position: relative;
+  z-index: 1;
+  max-width: 14ch;
+  margin: 0;
+  font-size: clamp(2.4rem, 6.2vw, 5.6rem);
+  font-weight: 450;
+  line-height: 0.96;
+  letter-spacing: -0.058em;
+}
+
+.discover-shell .closing-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 32rem;
+  margin: 22px 0 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(23, 27, 18, 0.66);
+}
+
+.discover-shell .closing-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.discover-shell .closing-primary,
+.discover-shell .closing-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 26px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.discover-shell .closing-primary {
+  background: var(--discover-ink);
+  color: var(--discover-cream);
+}
+
+.discover-shell .closing-primary:hover {
+  background: #2a3223;
+  transform: translateY(-2px);
+}
+
+.discover-shell .closing-primary svg {
+  transition: transform 0.35s ease;
+}
+
+.discover-shell .closing-primary:hover svg {
+  transform: translate(3px, -3px);
+}
+
+.discover-shell .closing-secondary {
+  border: 1px solid rgba(23, 27, 18, 0.28);
+  color: var(--discover-ink);
+}
+
+.discover-shell .closing-secondary:hover {
+  background: rgba(23, 27, 18, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Small screens ------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .discover-results-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .grove-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Reduced motion ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .discover-shell *,
+  .discover-shell *::before,
+  .discover-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .discover-tags-track {
+    animation: none;
+  }
+}

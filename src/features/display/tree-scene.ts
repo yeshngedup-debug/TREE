@@ -136,7 +136,12 @@ export function createTreeScene(
   const centre = new THREE.Vector3(),
     corner = new THREE.Vector3();
   let fittedDistance = 10;
-  function fit(growth = model.metrics.progress) {
+  function fit(
+    growth =
+      composition === "poster" ? model.growthTarget() : model.metrics.progress,
+    growthScale =
+      composition === "poster" ? model.targetScale() : model.metrics.scale,
+  ) {
     const width = Math.max(1, host.clientWidth),
       height = Math.max(1, host.clientHeight),
       budget = software
@@ -192,16 +197,20 @@ export function createTreeScene(
       // Extra space below the ground line is reserved for the quote and the
       // QR card, so the scene stays a poster rather than an illustration.
       model
-        .measure(box, growth)
+        .measure(box, growth, growthScale)
         .applyMatrix4(new THREE.Matrix4().makeRotationY(angle));
       const span = Math.max(box.max.y - box.min.y, settings.size * 0.34);
-      box.expandByScalar(span * 0.08);
       const portrait = height > width;
-      box.min.y = -span * (portrait ? 0.9 : 0.54);
-      box.max.y = span * (portrait ? 1.48 : 1.38);
-      // Drop the tree below the headline instead of letting branches run
-      // through it. The reserved ground band below keeps this safe.
-      compositionLift = span * (portrait ? 0 : 0.18);
+      box.expandByScalar(span * (portrait ? 0.06 : 0.05));
+      // A portrait sheet keeps the whole island in view, floating above the
+      // stories. A landscape print crops the trunk at the bottom edge and
+      // lets the boughs run close to the sides, so the tree reads at gallery
+      // scale instead of floating small in a wide field of sky.
+      box.min.y = span * (portrait ? -0.76 : 0.25);
+      box.max.y = span * (portrait ? 1.24 : 1.05);
+      // Keep a little air between the crown and the headline; the reserved
+      // ground band below takes the rest of the drop.
+      compositionLift = span * (portrait ? 0.06 : 0.04);
     } else {
       box
         .copy(model.bounds)
@@ -213,8 +222,14 @@ export function createTreeScene(
     box.getCenter(centre);
     centre.y += compositionLift;
     const tanY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2),
-      tanX = tanY * camera.aspect;
-    let distance = 1;
+      tanX = tanY * camera.aspect,
+      // A portrait poster lets the widest boughs run past the trim. Fitting the
+      // whole canopy width would pull the camera back until the tree floats
+      // small in the middle of the sheet; cropping the sides keeps its scale.
+      sideBleed = composition === "poster" && height > width ? 1.4 : 1;
+    let distance = 1,
+      horizontal = 1,
+      vertical = 1;
     for (let i = 0; i < 8; i++) {
       corner
         .set(
@@ -223,11 +238,12 @@ export function createTreeScene(
           i & 4 ? box.max.z : box.min.z,
         )
         .sub(centre);
-      distance = Math.max(
-        distance,
-        corner.z + Math.abs(corner.x) / tanX,
-        corner.z + Math.abs(corner.y) / tanY,
+      horizontal = Math.max(
+        horizontal,
+        corner.z + Math.abs(corner.x) / (tanX * sideBleed),
       );
+      vertical = Math.max(vertical, corner.z + Math.abs(corner.y) / tanY);
+      distance = Math.max(distance, horizontal, vertical);
     }
     fittedDistance =
       composition === "portrait" || composition === "poster"
@@ -373,7 +389,7 @@ export function createTreeScene(
       count !== lastCount
     ) {
       lastCount = count;
-      fit(model.growthTarget());
+      fit(model.growthTarget(), model.targetScale());
     }
     dirty = true;
   }

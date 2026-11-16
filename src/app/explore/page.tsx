@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { SiteHeader, SiteFooter } from "@/components/brand";
 import { ExploreClient } from "@/features/explore/explore-client";
+import "./explore.css";
 
 export const metadata = {
   title: "Explore Bhutan · BI Tree",
@@ -10,14 +11,14 @@ export const metadata = {
 
 export default function ExplorePage() {
   return (
-    <>
+    <div className="explore-shell">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-10 sm:px-6">
+      <main className="explore-main">
         <Suspense fallback={<div className="h-40" />}>
           <ExploreClient />
         </Suspense>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

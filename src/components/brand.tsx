@@ -35,7 +35,11 @@ export function Brand({ compact = false }: { compact?: boolean }) {
     </Link>
   );
 }
-export function SiteHeader() {
+export function SiteHeader({
+  variant = "default",
+}: {
+  variant?: "default" | "home";
+}) {
   const pathname = usePathname();
   const items = [
     {
@@ -62,6 +66,41 @@ export function SiteHeader() {
       active: pathname.startsWith("/display"),
     },
   ];
+  if (variant === "home") {
+    return (
+      <header className="home-nav">
+        <div className="home-nav-bar">
+          <Brand />
+          <nav aria-label="Main navigation" className="home-nav-links">
+            {items.map(({ href, label, active }) => (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                className="home-nav-link"
+              >
+                {label}
+                {href === "/display" && (
+                  <ArrowUpRight size={13} aria-hidden="true" />
+                )}
+              </Link>
+            ))}
+          </nav>
+          <div className="home-nav-actions">
+            <Link
+              href="/create"
+              aria-label="Share an idea"
+              className="home-nav-share"
+            >
+              <span>Share an idea</span>
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
+            <AccountMenu />
+          </div>
+        </div>
+      </header>
+    );
+  }
   return (
     <header className="site-header mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-5 py-6 md:flex-nowrap md:px-10">
       <Brand />

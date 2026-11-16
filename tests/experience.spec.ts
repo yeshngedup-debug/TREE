@@ -47,7 +47,9 @@ test("mobile visitor grows a leaf, kiosk receives it, keepsake downloads and exp
   ).toBeVisible();
   await phone.getByRole("link", { name: "Explore this in Bhutan" }).click();
   await expect(
-    phone.getByRole("heading", { name: "Grow where your hope points." }),
+    phone.getByRole("heading", {
+      name: "Every hope has a place to walk.",
+    }),
   ).toBeVisible();
   expect(
     await phone.evaluate(

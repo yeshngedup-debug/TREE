@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { HydrationCompatibility } from "@/components/hydration-compat";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-outfit",
+});
 
 function metadataBase() {
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
@@ -51,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={outfit.variable}>
       <head>
         <HydrationCompatibility />
       </head>

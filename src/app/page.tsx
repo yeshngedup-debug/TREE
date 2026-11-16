@@ -1,7 +1,11 @@
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import { CommunityHighlights } from "@/features/community/community-highlights";
-import { HomeExperience } from "@/features/home/home-experience";
+import {
+  HomeClosing,
+  HomeExperience,
+} from "@/features/home/home-experience";
 import { postQuerySchema } from "@/lib/community";
+import "./home.css";
 import {
   communityStats,
   featuredPosts,
@@ -42,10 +46,11 @@ export default async function Home() {
   const highlights = await loadHighlights();
   return (
     <>
-      <SiteHeader />
-      <main>
+      <SiteHeader variant="home" />
+      <main className="home-shell">
         <HomeExperience />
         <CommunityHighlights {...highlights} />
+        <HomeClosing />
       </main>
       <SiteFooter />
     </>

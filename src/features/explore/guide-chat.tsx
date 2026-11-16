@@ -70,10 +70,10 @@ export function GuideChat() {
   }
 
   return (
-    <section className="guide-card" aria-label="Ask the BI Tree guide">
+    <section className="guide-card explore-guide" aria-label="Ask the BI Tree guide">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <span className="guide-badge">
+          <span className="guide-badge explore-guide-badge">
             <Sparkles size={20} strokeWidth={1.6} />
           </span>
           <div>
@@ -90,7 +90,7 @@ export function GuideChat() {
       <div
         ref={listRef}
         aria-live="polite"
-        className="mt-4 flex max-h-72 min-h-36 flex-col gap-3 overflow-y-auto rounded-2xl bg-muted/60 p-4"
+        className="mt-4 flex max-h-72 min-h-36 flex-col gap-3 overflow-y-auto rounded-2xl bg-muted/60 p-4 explore-guide-list"
       >
         {messages.map((entry, index) => (
           <div
@@ -128,7 +128,7 @@ export function GuideChat() {
         }}
       >
         <input
-          className="visitor-input"
+          className="visitor-input explore-input"
           value={input}
           onChange={(event) => setInput(event.target.value)}
           placeholder="Ask about places, food or stories…"
@@ -140,7 +140,7 @@ export function GuideChat() {
           type="submit"
           disabled={pending || !input.trim()}
           aria-label="Send question"
-          className="flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground disabled:opacity-50"
+          className="flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground disabled:opacity-50 explore-send"
         >
           {pending ? <LoaderCircle size={15} className="animate-spin" /> : <Send size={15} />}
           <span className="hidden sm:inline">Ask</span>
@@ -153,7 +153,7 @@ export function GuideChat() {
             type="button"
             onClick={() => void send(prompt)}
             disabled={pending}
-            className="rounded-full border border-border px-3 py-1.5 text-[11px] text-foreground/70 transition hover:bg-muted disabled:opacity-50"
+            className="rounded-full border border-border px-3 py-1.5 text-[11px] text-foreground/70 transition hover:bg-muted disabled:opacity-50 explore-prompt"
           >
             {prompt}
           </button>

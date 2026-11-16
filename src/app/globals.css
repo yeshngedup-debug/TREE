@@ -11,6 +11,7 @@
   --radius: 1rem;
 }
 @theme inline {
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -40,8 +41,17 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    var(--font-outfit),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01" 1;
 }
 h1,
 h2,
@@ -50,6 +60,12 @@ h3,
   font-family: inherit;
   font-weight: 500;
   letter-spacing: -0.035em;
+}
+h1,
+h2 {
+  font-weight: 450;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
 }
 button,
 a,
@@ -93,102 +109,6 @@ select:focus-visible {
   --muted: #3b3f33;
   background: var(--background);
   color: var(--foreground);
-}
-.hero-highlight {
-  background: linear-gradient(
-    transparent 60%,
-    #d8ed92 60%,
-    #d8ed92 92%,
-    transparent 92%
-  );
-}
-.home-hero {
-  height: calc(100svh - 100px);
-  min-height: 540px;
-  max-height: 1100px;
-}
-.home-hero-card {
-  height: 100%;
-  min-height: 0;
-}
-.home-tree {
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  isolation: isolate;
-  border-radius: 30px;
-  background: #c4f3fd;
-  transform: translateZ(0);
-}
-.home-tree-canvas {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto !important;
-}
-@media (max-width: 767px) {
-  .home-hero {
-    height: calc(100svh - 164px);
-    min-height: 550px;
-    max-height: 1000px;
-  }
-  .home-hero-card {
-    grid-template-rows: auto minmax(160px, 1fr);
-    gap: 12px;
-    border-radius: 26px;
-  }
-  .hero-copy {
-    padding: 8px;
-  }
-  .hero-copy h1 {
-    font-size: clamp(30px, 7.3vw, 42px);
-  }
-  .hero-kicker {
-    margin-bottom: 12px;
-    font-size: 10px;
-  }
-  .hero-description {
-    margin-top: 12px;
-    font-size: 12px;
-    line-height: 1.65;
-    max-width: 400px;
-  }
-  .hero-actions {
-    margin-top: 16px;
-    gap: 12px;
-  }
-  .hero-note {
-    font-size: 9px;
-  }
-  .hero-community {
-    margin-top: 16px;
-  }
-  .hero-community > div {
-    display: none;
-  }
-  .hero-community p br {
-    display: none;
-  }
-  .hero-community p {
-    font-size: 10px;
-  }
-  .home-tree {
-    border-radius: 22px;
-  }
-}
-@media (max-width: 380px) {
-  .hero-note {
-    display: none;
-  }
-  .hero-community {
-    display: none;
-  }
-}
-@media (max-height: 650px) {
-  .home-hero {
-    height: auto;
-    min-height: 600px;
-  }
 }
 .admin-shell {
   min-height: 100svh;
@@ -968,7 +888,6 @@ select:focus-visible {
   background: var(--accent);
   font-size: 22px;
 }
-/* Portrait is a stable vertical sequence; landscape keeps its existing overlay layout. */
 .visit-choice {
   display: flex;
   align-items: center;
@@ -1557,147 +1476,6 @@ select:focus-visible {
 }
 .community-editor .community-form {
   padding-bottom: 1.2rem;
-}
-
-/* Discover --------------------------------------------------------------- */
-.discover-head {
-  padding: 1.5rem 0 2rem;
-}
-.discover-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  border-radius: 20px;
-  background: var(--card);
-  padding: 0.6rem;
-}
-.discover-search {
-  display: flex;
-  flex: 1 1 260px;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 13px;
-  background: var(--background);
-  padding: 0 0.75rem;
-}
-.discover-search input {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  padding: 0.72rem 0;
-  font: inherit;
-  font-size: 13px;
-  color: var(--foreground);
-}
-.discover-filters select {
-  min-height: 44px;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  background: var(--background);
-  padding: 0 0.7rem;
-  font: inherit;
-  font-size: 12px;
-  color: var(--foreground);
-}
-.discover-apply {
-  min-height: 44px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--primary);
-  padding: 0 1.1rem;
-  color: var(--primary-foreground);
-  font-size: 12px;
-  font-weight: 500;
-}
-.discover-active {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.9rem;
-  font-size: 11px;
-  color: color-mix(in srgb, var(--foreground) 55%, transparent);
-}
-.discover-active a {
-  border-radius: 999px;
-  background: var(--card);
-  padding: 0.25rem 0.6rem;
-  color: var(--foreground);
-}
-.discover-pagination {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: 1.6rem;
-}
-.discover-pagination a {
-  display: inline-flex;
-  min-width: 40px;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  padding: 0 0.75rem;
-  font-size: 12px;
-}
-.discover-pagination a:hover {
-  background: var(--muted);
-}
-.discover-pagination a[aria-current="page"] {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-.discover-pagination a.is-disabled {
-  pointer-events: none;
-  opacity: 0.35;
-}
-.discover-aside {
-  align-self: start;
-  border-radius: 22px;
-  background: var(--card);
-  padding: 1.2rem;
-}
-@media (min-width: 1024px) {
-  .discover-aside {
-    position: sticky;
-    top: 1.25rem;
-  }
-}
-.discover-aside h2 {
-  margin: 0 0 0.6rem;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--foreground) 55%, transparent);
-}
-.discover-aside h2:not(:first-child) {
-  margin-top: 1.4rem;
-}
-.discover-category-list {
-  display: grid;
-  gap: 0.15rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.discover-category-list a {
-  display: flex;
-  min-height: 36px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  border-radius: 10px;
-  padding: 0 0.4rem;
-  font-size: 12px;
-}
-.discover-category-list a:hover {
-  background: var(--muted);
-}
-.discover-category-list span {
-  font-size: 10px;
-  opacity: 0.45;
 }
 
 /* Post ------------------------------------------------------------------- */
@@ -2387,6 +2165,7 @@ select:focus-visible {
   font-size: 10px;
   color: color-mix(in srgb, var(--foreground) 42%, transparent);
 }
+
 /* ---------------------------------------------------------------------------
    Display poster — a gallery print for the living tree. The 3D scene is the
    artwork; the keyline, the editorial headline and the paper QR card are its
@@ -2468,6 +2247,7 @@ select:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }
+
 /* Header ------------------------------------------------------------------ */
 .kiosk-header {
   position: static;
@@ -2508,26 +2288,6 @@ select:focus-visible {
   align-items: center;
   gap: clamp(10px, 1.8vmin, 28px);
 }
-.kiosk-count {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  font-size: clamp(8px, 0.95vmin, 13px);
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.72;
-}
-.kiosk-count strong {
-  font-size: clamp(15px, 1.7vmin, 26px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  opacity: 1;
-}
-.kiosk-count > span {
-  white-space: nowrap;
-}
 .kiosk-connection {
   display: flex;
   align-items: center;
@@ -2558,6 +2318,7 @@ select:focus-visible {
 .kiosk-icon:hover {
   background: color-mix(in srgb, currentColor 10%, transparent);
 }
+
 /* Headline ---------------------------------------------------------------- */
 .kiosk-heading {
   position: static;
@@ -2586,12 +2347,102 @@ select:focus-visible {
   display: inline-block;
   will-change: transform;
 }
+
+/* Caption slug: the collection and its pulse, centred under the headline. --- */
+.kiosk-caption {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em 0.9em;
+  margin: clamp(10px, 1.8vh, 22px) 0 0;
+  font-size: clamp(8px, 0.92vmin, 13px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+.kiosk-caption-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+.kiosk-caption-count strong {
+  font-size: clamp(14px, 1.55vmin, 23px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 1;
+}
+.kiosk-caption-divider {
+  opacity: 0.4;
+}
+
+/* Arrival slip: a second piece of paper pinned over the print. ------------- */
+.kiosk-notice {
+  position: absolute;
+  top: clamp(170px, 24vh, 300px);
+  right: calc(var(--frame-inset) + clamp(14px, 2.2vmin, 40px));
+  z-index: 5;
+  width: min(340px, 82vw);
+  padding: clamp(13px, 1.6vmin, 19px) clamp(15px, 1.8vmin, 22px);
+  border: 1px solid rgba(30, 47, 40, 0.5);
+  border-radius: 2px;
+  background: var(--kiosk-paper);
+  color: var(--kiosk-ink);
+  box-shadow: 7px 8px 0 color-mix(in srgb, var(--kiosk-ink) 18%, transparent);
+  pointer-events: none;
+}
+.kiosk-notice::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(30, 47, 40, 0.14);
+  pointer-events: none;
+}
+.kiosk-notice-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: clamp(9px, 1vmin, 14px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.kiosk-notice-label strong {
+  font-size: clamp(19px, 2.2vmin, 30px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+.kiosk-notice-quote {
+  margin: clamp(8px, 1.1vmin, 12px) 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(14px, 1.5vmin, 22px);
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+.kiosk-notice-meta {
+  display: block;
+  margin-top: clamp(8px, 1.1vmin, 12px);
+  font-size: clamp(7px, 0.8vmin, 11px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
 /* Stage holds the tree visible behind the overlay. ------------------------ */
 .kiosk-stage {
   flex: 1 1 auto;
   min-height: 0;
   pointer-events: none;
 }
+
 /* Quote, dock and QR card ------------------------------------------------- */
 .kiosk-bottom {
   position: static;
@@ -2601,15 +2452,14 @@ select:focus-visible {
   grid-template-areas: "feature controls qr";
   align-items: end;
   gap: clamp(16px, 2.4vmin, 40px);
-  padding-top: clamp(10px, 2vh, 26px);
+  padding-top: clamp(12px, 2vh, 28px);
+  border-top: 1px solid color-mix(in srgb, currentColor 30%, transparent);
 }
 .kiosk-feature {
   position: relative;
   grid-area: feature;
   justify-self: start;
-  width: min(100%, 520px);
-  padding-top: clamp(10px, 1.4vmin, 16px);
-  border-top: 1px solid color-mix(in srgb, currentColor 32%, transparent);
+  width: min(100%, 560px);
   pointer-events: none;
 }
 .kiosk-feature-label {
@@ -2699,6 +2549,18 @@ select:focus-visible {
 .kiosk-controls button[aria-pressed="true"] {
   background: color-mix(in srgb, currentColor 12%, transparent);
 }
+.kiosk-controls .kiosk-sound {
+  position: relative;
+}
+.kiosk-controls .kiosk-sound::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * clamp(2px, 0.5vmin, 6px));
+  top: 24%;
+  bottom: 24%;
+  width: 1px;
+  background: color-mix(in srgb, currentColor 22%, transparent);
+}
 .kiosk-qr-panel {
   position: static;
   grid-area: qr;
@@ -2747,10 +2609,11 @@ select:focus-visible {
   opacity: 0.55;
   overflow-wrap: anywhere;
 }
+
 /* Palette adjustments ----------------------------------------------------- */
 .kiosk-shell[data-palette="frost"]
   :is(
-    .kiosk-count,
+    .kiosk-caption,
     .kiosk-connection,
     .kiosk-feature-label,
     .kiosk-leaf-code,
@@ -2765,6 +2628,7 @@ select:focus-visible {
 .kiosk-shell[data-palette="night"] .kiosk-icon {
   border-color: color-mix(in srgb, #ffffff 24%, transparent);
 }
+
 /* Portrait: a stable vertical sequence — headline, tree, quote, then the
    scan card and the dock sharing one row. -------------------------------- */
 @media (max-aspect-ratio: 1/1) {
@@ -2774,6 +2638,19 @@ select:focus-visible {
   .kiosk-heading h1 {
     width: 96%;
     font-size: clamp(1.35rem, 4.4vmin, 3rem);
+  }
+  .kiosk-caption {
+    margin-top: clamp(8px, 1.4vh, 16px);
+  }
+  .kiosk-notice {
+    top: clamp(196px, 12vh, 250px);
+    right: 0;
+    left: 0;
+    width: min(clamp(340px, 42vmin, 560px), 86vw);
+    margin-inline: auto;
+  }
+  .kiosk-notice-quote {
+    font-size: clamp(14px, 1.75vmin, 22px);
   }
   .kiosk-bottom {
     grid-template-columns: auto minmax(0, 1fr);
@@ -2801,6 +2678,7 @@ select:focus-visible {
     justify-self: end;
   }
 }
+
 @media (max-width: 700px) {
   .kiosk-header {
     gap: 8px;
@@ -2808,8 +2686,9 @@ select:focus-visible {
   .kiosk-header-actions {
     gap: 8px;
   }
-  .kiosk-count {
-    display: none;
+  .kiosk-caption {
+    gap: 0.1em 0.6em;
+    letter-spacing: 0.16em;
   }
   .kiosk-connection {
     letter-spacing: 0.12em;
@@ -2841,6 +2720,7 @@ select:focus-visible {
     height: 32px;
   }
 }
+
 @media (max-width: 360px) {
   /* Keep the brand on one line; the dot still signals the connection and the
      label stays available to screen readers. */
@@ -2853,6 +2733,7 @@ select:focus-visible {
     white-space: nowrap;
   }
 }
+
 @media (max-height: 560px) {
   .kiosk-heading {
     margin-top: 10px;

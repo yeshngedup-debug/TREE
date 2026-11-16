@@ -15,6 +15,8 @@ import {
   Minus,
   RotateCcw,
   SlidersHorizontal,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { TreeCanvas } from "./tree-canvas";
 import { themeFor, type Leaf } from "@/lib/catalog";
@@ -24,6 +26,15 @@ import { displayMessage } from "@/lib/display-copy";
 import { defaultTreeSettings, treePalettes } from "@/lib/tree-settings";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import type { SceneController } from "./tree-scene";
+import {
+  armChime,
+  playChime,
+  rememberSound,
+  soundAllowed,
+} from "./chime";
+
+type Notice = { count: number; leaf: Leaf };
+
 export function DisplayScreen() {
   const { tree, connection } = useTree({ cache: true });
   const scene = useRef<SceneController | null>(null);
@@ -42,7 +53,9 @@ export function DisplayScreen() {
     [pending, setPending] = useState(0),
     [lastArrival, setLastArrival] = useState(0),
     [showReflection, setShowReflection] = useState(false),
-    [reflectionVisible, setReflectionVisible] = useState(false);
+    [reflectionVisible, setReflectionVisible] = useState(false),
+    [sound, setSound] = useState(true),
+    [notice, setNotice] = useState<Notice | null>(null);
   const initialized = useRef(false),
     synced = useRef(false),
     seen = useRef(new Set<string>()),
@@ -50,13 +63,39 @@ export function DisplayScreen() {
     available = useRef(new Set<string>()),
     flights = useRef(new Map<string, number>()),
     stories = useRef<Leaf[]>([]),
-    lastStory = useRef(0);
+    lastStory = useRef(0),
+    noticeRef = useRef<Notice | null>(null),
+    soundRef = useRef(true);
   useEffect(() => {
     setTimeout(() => setJoinUrl(appUrl() + "/join"), 0);
     const changed = () => setFull(Boolean(document.fullscreenElement));
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
+  useEffect(() => {
+    const stored = setTimeout(() => setSound(soundAllowed()), 0);
+    // Browsers keep audio locked until someone touches the kiosk. Arm the
+    // context on the first tap or key press so the next arrival can ring.
+    const arm = () => armChime();
+    window.addEventListener("pointerdown", arm, { once: true, capture: true });
+    window.addEventListener("keydown", arm, { once: true });
+    return () => {
+      clearTimeout(stored);
+      window.removeEventListener("pointerdown", arm, { capture: true });
+      window.removeEventListener("keydown", arm);
+    };
+  }, []);
+  useEffect(() => {
+    soundRef.current = sound;
+  }, [sound]);
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => {
+      noticeRef.current = null;
+      setNotice(null);
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, [notice]);
   useEffect(() => {
     if (!tree) return;
     available.current = new Set(tree.leaves.map((leaf) => leaf.id));
@@ -131,6 +170,16 @@ export function DisplayScreen() {
         stories.current = [...stories.current, ...batch].slice(-12);
         setLastArrival(now);
         setShowReflection(false);
+        // Keep one paper slip on screen while a burst of leaves lands; a new
+        // batch inside the dismissal window adds to it rather than restacking.
+        const previous = noticeRef.current;
+        const next = {
+          count: (previous?.count ?? 0) + batch.length,
+          leaf: batch[batch.length - 1],
+        };
+        noticeRef.current = next;
+        setNotice(next);
+        if (soundRef.current) playChime();
       }
       const ids = [...flights.current.keys()];
       setArrivalIds((previous) =>
@@ -176,6 +225,13 @@ export function DisplayScreen() {
       /* Some embedded browsers do not support fullscreen. */
     }
   }
+  function toggleSound() {
+    setSound((value) => {
+      const next = !value;
+      rememberSound(next);
+      return next;
+    });
+  }
   const active = selected || featured,
     reflection =
       showReflection &&
@@ -193,6 +249,7 @@ export function DisplayScreen() {
         className="kiosk-shell"
         data-testid="kiosk-display"
         data-palette={settings.palette}
+        data-sound={sound ? "on" : "off"}
         style={
           {
             background: `linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 34%, rgba(8,16,12,0.1) 100%), ${palette.background}`,
@@ -241,34 +298,6 @@ export function DisplayScreen() {
               </span>
             </Link>
             <div className="kiosk-header-actions">
-              <span className="kiosk-count">
-                <motion.strong
-                  key={lastArrival}
-                  initial={{ scale: 1.18, opacity: 0.4 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                >
-                  {tree?.total ?? 0}
-                </motion.strong>
-                <span>
-                  {tree?.total === 1 ? "hope" : "hopes"} taking root
-                </span>
-              </span>
-              <span className="kiosk-connection" aria-live="polite">
-                <span
-                  aria-hidden="true"
-                  className={`kiosk-connection-dot ${
-                    connection === "live" ? "bg-[#55834d]" : "bg-amber-500"
-                  }`}
-                />
-                <span className="kiosk-connection-label">
-                  {connection === "live"
-                    ? "A living collection"
-                    : connection === "connecting"
-                      ? "Connecting"
-                      : "Reconnecting"}
-                </span>
-              </span>
               <Link
                 href="/tree"
                 className="kiosk-icon"
@@ -316,6 +345,85 @@ export function DisplayScreen() {
               ))}
             </h1>
           </motion.div>
+          <motion.p
+            className="kiosk-caption"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <span className="kiosk-caption-count">
+              <motion.strong
+                key={lastArrival}
+                initial={{ scale: 1.2, opacity: 0.4 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 14 }}
+              >
+                {tree?.total ?? 0}
+              </motion.strong>
+              <span>{tree?.total === 1 ? "hope" : "hopes"} taking root</span>
+            </span>
+            <span className="kiosk-caption-divider" aria-hidden="true">
+              ·
+            </span>
+            <span className="kiosk-connection" aria-live="polite">
+              <span
+                aria-hidden="true"
+                className={`kiosk-connection-dot ${
+                  connection === "live" ? "bg-[#55834d]" : "bg-amber-500"
+                }`}
+              />
+              <span className="kiosk-connection-label">
+                {connection === "live"
+                  ? "A living collection"
+                  : connection === "connecting"
+                    ? "Connecting"
+                    : "Reconnecting"}
+              </span>
+            </span>
+          </motion.p>
+          <AnimatePresence>
+            {notice && (
+              <motion.aside
+                className="kiosk-notice"
+                aria-hidden="true"
+                initial={{ opacity: 0, y: -14, rotate: -1.2 }}
+                animate={{ opacity: 1, y: 0, rotate: 0 }}
+                exit={{
+                  opacity: 0,
+                  y: -10,
+                  transition: { duration: 0.28 },
+                }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <p className="kiosk-notice-label">
+                  <motion.strong
+                    key={notice.count}
+                    initial={{ scale: 1.35, opacity: 0.35 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 16,
+                    }}
+                  >
+                    {notice.count}
+                  </motion.strong>
+                  <span>
+                    {notice.count === 1
+                      ? "new hope just arrived"
+                      : "new hopes just arrived"}
+                  </span>
+                </p>
+                <p className="kiosk-notice-quote">
+                  “{displayMessage(notice.leaf.leaf_message, 108)}”
+                </p>
+                <span className="kiosk-notice-meta">
+                  Leaf #{notice.leaf.id.slice(0, 6)} ·{" "}
+                  {themeFor(notice.leaf.category).short}
+                </span>
+              </motion.aside>
+            )}
+          </AnimatePresence>
           <div className="kiosk-stage" aria-hidden="true" />
           <div className="kiosk-bottom">
             <section
@@ -433,6 +541,21 @@ export function DisplayScreen() {
               >
                 <RotateCcw size={16} aria-hidden="true" />
               </motion.button>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="kiosk-sound"
+                aria-label={
+                  sound ? "Mute arrival sound" : "Enable arrival sound"
+                }
+                onClick={toggleSound}
+              >
+                {sound ? (
+                  <Volume2 size={17} aria-hidden="true" />
+                ) : (
+                  <VolumeX size={17} aria-hidden="true" />
+                )}
+              </motion.button>
             </div>
             <motion.section
               className="kiosk-qr-panel"
@@ -470,11 +593,13 @@ export function DisplayScreen() {
             </motion.section>
           </div>
           <p role="status" className="sr-only">
-            {connection === "reconnecting"
-              ? "Connection paused. Keeping the tree while we reconnect."
-              : pending
-                ? `${pending} ${pending === 1 ? "leaf is" : "leaves are"} finding a branch…`
-                : "Anonymous voices. Shared possibilities."}
+            {notice
+              ? `${notice.count === 1 ? "A new hope just arrived" : `${notice.count} new hopes just arrived`}: ${displayMessage(notice.leaf.leaf_message, 108)}`
+              : connection === "reconnecting"
+                ? "Connection paused. Keeping the tree while we reconnect."
+                : pending
+                  ? `${pending} ${pending === 1 ? "leaf is" : "leaves are"} finding a branch…`
+                  : "Anonymous voices. Shared possibilities."}
             {Boolean(tree?.stats.demo) &&
               ` Includes ${tree!.stats.demo} illustrative demo leaves.`}
           </p>
