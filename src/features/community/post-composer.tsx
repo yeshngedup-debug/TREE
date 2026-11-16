@@ -26,21 +26,26 @@ export function PostComposer({
   const [category, setCategory] = useState(
     post?.category.slug ?? categories[0]?.slug ?? "",
   );
+  const [title, setTitle] = useState(post?.title ?? "");
+  const [body, setBody] = useState(post?.body ?? "");
+  const [imageUrl, setImageUrl] = useState(post?.imageUrl ?? "");
   const [tags, setTags] = useState(post?.tags.join(", ") ?? "");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+
+  const titleShort = title.trim().length > 0 && title.trim().length < 6;
+  const bodyShort = body.trim().length > 0 && body.trim().length < 20;
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError("");
-    const data = new FormData(event.currentTarget);
     const payload = {
-      title: data.get("title"),
-      body: data.get("body"),
+      title,
+      body,
       contentType,
       category,
-      imageUrl: data.get("imageUrl") || "",
+      imageUrl,
       tags: tags
         .split(",")
         .map((tag) => tag.trim())
@@ -70,7 +75,6 @@ export function PostComposer({
               : "We could not publish your post."),
         );
       router.push(`/posts/${result.post.slug}`);
-      router.refresh();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Something went wrong.");
       setPending(false);
@@ -80,13 +84,13 @@ export function PostComposer({
   return (
     <section className="community-panel" aria-labelledby="composer-title">
       <div className="community-panel-head">
-        <p className="eyebrow text-foreground/45">
+        <p className="eyebrow text-soft">
           {editing ? "Edit your post" : "Publish to the community"}
         </p>
         <h1 id="composer-title" className="text-3xl tracking-tight md:text-4xl">
           {editing ? "Refine what you are growing." : "What are you growing?"}
         </h1>
-        <p className="mt-3 max-w-md text-sm leading-6 text-foreground/60">
+        <p className="mt-3 max-w-md text-sm leading-6 text-soft">
           {editing
             ? "Saving updates the post and its leaf on the Living Tree. The shared link stays the same."
             : "An aspiration names the future you want. An idea proposes a practical way to reach it. Both become part of the Living Tree."}
@@ -133,9 +137,22 @@ export function PostComposer({
             required
             minLength={6}
             maxLength={120}
-            defaultValue={post?.title ?? ""}
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
             placeholder="Offline-first learning for rural schools"
+            aria-invalid={titleShort || undefined}
+            aria-describedby="composer-title-foot"
           />
+          <div
+            id="composer-title-foot"
+            className="community-field-foot"
+            data-short={titleShort || undefined}
+          >
+            <small className="field-hint">
+              {titleShort ? "Needs at least 6 characters." : "6–120 characters."}
+            </small>
+            <small className="field-counter">{title.length}/120</small>
+          </div>
         </label>
 
         <label className="community-field">
@@ -162,10 +179,24 @@ export function PostComposer({
             minLength={20}
             maxLength={5000}
             rows={10}
-            defaultValue={post?.body ?? ""}
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
             placeholder="Describe the need, who it serves, and what the first step would look like."
+            aria-invalid={bodyShort || undefined}
+            aria-describedby="composer-body-foot"
           />
-          <small>Plain text. 20–5000 characters.</small>
+          <div
+            id="composer-body-foot"
+            className="community-field-foot"
+            data-short={bodyShort || undefined}
+          >
+            <small className="field-hint">
+              {bodyShort
+                ? "Needs at least 20 characters."
+                : "Plain text. 20–5000 characters."}
+            </small>
+            <small className="field-counter">{body.length}/5000</small>
+          </div>
         </label>
 
         <label className="community-field">
@@ -176,8 +207,12 @@ export function PostComposer({
             onChange={(event) => setTags(event.target.value)}
             maxLength={180}
             placeholder="education, offline, dzongkhag"
+            aria-describedby="composer-tags-foot"
           />
-          <small>Up to 6 tags, separated by commas.</small>
+          <div id="composer-tags-foot" className="community-field-foot">
+            <small className="field-hint">Up to 6 tags, separated by commas.</small>
+            <small className="field-counter">{tags.length}/180</small>
+          </div>
         </label>
 
         <label className="community-field">
@@ -186,7 +221,8 @@ export function PostComposer({
             name="imageUrl"
             type="url"
             maxLength={500}
-            defaultValue={post?.imageUrl ?? ""}
+            value={imageUrl}
+            onChange={(event) => setImageUrl(event.target.value)}
             placeholder="https://example.org/photo.jpg"
           />
           <small>An https link to an image you have the right to use.</small>
@@ -201,7 +237,12 @@ export function PostComposer({
         <button
           type="submit"
           className="community-submit"
-          disabled={pending || !category}
+          disabled={
+            pending ||
+            !category ||
+            title.trim().length < 6 ||
+            body.trim().length < 20
+          }
         >
           {pending
             ? editing
