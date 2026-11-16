@@ -43,7 +43,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
         image.close();
         context.textAlign = "center";
         context.fillStyle = dark ? "#f1f4e8" : "#243c3a";
-        context.font = "28px Georgia";
+        context.font = '28px "Outfit", Arial, sans-serif';
         context.fillText("BI Tree", 500, 66);
         context.font = "19px Arial";
         context.fillText(
@@ -65,7 +65,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
         context.lineTo(0, -35);
         context.stroke();
         context.restore();
-        context.font = "28px Georgia";
+        context.font = '28px "Outfit", Arial, sans-serif';
         const lines: string[] = [];
         let line = "";
         for (const word of leaf.leaf_message.split(/\s+/)) {

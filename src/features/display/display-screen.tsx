@@ -278,7 +278,6 @@ export function DisplayScreen() {
         />
         <div className="kiosk-halo" aria-hidden="true" />
         <div className="kiosk-grain" aria-hidden="true" />
-        <div className="kiosk-frame" aria-hidden="true" />
         <main className="kiosk-screen">
           <motion.header
             className="kiosk-header"
@@ -586,6 +585,8 @@ export function DisplayScreen() {
                     value={joinUrl}
                     size={220}
                     marginSize={2}
+                    fgColor="#171b12"
+                    bgColor="#ffffff"
                     title="Scan to add your hope"
                   />
                 </Link>

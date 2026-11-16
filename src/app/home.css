@@ -41,7 +41,6 @@
   min-height: 72px;
   padding: 8px 10px 8px 20px;
   border-radius: 999px;
-  border: 1px solid rgba(37, 38, 32, 0.08);
   background: rgba(242, 242, 235, 0.74);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
@@ -116,7 +115,6 @@
 }
 
 .home-nav-actions :is(a, summary) {
-  border-color: rgba(23, 27, 18, 0.16);
 }
 
 .home-nav-actions :is(a, summary):hover {
@@ -318,13 +316,11 @@
 }
 
 .hero-cta-secondary {
-  border: 1px solid rgba(246, 245, 234, 0.24);
   color: var(--home-cream);
 }
 
 .hero-cta-secondary:hover {
   background: rgba(246, 245, 234, 0.08);
-  border-color: rgba(246, 245, 234, 0.45);
   transform: translateY(-2px);
 }
 
@@ -495,7 +491,6 @@
 .home-marquee {
   position: relative;
   overflow: hidden;
-  border-block: 1px solid var(--home-line);
   padding: 26px 0;
 }
 
@@ -601,15 +596,18 @@
   min-height: 44px;
   font-size: 12.5px;
   color: rgba(23, 27, 18, 0.7);
-  border-bottom: 1px solid rgba(23, 27, 18, 0.2);
+  text-decoration: underline;
+  text-decoration-color: rgba(23, 27, 18, 0.2);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
   transition:
     color 0.3s ease,
-    border-color 0.3s ease;
+    text-decoration-color 0.3s ease;
 }
 
 .home-text-link:hover {
   color: var(--home-ink);
-  border-color: var(--home-ink);
+  text-decoration-color: var(--home-ink);
 }
 
 .home-text-link svg {
@@ -810,7 +808,6 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(246, 245, 234, 0.22);
   color: var(--home-cream);
   transition:
     background 0.4s ease,
@@ -825,7 +822,6 @@
 }
 
 .bento-c .bento-arrow {
-  border-color: rgba(23, 27, 18, 0.22);
   color: var(--home-ink);
 }
 
@@ -1170,7 +1166,6 @@
 }
 
 .closing-secondary {
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--home-ink);
 }
 

@@ -55,7 +55,6 @@
   margin: 10px auto 0;
   padding: 8px 8px 8px 16px;
   border-radius: 26px;
-  border: 1px solid rgba(37, 38, 32, 0.08);
   background: rgba(242, 242, 235, 0.74);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
@@ -122,7 +121,6 @@
 }
 
 .explore-shell .site-header > div:last-child :is(a, summary) {
-  border-color: rgba(23, 27, 18, 0.16);
 }
 
 .explore-shell .site-header > div:last-child :is(a, summary):hover {
@@ -277,8 +275,7 @@
     background 0.35s ease,
     color 0.35s ease,
     transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
+    box-shadow 0.35s ease;
 }
 
 .explore-cta-primary {
@@ -294,13 +291,11 @@
 }
 
 .explore-cta-secondary {
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--explore-ink);
 }
 
 .explore-cta-secondary:hover {
   background: rgba(23, 27, 18, 0.06);
-  border-color: rgba(23, 27, 18, 0.45);
   transform: translateY(-2px);
 }
 
@@ -317,7 +312,6 @@
   min-height: 44px;
   padding: 0 18px;
   border-radius: 999px;
-  border: 1px solid rgba(23, 27, 18, 0.18);
   background: transparent;
   color: rgba(23, 27, 18, 0.72);
   font-size: 12.5px;
@@ -327,19 +321,16 @@
   transition:
     background 0.3s ease,
     color 0.3s ease,
-    border-color 0.3s ease,
     transform 0.3s ease;
 }
 
 .explore-chip:hover {
-  border-color: rgba(23, 27, 18, 0.45);
   color: var(--explore-ink);
   transform: translateY(-1px);
 }
 
 .explore-chip[data-active] {
   background: var(--explore-ink);
-  border-color: var(--explore-ink);
   color: var(--explore-cream);
 }
 
@@ -437,7 +428,6 @@
 .explore-credits {
   position: relative;
   overflow: hidden;
-  border-block: 1px solid var(--explore-line);
   padding: 18px 0;
 }
 
@@ -671,18 +661,15 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(246, 245, 234, 0.22);
   color: var(--explore-cream);
   transition:
     background 0.4s ease,
     color 0.4s ease,
-    border-color 0.4s ease,
     transform 0.4s ease;
 }
 
 .path-card:hover .path-arrow {
   background: var(--explore-lime);
-  border-color: var(--explore-lime);
   color: var(--explore-ink);
   transform: translate(3px, -3px);
 }
@@ -720,7 +707,6 @@
   max-width: 36ch;
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid rgba(246, 245, 234, 0.16);
   font-size: 11.5px;
   line-height: 1.55;
   color: rgba(246, 245, 234, 0.62);
@@ -765,7 +751,6 @@
   padding: 14px 16px;
   border-radius: 18px;
   background: rgba(180, 98, 47, 0.08);
-  border: 1px solid rgba(180, 98, 47, 0.24);
   font-size: 13px;
   line-height: 1.6;
   color: rgba(23, 27, 18, 0.78);
@@ -808,7 +793,6 @@
   height: 100%;
   overflow: hidden;
   border-radius: 24px;
-  border: 1px solid var(--explore-line);
   background: var(--explore-cream);
   transition:
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
@@ -845,7 +829,6 @@
 .place-credit {
   margin: 0;
   padding: 6px 12px;
-  border-bottom: 1px solid var(--explore-line);
   font-size: 10px;
   line-height: 1.4;
   letter-spacing: 0.01em;
@@ -904,16 +887,18 @@
   font-size: 10px;
   letter-spacing: 0.01em;
   color: rgba(23, 27, 18, 0.55);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
   transition:
     color 0.3s ease,
-    border-color 0.3s ease;
+    text-decoration-color 0.3s ease;
 }
 
 .place-source:hover {
   color: var(--explore-ink);
-  border-bottom-color: var(--explore-ink);
+  text-decoration-color: var(--explore-ink);
 }
 
 .place-name {
@@ -1113,19 +1098,21 @@
   gap: 5px;
   margin-top: 10px;
   padding-bottom: 2px;
-  border-bottom: 1px solid rgba(246, 245, 234, 0.3);
   font-size: 10.5px;
   letter-spacing: 0.01em;
   color: rgba(246, 245, 234, 0.75);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: rgba(246, 245, 234, 0.3);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
   transition:
     color 0.3s ease,
-    border-color 0.3s ease;
+    text-decoration-color 0.3s ease;
 }
 
 .tale-source:hover {
   color: var(--explore-lime);
-  border-bottom-color: var(--explore-lime);
+  text-decoration-color: var(--explore-lime);
 }
 
 /* Wisdom carousel --------------------------------------------------------- */
@@ -1225,21 +1212,18 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 1px solid rgba(246, 245, 234, 0.22);
   background: transparent;
   color: var(--explore-cream);
   cursor: pointer;
   transition:
     background 0.3s ease,
     color 0.3s ease,
-    border-color 0.3s ease,
     transform 0.3s ease;
 }
 
 .wisdom-prev:hover,
 .wisdom-next:hover {
   background: var(--explore-lime);
-  border-color: var(--explore-lime);
   color: var(--explore-ink);
   transform: translateY(-2px);
 }
@@ -1304,7 +1288,6 @@
    sheet loads after globals and sits outside Tailwind's @layer utilities. */
 .guide-panel .explore-guide {
   background: rgba(246, 245, 234, 0.07);
-  border: 1px solid rgba(246, 245, 234, 0.14);
   color: var(--explore-cream);
 }
 
@@ -1331,7 +1314,6 @@
 
 .guide-panel .explore-input {
   background: rgba(246, 245, 234, 0.1);
-  border-color: rgba(246, 245, 234, 0.2);
   color: var(--explore-cream);
 }
 
@@ -1345,7 +1327,6 @@
 }
 
 .guide-panel .explore-prompt {
-  border-color: rgba(246, 245, 234, 0.22);
   color: rgba(246, 245, 234, 0.8);
 }
 
@@ -1465,7 +1446,6 @@
 }
 
 .explore-shell .closing-secondary {
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--explore-ink);
 }
 
@@ -1686,7 +1666,6 @@
 
 .explore-shell .guide-card.explore-guide {
   background: rgba(246, 245, 234, 0.05);
-  border: 1px solid rgba(246, 245, 234, 0.14);
   border-radius: 24px;
   padding: 22px;
   color: var(--explore-cream);
@@ -1735,14 +1714,12 @@
 
 .explore-shell .explore-guide span.rounded-full.bg-muted {
   background: rgba(246, 245, 234, 0.08);
-  border: 1px solid rgba(246, 245, 234, 0.12);
   color: rgba(246, 245, 234, 0.65);
 }
 
 .explore-shell .explore-input {
   margin-top: 0;
   background: rgba(246, 245, 234, 0.07);
-  border: 1px solid rgba(246, 245, 234, 0.16);
   border-radius: 14px;
   color: var(--explore-cream);
   outline: none;
@@ -1754,7 +1731,6 @@
 
 .explore-shell .explore-input:focus,
 .explore-shell .explore-input:focus-visible {
-  border-color: rgba(216, 237, 146, 0.6);
   box-shadow: 0 0 0 3px rgba(216, 237, 146, 0.25);
   outline: none;
 }
@@ -1762,7 +1738,6 @@
 .explore-shell .explore-send {
   background: var(--explore-lime);
   color: var(--explore-ink);
-  border: none;
 }
 
 .explore-shell .explore-send:hover:not(:disabled) {
@@ -1775,13 +1750,11 @@
 
 .explore-shell .explore-prompt {
   background: transparent;
-  border-color: rgba(246, 245, 234, 0.22);
   color: rgba(246, 245, 234, 0.75);
 }
 
 .explore-shell .explore-prompt:hover:not(:disabled) {
   background: rgba(246, 245, 234, 0.08);
-  border-color: rgba(246, 245, 234, 0.35);
   color: var(--explore-cream);
 }
 
@@ -1791,7 +1764,6 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 26px 20px 0;
-  border-top: 1px solid var(--explore-line);
   font-size: 11px;
   line-height: 1.75;
   color: rgba(23, 27, 18, 0.55);
@@ -1865,7 +1837,6 @@
 .explore-shell .closing-primary {
   background: var(--explore-ink);
   color: var(--explore-cream);
-  border: none;
 }
 
 .explore-shell .closing-primary:hover {
@@ -1883,7 +1854,6 @@
 
 .explore-shell .closing-secondary {
   background: transparent;
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--explore-ink);
 }
 
@@ -1895,7 +1865,6 @@
 /* Footer --------------------------------------------------------------------*/
 
 .explore-shell footer {
-  border-top: 1px solid var(--explore-line);
   background: var(--explore-paper);
   color: rgba(23, 27, 18, 0.55);
 }

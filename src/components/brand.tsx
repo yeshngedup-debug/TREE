@@ -213,7 +213,7 @@ function AccountMenu() {
       <Link
         href="/create?mode=login"
         aria-label="Sign in to BI Tree"
-        className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-foreground/15 px-3 text-xs font-medium sm:px-4"
+        className="flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-foreground/[0.05] px-3 text-xs font-medium sm:px-4"
       >
         <LogIn size={15} aria-hidden="true" />
         <span className="hidden sm:inline">Sign in</span>
@@ -233,7 +233,7 @@ function AccountMenu() {
             menu.current.querySelector("summary")?.focus();
           }
         }}
-        className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full border border-foreground/15 py-1 pl-1 pr-2 [&::-webkit-details-marker]:hidden"
+        className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full bg-foreground/[0.05] py-1 pl-1 pr-2 [&::-webkit-details-marker]:hidden"
       >
         {account.avatarUrl ? (
           <img
@@ -257,7 +257,7 @@ function AccountMenu() {
         </span>
         <ChevronDown size={13} aria-hidden="true" className="opacity-60" />
       </summary>
-      <div className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-foreground/10 bg-card p-2 shadow-xl">
+      <div className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl bg-card p-2 shadow-xl">
         <div className="px-3 py-2">
           <p className="truncate text-xs font-semibold">{account.displayName}</p>
           <p className="truncate text-[10px] text-foreground/55">

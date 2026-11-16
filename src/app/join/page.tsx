@@ -20,7 +20,7 @@ export default async function JoinPage({
     theme = themeSchema.safeParse(params.theme);
   return (
     <div className="min-h-[100svh] flex flex-col bg-background text-foreground">
-      <header className="border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20">
+      <header className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20">
         <div className="mx-auto w-full flex items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-4">
           <Brand compact />
           <Link
@@ -35,7 +35,7 @@ export default async function JoinPage({
       <main className="flex-1 mx-auto w-full sm:max-w-700 px-4 pt-1 pb-20 sm:px-6 sm:pt-8 sm:pb-24">
         <JoinForm initialTheme={theme.success ? theme.data : undefined} />
       </main>
-      <footer className="border-t border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-bottom">
+      <footer className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-bottom">
         <div className="mx-auto w-full flex items-center justify-between gap-4 px-4 py-6 sm:px-6 sm:py-8">
           <span className="text-[10px] text-foreground/45">
             A moment for a shared future.

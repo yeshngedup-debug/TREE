@@ -153,7 +153,7 @@ export function GuideChat() {
             type="button"
             onClick={() => void send(prompt)}
             disabled={pending}
-            className="rounded-full border border-border px-3 py-1.5 text-[11px] text-foreground/70 transition hover:bg-muted disabled:opacity-50 explore-prompt"
+            className="rounded-full bg-muted/60 px-3 py-1.5 text-[11px] text-foreground/70 transition hover:bg-muted disabled:opacity-50 explore-prompt"
           >
             {prompt}
           </button>

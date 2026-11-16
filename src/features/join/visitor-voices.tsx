@@ -84,7 +84,7 @@ export function VisitorVoices() {
             </p>
           )}
           {history.voices.map((voice) => (
-            <article key={voice.id} className="rounded-2xl bg-card p-5 sm:p-6 border border-border">
+            <article key={voice.id} className="rounded-2xl bg-card p-5 sm:p-6">
               <p className="text-[10px] text-foreground/55">
                 {new Date(voice.created_at).toLocaleDateString("en-GB", {
                   timeZone: "Asia/Thimphu",

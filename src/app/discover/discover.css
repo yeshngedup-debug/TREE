@@ -56,7 +56,6 @@
   margin: 10px auto 0;
   padding: 8px 8px 8px 16px;
   border-radius: 26px;
-  border: 1px solid rgba(37, 38, 32, 0.08);
   background: rgba(242, 242, 235, 0.74);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
@@ -123,7 +122,6 @@
 }
 
 .discover-shell .site-header > div:last-child :is(a, summary) {
-  border-color: rgba(23, 27, 18, 0.16);
 }
 
 .discover-shell .site-header > div:last-child :is(a, summary):hover {
@@ -131,7 +129,6 @@
 }
 
 .discover-shell footer {
-  border-top: 1px solid var(--discover-line);
 }
 
 @media (min-width: 768px) {
@@ -281,8 +278,7 @@
     background 0.35s ease,
     color 0.35s ease,
     transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
+    box-shadow 0.35s ease;
 }
 
 .discover-cta-primary {
@@ -297,7 +293,6 @@
 }
 
 .discover-cta-secondary {
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--discover-ink);
 }
 
@@ -468,7 +463,6 @@
 .discover-tags {
   position: relative;
   overflow: hidden;
-  border-block: 1px solid var(--discover-line);
   padding: 15px 0;
 }
 
@@ -494,7 +488,6 @@
   align-items: center;
   gap: 0.45rem;
   padding-inline: clamp(12px, 1.6vw, 20px);
-  border-right: 1px solid var(--discover-line);
   font-size: 12.5px;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -533,7 +526,6 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 0.55rem;
-  border: 1px solid var(--discover-line);
   border-radius: 22px;
   background: var(--discover-cream);
   scroll-margin-top: 96px;
@@ -561,7 +553,6 @@
 .discover-search input {
   width: 100%;
   min-height: 46px;
-  border: 0;
   background: transparent;
   padding: 0.72rem 0;
   font: inherit;
@@ -579,7 +570,6 @@
 
 .discover-select {
   min-height: 46px;
-  border: 1px solid var(--discover-line);
   border-radius: 15px;
   background: var(--discover-paper);
   padding: 0 0.75rem;
@@ -594,7 +584,6 @@
   gap: 8px;
   min-height: 46px;
   padding: 0 1.4rem;
-  border: 0;
   border-radius: 15px;
   background: var(--discover-ink);
   color: var(--discover-cream);
@@ -712,7 +701,6 @@
 /* Scoped community-card language — the shared PostCard, restyled in place --- */
 
 .discover-shell .community-card {
-  border: 1px solid var(--discover-line);
   border-radius: 26px;
   background: var(--discover-cream);
   box-shadow: 0 2px 10px rgba(23, 27, 18, 0.04);
@@ -822,7 +810,6 @@
 
 .discover-aside {
   align-self: start;
-  border: 1px solid var(--discover-line);
   border-radius: 26px;
   background: var(--discover-cream);
   padding: 1.15rem;
@@ -900,7 +887,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.9rem;
-  border: 1px dashed rgba(23, 27, 18, 0.28);
   border-radius: 30px;
   background:
     radial-gradient(
@@ -1044,7 +1030,6 @@
 }
 
 .discover-shell .closing-secondary {
-  border: 1px solid rgba(23, 27, 18, 0.28);
   color: var(--discover-ink);
 }
 

@@ -283,7 +283,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               setVisitorType("first");
               setShowHistory(false);
             }}
-            className="min-h-11 shrink-0 rounded-full border border-border px-4 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50 disabled:pointer-events-none"
+            className="min-h-11 shrink-0 rounded-full px-4 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50 disabled:pointer-events-none"
           >
             First visit
           </button>
@@ -295,7 +295,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               setVisitorType("returning");
               setShowHistory(true);
             }}
-            className="min-h-11 shrink-0 rounded-full border border-border px-4 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50 disabled:pointer-events-none"
+            className="min-h-11 shrink-0 rounded-full px-4 py-2 text-sm transition-colors hover:bg-muted disabled:opacity-50 disabled:pointer-events-none"
           >
             Returning
           </button>
@@ -317,10 +317,10 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           <li key={label} className="flex flex-col items-center gap-1">
             <span
               className={cn(
-                "flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-medium border",
+                "flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-medium",
                 step === index
-                  ? "bg-accent border-accent text-primary-foreground"
-                  : "border-border text-foreground/40",
+                  ? "bg-accent text-primary-foreground"
+                  : "text-foreground/40",
               )}
             >
               {index + 1}
@@ -365,17 +365,17 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               Choose a branch. Your words come next.
             </p>
           </div>
-          <fieldset className="border border-border rounded-2xl p-1">
+          <fieldset className="rounded-2xl p-1">
             <legend className="sr-only">Choose a theme</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {themes.map((item) => (
                 <label
                   key={item.id}
                   className={cn(
-                    "relative flex cursor-pointer items-center gap-3 rounded-xl bg-card border border-transparent p-2 sm:p-3 transition-colors min-h-[56px]",
+                    "relative flex cursor-pointer items-center gap-3 rounded-xl bg-card p-2 sm:p-3 transition-colors min-h-[56px]",
                     theme === item.id
-                      ? "bg-accent border-accent/40"
-                      : "hover:bg-muted hover:border-border",
+                      ? "bg-accent"
+                      : "hover:bg-muted",
                   )}
                 >
                   <input
@@ -420,7 +420,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             <span
               className={cn(
                 "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                "border border-border text-foreground/40",
+                "text-foreground/40",
               )}
               style={{ backgroundColor: themeColor }}
             >
@@ -453,7 +453,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             onChange={(event) => edit(event.target.value)}
             placeholder="A hope, a thought, or something you'd love to see…"
             aria-describedby="aspiration-help"
-            className="w-full min-h-[140px] resize-none rounded-xl border border-border bg-muted p-4 text-base leading-relaxed font-sans focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-60 disabled:pointer-events-none"
+            className="w-full min-h-[140px] resize-none rounded-xl bg-muted p-4 text-base leading-relaxed font-sans focus:ring-1 focus:ring-primary transition-colors disabled:opacity-60 disabled:pointer-events-none"
           />
           <div
             id="aspiration-help"
@@ -505,7 +505,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           {error && (
             <p
               role="alert"
-              className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-800"
+              className="rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-800"
             >
               {error}
             </p>
