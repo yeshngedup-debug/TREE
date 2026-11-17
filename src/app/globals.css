@@ -213,7 +213,7 @@ button:disabled {
   background: var(--forest-soft);
   transform: translateY(-1px);
 }
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .site-header {
     padding: 8px 10px 0;
   }
@@ -228,11 +228,17 @@ button:disabled {
     grid-column: 1 / -1;
     justify-self: stretch;
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .site-header-nav::-webkit-scrollbar {
+    display: none;
   }
   .site-header-link {
     flex: 1;
     padding-inline: 8px;
   }
+}
+@media (max-width: 767px) {
   .site-header-share span {
     display: none;
   }
