@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Search,
   ChevronLeft,
@@ -9,6 +10,7 @@ import {
   Trash2,
   LoaderCircle,
   LockKeyhole,
+  TreePine,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/client";
@@ -198,6 +200,19 @@ export function SubmissionManager() {
               </div>
             </div>
             <div className="mt-4 flex flex-wrap justify-end gap-2">
+              {item.leaf_id && (
+                <Link
+                  href={`/display?leaf=${item.leaf_id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="View on the tree"
+                  aria-label="View this leaf on the tree (opens in a new tab)"
+                  className="flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md border border-transparent px-2 text-soft transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <TreePine size={13} aria-hidden="true" />
+                  <span className="text-xs">Tree</span>
+                </Link>
+              )}
               {item.leaf_id && (
                 <Button
                   variant="secondary"

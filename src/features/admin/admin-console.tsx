@@ -19,6 +19,7 @@ import {
   Plus,
   Trash2,
   Sparkles,
+  TreePine,
   Search,
   MessageSquare,
   SlidersHorizontal,
@@ -543,7 +544,18 @@ export function AdminConsole() {
                               </span>
                             </td>
                             <td className="p-3 text-right">
-                              <Button
+                              <div className="flex items-center justify-end gap-1">
+                                <Link
+                                  href={`/display?leaf=${leaf.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  title="View on the tree"
+                                  aria-label="View this leaf on the tree (opens in a new tab)"
+                                  className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-soft transition-colors hover:bg-muted hover:text-foreground"
+                                >
+                                  <TreePine size={16} aria-hidden="true" />
+                                </Link>
+                                <Button
                                 size="icon"
                                 variant="ghost"
                                 disabled={Boolean(busy)}
@@ -573,7 +585,8 @@ export function AdminConsole() {
                                 ) : (
                                   <Eye size={16} />
                                 )}
-                              </Button>
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))}
