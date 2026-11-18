@@ -441,7 +441,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
               type="button"
               disabled={busy}
               onClick={() => setStep(0)}
-              className="min-h-10 text-xs text-soft hover:underline"
+              className="min-h-11 text-xs text-soft hover:underline"
             >
               Change theme
             </button>
@@ -542,7 +542,7 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             </span>
           </label>
           <details className="text-xs text-soft">
-            <summary className="cursor-pointer min-h-[36px] py-1.5">
+            <summary className="cursor-pointer min-h-11 py-1.5">
               Privacy &amp; how this works
             </summary>
             <p className="leading-relaxed pt-2">

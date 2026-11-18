@@ -1031,8 +1031,8 @@ select:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   pointer-events: auto;
   background: transparent;
@@ -1159,10 +1159,10 @@ select:focus-visible {
   width: 100%;
   min-width: 0;
   margin-top: 8px;
-  padding: 11px 12px;
+  padding: 12px 14px;
   border-radius: 12px;
   background: var(--card);
-  font-size: 14px;
+  font-size: 16px;
   outline-offset: 3px;
 }
 .bi-tree-fact {
@@ -2533,8 +2533,8 @@ select:focus-visible {
 .kiosk-icon {
   display: grid;
   place-items: center;
-  width: clamp(30px, 3.2vmin, 46px);
-  height: clamp(30px, 3.2vmin, 46px);
+  width: clamp(44px, 3.2vmin, 46px);
+  height: clamp(44px, 3.2vmin, 46px);
   border-radius: 50%;
   background: color-mix(in srgb, currentColor 4%, transparent);
   color: inherit;
@@ -2775,8 +2775,8 @@ select:focus-visible {
   right: 0;
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: color-mix(in srgb, currentColor 6%, transparent);
   color: inherit;
@@ -2797,8 +2797,8 @@ select:focus-visible {
 .kiosk-controls button {
   display: grid;
   place-items: center;
-  width: clamp(32px, 3.4vmin, 46px);
-  height: clamp(32px, 3.4vmin, 46px);
+  width: clamp(44px, 3.4vmin, 46px);
+  height: clamp(44px, 3.4vmin, 46px);
   border-radius: 50%;
   color: inherit;
 }
@@ -2977,8 +2977,8 @@ select:focus-visible {
     letter-spacing: 0.06em;
   }
   .kiosk-icon {
-    width: 30px;
-    height: 30px;
+    width: 44px;
+    height: 44px;
   }
   .kiosk-qr-copy {
     display: none;
@@ -2994,8 +2994,8 @@ select:focus-visible {
     display: none;
   }
   .kiosk-controls button {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
   }
 }
 

@@ -149,7 +149,7 @@ export function VisitorAccess({
               Connect this voice to my history
             </Button>
           )}
-          <Button asChild size="sm" className="w-full sm:w-auto">
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/voices">
               My previous voices <ArrowRight size={14} />
             </Link>
@@ -269,7 +269,7 @@ export function VisitorAccess({
       {onDismiss && (
         <button
           type="button"
-          className="mt-4 min-h-10 text-sm text-soft"
+          className="mt-4 min-h-11 text-sm text-soft"
           onClick={onDismiss}
         >
           Continue with a new hope
