@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { SiteFooter, SiteHeader } from "@/components/brand";
 import { CommunityHighlights } from "@/features/community/community-highlights";
 import {
@@ -14,6 +15,9 @@ import {
 } from "@/server/community";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 async function loadHighlights() {
   try {
