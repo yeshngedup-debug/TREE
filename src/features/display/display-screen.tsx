@@ -376,7 +376,11 @@ export function DisplayScreen() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <span className="kiosk-caption-count" aria-busy={!ready}>
-              {ready ? (
+              {ready && tree?.statsUnavailable ? (
+                <span className="kiosk-caption-loading">
+                  The canopy count is resting
+                </span>
+              ) : ready ? (
                 <>
                   <motion.strong
                     key={lastArrival}

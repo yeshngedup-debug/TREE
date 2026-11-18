@@ -55,13 +55,7 @@ export default async function Home() {
       <SiteHeader />
       <main className="home-shell">
         <HomeExperience />
-        {failed && (
-          <p className="community-error home-data-error" role="alert">
-            The community grove is not loading right now. Check your connection
-            and try again in a moment.
-          </p>
-        )}
-        <CommunityHighlights {...highlights} />
+        <CommunityHighlights {...highlights} unavailable={failed} />
         <HomeClosing />
       </main>
       <SiteFooter />

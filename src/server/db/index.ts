@@ -811,10 +811,14 @@ export function saveReflection(reflection: Reflection, sourceRevision: number) {
 
 export async function snapshot(): Promise<TreeSnapshot> {
   let stats: TreeStats;
+  let statsUnavailable: boolean | undefined;
   try {
     stats = await treeStats();
   } catch {
+    // A database failure is not a zero. Flag it so surfaces can rest the
+    // counter instead of presenting invented all-zero counts as real.
     stats = emptyTreeStats();
+    statsUnavailable = true;
   }
   let leaves: Leaf[] = [];
   try {
@@ -848,6 +852,7 @@ export async function snapshot(): Promise<TreeSnapshot> {
     revision,
     serverTime: new Date().toISOString(),
     settings,
+    ...(statsUnavailable ? { statsUnavailable: true } : {}),
   };
 }
 

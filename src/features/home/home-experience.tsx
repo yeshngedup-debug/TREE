@@ -291,6 +291,8 @@ export function HomeExperience() {
                 <span className="bento-live-dot" aria-hidden="true" />
                 {!ready ? (
                   "Connecting to the canopy…"
+                ) : tree.statsUnavailable ? (
+                  "The canopy count is resting — check back shortly"
                 ) : tree.total > 0 ? (
                   <>
                     <strong>{tree.total}</strong>{" "}

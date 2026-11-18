@@ -133,6 +133,8 @@ export type TreeSnapshot = {
   revision: number;
   serverTime: string;
   settings: import("./tree-settings").TreeSettings;
+  /** True when the stats query failed; `stats` zeros are not real counts. */
+  statsUnavailable?: boolean;
 };
 export const themeFor = (id: Theme): (typeof themes)[number] => {
   const found = themes.find((theme) => theme.id === id);

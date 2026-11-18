@@ -25,14 +25,17 @@ export function CommunityHighlights({
   aspirations,
   featured,
   categories,
+  unavailable = false,
 }: {
   stats: Stats;
   ideas: CommunityPostSummary[];
   aspirations: CommunityPostSummary[];
   featured: CommunityPostSummary[];
   categories: (CommunityCategory & { postCount: number })[];
+  /** True when the community database could not be reached. Distinct from a genuine zero. */
+  unavailable?: boolean;
 }) {
-  const empty = !stats.posts;
+  const empty = !unavailable && !stats.posts;
   return (
     <>
       <section className="mx-auto max-w-[1440px] px-5 pt-6 md:px-10">
@@ -55,26 +58,45 @@ export function CommunityHighlights({
               Share an idea <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
-          <dl className="community-stats">
-            {[
-              { label: "Published posts", value: stats.posts, Icon: FileText },
-              { label: "Aspirations", value: stats.aspirations, Icon: Sprout },
-              { label: "Ideas", value: stats.ideas, Icon: Lightbulb },
-              { label: "Members", value: stats.members, Icon: Users },
-            ].map(({ label, value, Icon }) => (
-              <div key={label}>
-                <dt>
-                  <Icon size={14} aria-hidden="true" /> {label}
-                </dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
+          {unavailable ? (
+            <p role="status" className="mt-6 text-sm leading-6 opacity-70">
+              The grove’s counters are resting — the community database is not
+              reachable from here right now. Your hopes and posts are safe;
+              they will show again shortly.
+            </p>
+          ) : (
+            <dl className="community-stats">
+              {[
+                { label: "Published posts", value: stats.posts, Icon: FileText },
+                { label: "Aspirations", value: stats.aspirations, Icon: Sprout },
+                { label: "Ideas", value: stats.ideas, Icon: Lightbulb },
+                { label: "Members", value: stats.members, Icon: Users },
+              ].map(({ label, value, Icon }) => (
+                <div key={label}>
+                  <dt>
+                    <Icon size={14} aria-hidden="true" /> {label}
+                  </dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
         </div>
       </section>
 
       <section className="mx-auto max-w-[1440px] px-5 py-10 md:px-10 md:py-14">
-        {empty ? (
+        {unavailable ? (
+          <div className="community-empty" role="status">
+            <Sprout size={22} aria-hidden="true" />
+            <h3>The community grove is not loading right now.</h3>
+            <p>
+              This is a connection problem, not an empty tree — nothing you
+              planted is lost. The grove will open as soon as the database
+              answers again.
+            </p>
+            <Link href="/">Check again</Link>
+          </div>
+        ) : empty ? (
           <div className="community-empty">
             <Sprout size={22} aria-hidden="true" />
             <h3>The first idea is waiting to be planted.</h3>
@@ -163,6 +185,7 @@ export function CommunityHighlights({
         )}
       </section>
 
+      {unavailable ? null : (
       <section className="mx-auto mb-12 max-w-[1440px] px-5 md:px-10">
         <div className="rounded-[28px] bg-card p-6 md:p-8">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
@@ -192,6 +215,7 @@ export function CommunityHighlights({
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }
