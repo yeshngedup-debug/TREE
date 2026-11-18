@@ -113,6 +113,10 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
     if (stream)
       stream.onerror = () => {
         if (alive) setConnection("reconnecting");
+        // EventSource retries the stream on its own, but don't wait up to a
+        // poll interval: pull a snapshot now so the display catches up
+        // quickly. reconcile() is guarded against overlapping fetches.
+        void reconcile();
       };
     void reconcile();
     const interval = setInterval(reconcile, stream ? 15000 : 2000);

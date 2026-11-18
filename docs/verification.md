@@ -15,6 +15,10 @@ E2E needs a running app. The suite defaults to `BASE_URL=http://127.0.0.1:3100` 
 
 ### Canonical e2e harness
 
+One command does steps 1–3 below: `npm run test:e2e:isolated` (requires `npm run build` first). It spawns the harness, waits for health, runs Playwright against :3100, then kills the servers and deletes only the databases created by that run.
+
+Manual equivalent:
+
 `node scripts/test-server.mjs` spawns three processes: a mock AI provider on :3102, and the app on :3100 (`AI_MODE=offline`) and :3101 (`AI_MODE=auto`), both against **fresh** SQLite files in `data/tests/` (gitignored) and `ADMIN_PASSWORD=test-only-staff-password`. The suite must run against this harness, never against a `next start` over a `.env`-shaped database: the real Neon database carries production data and `00-growth.spec.ts` expects a bare reception tree.
 
 Protocol:
@@ -24,6 +28,8 @@ Protocol:
 3. `npx playwright test` — a full clean run has reported **102 passed** (2026-11-18).
 4. If a single spec ever fails on state left behind (e.g. `00-growth` seeing a non-zero count), the DB was dirty, not the code: return to step 1. A dirty-DB failure is distinguishable because it only appears after the harness has already served other specs.
 5. `tests/scene-animation.spec.ts` asserts the kiosk QR sits on the solid white `.kiosk-qr` panel, matching the "QR on solid white" design requirement.
+
+**Snapshot cap trap (2026-11-18):** `listLeaves()` caps the public snapshot at **120 leaves** (`snapshot() → listLeaves()` default). Point the suite at a long-lived populated database and marker-count assertions (`.tree-leaf` count = before+1) can never pass — the window drops older leaves as new ones arrive (observed: shared DB at 263 total, every insert left the marker count at 120). Specs `tree-upgrade.spec.ts` and `experience.spec.ts` carry these assertions, so the harness's fresh-DB-per-run property is load-bearing: never `npx playwright test` against a reused `next start` over an accumulated SQLite file. The real Neon production database is equally off-limits (`00-growth` expects a bare tree).
 
 Diagnostics used while tuning the join flow live nowhere in the tree; rebuild them ad hoc (a five-line Playwright script walking `.join-form` and printing `getBoundingClientRect()` is enough).
 

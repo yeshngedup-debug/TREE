@@ -372,7 +372,9 @@ export function DisplayScreen() {
               ) : (
                 <span className="kiosk-caption-loading">
                   <span className="kiosk-caption-pulse" aria-hidden="true" />
-                  Counting the canopy
+                  {connection === "connecting"
+                    ? "Counting the canopy"
+                    : "Still trying to reach the tree"}
                 </span>
               )}
             </span>

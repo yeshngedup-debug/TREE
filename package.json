@@ -11,6 +11,7 @@
     "test:smoke": "node scripts/smoke.mjs",
     "setup": "node scripts/setup.mjs",
     "test:e2e": "playwright test",
+    "test:e2e:isolated": "node scripts/e2e-isolated.mjs",
     "lint": "eslint src"
   },
   "keywords": [],
