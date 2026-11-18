@@ -277,9 +277,14 @@ export default async function DiscoverPage({
               <div className="discover-results-head">
                 <h2 className="discover-results-title">Leaves from the grove</h2>
                 <p className="discover-results-count">
-                  {result.total}{" "}
-                  {result.total === 1 ? "leaf" : "leaves"}
-                  {filtered ? " in this view" : " and counting"}
+                  {result.total === 0 ? (
+                    filtered ? "No leaves match this view" : "No leaves yet"
+                  ) : (
+                    <>
+                      {result.total} {result.total === 1 ? "leaf" : "leaves"}
+                      {filtered ? " in this view" : " and counting"}
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -292,16 +297,58 @@ export default async function DiscoverPage({
               ) : (
                 <div className="community-empty">
                   <Sprout size={22} aria-hidden="true" />
+                  <p className="community-empty-kicker">
+                    {filtered ? "No match in this view" : "A quiet grove"}
+                  </p>
                   <h2>Nothing has grown here yet.</h2>
                   <p>
-                    Try a broader search, another category, or clear the filters
-                    to see the whole grove.
+                    {filtered
+                      ? "No leaf matches this combination yet. Try a broader search, another theme, or clear the filters to see the whole grove."
+                      : "Community posts land here once someone publishes an aspiration or an idea. The Living Tree is a separate, anonymous collection — add a hope there in about a minute, or write the first post for this grove."}
                   </p>
                   <div className="discover-empty-actions">
-                    <Link href="/discover" className="discover-cta discover-cta-primary">
-                      Clear the search
+                    {filtered ? (
+                      <Link
+                        href="/discover"
+                        className="discover-cta discover-cta-primary"
+                      >
+                        Clear filters
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/create"
+                        className="discover-cta discover-cta-primary"
+                      >
+                        Write the first post
+                      </Link>
+                    )}
+                    <Link
+                      href="/join"
+                      className="discover-cta discover-cta-secondary"
+                    >
+                      Add a hope to the tree
                     </Link>
                   </div>
+                  {!filtered ? (
+                    <div className="discover-seeds">
+                      <p className="discover-seeds-label">
+                        Starting points, not published posts
+                      </p>
+                      <ul>
+                        <li>
+                          A small change that would make your community
+                          stronger.
+                        </li>
+                        <li>
+                          One tradition you hope carries into Bhutan&rsquo;s
+                          future.
+                        </li>
+                        <li>
+                          A skill you wish every young person could learn.
+                        </li>
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
               )}
 

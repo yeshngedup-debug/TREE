@@ -9,6 +9,7 @@ import {
   Share2,
   Sprout,
   MessageCircle,
+  ShieldCheck,
 } from "lucide-react";
 import { themeFor, guidePaths, type Leaf } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
@@ -217,6 +218,12 @@ export function LeafResult({
             ? "A little keepsake from the BI Tree."
             : `Look for leaf #${leaf.id.slice(0, 6)} on the big screen. You've helped the tree grow.`}
         </p>
+        {!keepsake ? (
+          <p className="mx-auto mt-4 inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-[11px] text-soft">
+            <ShieldCheck size={12} aria-hidden="true" />
+            Checked before publication · staff can review it privately
+          </p>
+        ) : null}
       </div>
       <section className="keepsake forest grain relative overflow-hidden rounded-[32px] px-7 pb-8 pt-9 text-center">
         <p className="eyebrow text-xs text-accent">

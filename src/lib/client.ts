@@ -35,6 +35,15 @@ export async function fetchWithTimeout(
     parent?.removeEventListener("abort", abort);
   }
 }
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
 export async function api<T>(
   url: string,
   init?: RequestInit,
@@ -50,14 +59,16 @@ export async function api<T>(
   } catch {
     // Empty or non-JSON body (e.g. serverless function crashed, bad gateway,
     // or missing environment variables on the deployed site).
-    throw new Error(
+    throw new ApiError(
       `The server returned an empty response (${response.status}). It may be missing required environment variables. Please try again or contact support.`,
+      response.status || 0,
     );
   }
   if (!response.ok)
-    throw new Error(
+    throw new ApiError(
       (data as { error?: string } | null)?.error ||
         "Something went wrong. Please try again.",
+      response.status,
     );
   if (schema) return schema.parse(data);
   return data as T;

@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             </p>
           </section>
           <section>
-            <h2>A hackathon experience</h2>
+            <h2>A living, non-official collection</h2>
             <p>
               These are participating visitors' hopes, not official plans,
               commitments or representative survey results. Demo contributions

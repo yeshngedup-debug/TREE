@@ -23,7 +23,11 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
   })),
     [connection, setConnection] = useState<
       "connecting" | "live" | "reconnecting"
-    >("connecting");
+    >("connecting"),
+    // `ready` only flips once a snapshot has actually arrived (live or cached).
+    // Surfaces wait for it so they never render "0 hopes" or an empty-state CTA
+    // while the first request is still in flight.
+    [ready, setReady] = useState(false);
   useEffect(() => {
     let alive = true;
     const controller = new AbortController();
@@ -50,6 +54,7 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
           : previous,
       );
       setConnection(navigator.onLine ? "live" : "reconnecting");
+      setReady(true);
       if (cache)
         try {
           localStorage.setItem("bi-tree-cache", JSON.stringify(data));
@@ -67,7 +72,10 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
           Array.isArray(stored.leaves) &&
           Date.now() - Date.parse(stored.serverTime) < 86400000
         )
-          setTimeout(() => setTree(stored), 0);
+          setTimeout(() => {
+            setTree(stored);
+            setReady(true);
+          }, 0);
       } catch {
         /* optional cache */
       }
@@ -120,5 +128,5 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
       window.removeEventListener("offline", offline);
     };
   }, [cache]);
-  return { tree, connection };
+  return { tree, connection, ready };
 }
