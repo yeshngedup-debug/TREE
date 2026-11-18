@@ -155,10 +155,11 @@ export function createTreeSky(
   scene.background = background;
   let initialised = false;
   function densityFor(settings: TreeSettings) {
-    // Enough haze to soften the far meadow, nowhere near enough to grey out the
-    // canopy. Scaling with size keeps the same read for a sapling and a mature
-    // tree, where the camera distance scales too.
-    return 0.16 / Math.max(1, settings.size);
+    // The camera scales with tree size (~2.8x), so a fixed density fogs a
+    // sapling into nothing while barely touching a mature tree. Keep the
+    // canopy under ~15% fog at its fitted distance; only the far meadow
+    // (40+ units) should be mostly haze.
+    return THREE.MathUtils.clamp(0.14 / Math.max(1, settings.size), 0.012, 0.032);
   }
   function configure(settings: TreeSettings) {
     tonesFor(settings, target);

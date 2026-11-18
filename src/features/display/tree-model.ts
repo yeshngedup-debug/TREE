@@ -146,6 +146,10 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     woodMaterial = new THREE.MeshToonMaterial({
       color: settings.customColors ? settings.woodColor : palette.wood,
       gradientMap: gradient,
+      // The tree is the hero: scene fog must never wash it into the sky,
+      // whatever palette or tree size is configured. Haze is for the far
+      // meadow only.
+      fog: false,
     });
   const positions = geometry.getAttribute("position"),
     original = positions
@@ -223,6 +227,8 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       alphaTest: 0.4,
       alphaToCoverage: true,
       color: "white",
+      // Keep the canopy crisp in garden atmospheres (see woodMaterial).
+      fog: false,
     });
   // Upstream applies a color ramp after lighting instead of multiplying the
   // leaf color by the sun again. Preserve those bands and the fine leaf edges.
