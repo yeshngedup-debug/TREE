@@ -499,12 +499,35 @@ export function createTreeScene(
     fit();
   });
   observer.observe(host);
+  // Pause the render loop entirely while the canvas is off screen. Phones and
+  // low-power laptops otherwise keep the full scene ticking below the fold
+  // (hero scroll, admin panel, receipt preview). A margin keeps the tree
+  // warm shortly before it scrolls back into view.
+  const frame = (now: number) => render(now);
+  const visibility = new IntersectionObserver(
+    (entries) => {
+      const onScreen = entries.some((entry) => entry.isIntersecting);
+      if (onScreen) {
+        dirty = true;
+        renderer.setAnimationLoop(frame);
+      } else {
+        renderer.setAnimationLoop(null);
+      }
+    },
+    { rootMargin: "160px 0px" },
+  );
+  visibility.observe(host);
+  const reducedMotionChanged = () => {
+    controls.enableDamping = !motion.matches;
+    dirty = true;
+  };
+  motion.addEventListener?.("change", reducedMotionChanged);
   const lost = (event: Event) => {
     event.preventDefault();
     if (!disposed) onFailure();
   };
   renderer.domElement.addEventListener("webglcontextlost", lost);
-  renderer.setAnimationLoop((now) => render(now));
+  renderer.setAnimationLoop(frame);
   async function capture(pixelRatio = renderer.getPixelRatio()) {
     const previous = renderer.getPixelRatio();
     try {
@@ -566,6 +589,8 @@ export function createTreeScene(
     if (disposed) return;
     disposed = true;
     observer.disconnect();
+    visibility.disconnect();
+    motion.removeEventListener?.("change", reducedMotionChanged);
     renderer.setAnimationLoop(null);
     renderer.domElement.removeEventListener("webglcontextlost", lost);
     controls.removeEventListener("change", changed);
