@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { sitemapEntries } from "@/server/community";
+import { listLeaves } from "@/server/db";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +30,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   let posts: Awaited<ReturnType<typeof sitemapEntries>>["posts"] = [];
   let profiles: Awaited<ReturnType<typeof sitemapEntries>>["profiles"] = [];
+  let leaves: Awaited<ReturnType<typeof listLeaves>> = [];
   try {
     const entries = await sitemapEntries();
     posts = entries.posts;
     profiles = entries.profiles;
+    // Public keepsake pages: latest 200 approved hopes. The same content is
+    // already on the public tree, so nothing private is exposed.
+    leaves = await listLeaves(200);
   } catch {
     // The sitemap still lists public static routes when the database is down.
   }
@@ -55,6 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(profile.updatedAt),
       changeFrequency: "weekly" as const,
       priority: 0.5,
+    })),
+    ...leaves.map((leaf) => ({
+      url: new URL(`/leaf/${leaf.id}`, base).toString(),
+      lastModified: new Date(leaf.created_at),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
     })),
   ];
 }
