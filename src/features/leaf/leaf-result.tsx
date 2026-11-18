@@ -327,12 +327,22 @@ export function LeafResult({
         </Link>
       )}
       {keepsake && (
-        <div className="no-print text-center">
+        <div className="no-print space-y-4 text-center">
           <Button asChild>
             <Link href="/join">
               Grow your own leaf <Sprout size={16} />
             </Link>
           </Button>
+          <p className="text-xs text-soft">
+            Is this your leaf? If you planted it anonymously,{" "}
+            <Link
+              href="/voices"
+              className="underline underline-offset-4"
+            >
+              unlock your previous voices
+            </Link>{" "}
+            with your CID and PIN.
+          </p>
         </div>
       )}
     </div>
