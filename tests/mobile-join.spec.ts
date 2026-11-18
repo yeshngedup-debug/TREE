@@ -58,7 +58,9 @@ test.describe("Join page on phone (390x844)", () => {
     await page.getByRole("radio", { name: "Education & opportunity" }).check();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
 
-    await expect(page.getByText("Opportunity")).toBeVisible();
+    // The live leaf preview repeats the theme label, so target the first
+    // match (the step-one chip) rather than requiring a single match.
+    await expect(page.getByText("Opportunity").first()).toBeVisible();
 
     await page.getByRole("button", { name: "Change theme" }).click();
     await expect(

@@ -100,8 +100,9 @@ test.describe("Join page - complete user flow", () => {
     await page.getByRole("radio", { name: "Education & opportunity" }).check();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
 
-    // Theme chip shows selected theme short value "Opportunity"
-    await expect(page.getByText("Opportunity")).toBeVisible();
+    // Theme chip shows selected theme short value "Opportunity". The live leaf
+    // preview repeats it, so target the first match (the chip).
+    await expect(page.getByText("Opportunity").first()).toBeVisible();
 
     // "Change theme" button works
     await page.getByRole("button", { name: "Change theme" }).click();
@@ -168,10 +169,9 @@ test.describe("Join page - complete user flow", () => {
       page.getByRole("button", { name: "Grow another hope" }),
     ).toBeVisible();
 
-    // Guide path recommendation
-    await expect(
-      page.locator("p.mb-1.text-xs.font-medium.text-foreground\\/65"),
-    ).toContainText("Your next step");
+    // Guide path recommendation (locate by copy; the old class-based locator
+    // drifted when the guide card restyled to text-soft).
+    await expect(page.getByText(/Your next step · Guide path/)).toBeVisible();
     await expect(page.getByText("Explore this in Bhutan")).toBeVisible();
   });
 
