@@ -8,20 +8,72 @@ export function createTreeEnvironment(
   scene: THREE.Scene,
   settings: TreeSettings,
   low: boolean,
+  // Garden scenes have sky and fog, so the meadow can run out to the horizon.
+  // Transparent embeds keep the old island so page chrome stays untouched.
+  openSky = false,
 ) {
   const palette = treePalettes[settings.palette],
     group = new THREE.Group();
   group.name = "Garden ground, shadow and grass";
   scene.add(group);
-  const radius = settings.size * 0.62;
+  const radius = settings.size * 0.62,
+    meadowMix = new THREE.Color();
+  function meadowColor(next: TreeSettings, out: THREE.Color) {
+    const tone = treePalettes[next.palette];
+    // Match the average tone of a blade (root to tip), so the meadow the grass
+    // sits on reads as the same field rather than a different green plate.
+    return out.set(tone.grass).lerp(meadowMix.set(tone.grassTip), 0.34);
+  }
+  // One soft radial wash under everything: dense near the trunk, thinning to
+  // nothing well before the horizon, so the island melts into the fog instead
+  // of ending on a hard green rim. A canvas gradient is cheaper than a shader
+  // and needs no extra draw call of its own.
+  const meadowCanvas = document.createElement("canvas");
+  meadowCanvas.width = meadowCanvas.height = 128;
+  const meadowContext = meadowCanvas.getContext("2d")!,
+    meadowGradient = meadowContext.createRadialGradient(64, 64, 0, 64, 64, 64);
+  meadowGradient.addColorStop(0, "rgba(255,255,255,0.95)");
+  meadowGradient.addColorStop(0.4, "rgba(255,255,255,0.85)");
+  meadowGradient.addColorStop(0.68, "rgba(255,255,255,0.45)");
+  meadowGradient.addColorStop(0.85, "rgba(255,255,255,0.12)");
+  // Reaching zero well inside the geometry means the disc has no rim at all:
+  // it simply stops existing before anything can outline it.
+  meadowGradient.addColorStop(0.97, "rgba(255,255,255,0)");
+  meadowGradient.addColorStop(1, "rgba(255,255,255,0)");
+  meadowContext.fillStyle = meadowGradient;
+  meadowContext.fillRect(0, 0, 128, 128);
+  const meadowTexture = new THREE.CanvasTexture(meadowCanvas),
+    meadowGeometry = new THREE.CircleGeometry(settings.size * 2.4, low ? 32 : 64),
+    meadowMaterial = new THREE.MeshBasicMaterial({
+      map: meadowTexture,
+      transparent: true,
+      depthWrite: false,
+      fog: true,
+    });
+  meadowColor(settings, meadowMaterial.color);
+  const meadow = new THREE.Mesh(meadowGeometry, meadowMaterial);
+  meadow.rotation.x = -Math.PI / 2;
+  meadow.position.y = -0.05;
+  meadow.renderOrder = 1;
+  meadow.visible = openSky;
+  meadow.name = "Meadow falloff";
+  group.add(meadow);
   const groundGeometry = new THREE.PlaneGeometry(160, 160);
   const groundMaterial = new THREE.ShadowMaterial({
     color: palette.shadow,
-    opacity: 0.32,
+    // A soft directional shadow: enough to seat the trunk, light enough that
+    // the stretched boughs do not read as a second grey tree on the meadow.
+    opacity: 0.2,
+    // The meadow sits just beneath this plane; without this the shadow catcher
+    // writes depth over it and erases the whole field.
+    depthWrite: false,
   });
   const ground = new THREE.Mesh(groundGeometry, groundMaterial);
   ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.025;
+  ground.position.y = -0.045;
+  // Drawn after the meadow so the shadow lands on the field instead of being
+  // hidden by it; neither plane writes depth.
+  ground.renderOrder = 2;
   ground.receiveShadow = true;
   group.add(ground);
 
@@ -44,6 +96,7 @@ export function createTreeEnvironment(
   const contact = new THREE.Mesh(contactGeometry, contactMaterial);
   contact.rotation.x = -Math.PI / 2;
   contact.position.y = -0.02;
+  contact.renderOrder = 3;
   group.add(contact);
 
   const bladeGeometry = new THREE.BufferGeometry();
@@ -174,8 +227,7 @@ export function createTreeEnvironment(
     reduced: boolean,
     contributions: number,
     gust: number,
-  ) {
-    const time = (now / 1000) * settings.windSpeed;
+  ) {    const time = (now / 1000) * settings.windSpeed;
     uniforms.uGrassTime.value = time;
     uniforms.uGrassWind.value = reduced ? 0 : settings.wind * 0.35 * (1 + gust);
     petals.count =
@@ -205,6 +257,9 @@ export function createTreeEnvironment(
     for (const item of [
       groundGeometry,
       groundMaterial,
+      meadowTexture,
+      meadowGeometry,
+      meadowMaterial,
       contactTexture,
       contactGeometry,
       contactMaterial,
@@ -221,10 +276,18 @@ export function createTreeEnvironment(
     dispose,
     grassCount: grass.count,
     configure(next: TreeSettings) {
+      const recolour = next.palette !== settings.palette;
       settings = next;
       uniforms.uGrassDirection.value = THREE.MathUtils.degToRad(
         next.windDirection,
       );
+      if (!recolour) return;
+      const palette = treePalettes[next.palette];
+      uniforms.uGrassRoot.value.set(palette.grass);
+      uniforms.uGrassTip.value.set(palette.grassTip);
+      petalMaterial.color.set(palette.leaves[1]);
+      groundMaterial.color.set(palette.shadow);
+      meadowColor(next, meadowMaterial.color);
     },
   };
 }

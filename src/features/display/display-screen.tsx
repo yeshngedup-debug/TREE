@@ -168,7 +168,7 @@ export function DisplayScreen() {
           ].slice(0, 120),
         );
         batch.forEach((leaf, index) =>
-          flights.current.set(leaf.id, now + 2400 + index * 80),
+          flights.current.set(leaf.id, now + 2600 + index * 80),
         );
         stories.current = [...stories.current, ...batch].slice(-12);
         setLastArrival(now);
@@ -276,6 +276,7 @@ export function DisplayScreen() {
           className="kiosk-tree"
           environment="garden"
           composition="poster"
+          followArrival
           sceneRef={scene}
           showControls={false}
         />

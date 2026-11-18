@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { createTreeModel, type GrowthMetrics } from "./tree-model";
-import { treePalettes, type TreeSettings } from "@/lib/tree-settings";
+import { createTreeModel, type GrowthMetrics, ARRIVAL_MS } from "./tree-model";
+import type { TreeSettings } from "@/lib/tree-settings";
 import type { Leaf } from "@/lib/catalog";
 import { createTreeEnvironment } from "./tree-environment";
+import { createTreeSky } from "./tree-sky";
 
 export type ProjectedLeaf = {
   id: string;
@@ -35,6 +36,9 @@ export function createTreeScene(
   onFailure: () => void,
   environment: "transparent" | "garden" = "transparent",
   composition: "mature" | "portrait" | "poster" = "mature",
+  // Only the display opts in: it drifts the camera a little toward a newcomer
+  // so the room notices where the leaf landed.
+  followArrival = false,
 ): SceneController {
   // WebGL2 is the minimum three r163+ runs on. Probe first: on kiosks and
   // sandboxed browsers the GPU is policy-disabled, and constructing the
@@ -62,6 +66,12 @@ export function createTreeScene(
     arrivalId: string | undefined,
     arrivalIds: readonly string[] = [],
     count = 0;
+  // Arrival camera drift: a short, small pull toward the leaf that just landed.
+  // Any orbit gesture takes the view back for good.
+  const focusHome = new THREE.Vector3(),
+    focusAim = new THREE.Vector3();
+  let focusUntil = 0,
+    focusSeen = new Set<string>();
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -85,7 +95,7 @@ export function createTreeScene(
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.className = "procedural-canvas";
   renderer.domElement.setAttribute("aria-hidden", "true");
@@ -130,7 +140,14 @@ export function createTreeScene(
   sun.shadow.normalBias = 0.025;
   rim.position.set(4, 4, -4);
   scene.add(sky, sun, sun.target, rim);
-  let garden = createTreeEnvironment(scene, settings, isLow());
+  let garden = createTreeEnvironment(scene, settings, isLow(), environment === "garden");
+  // Garden mode gets a continuous sky and matched fog; transparent embeds keep
+  // the renderer's alpha so page chrome shows through the canvas.
+  const atmosphere =
+    environment === "garden"
+      ? createTreeSky(scene, settings, camera, isLow())
+      : null;
+  host.dataset.atmosphere = atmosphere ? "sky" : "clear";
   host.dataset.grassBlades = String(garden.grassCount);
   host.dataset.shadows = "true";
   const centre = new THREE.Vector3(),
@@ -250,6 +267,7 @@ export function createTreeScene(
         ? distance
         : distance * (environment === "garden" ? 0.9 : 1.04);
     controls.target.copy(centre);
+    focusHome.copy(centre);
     controls.minDistance = Math.max(1, fittedDistance * 0.25);
     controls.maxDistance = fittedDistance * 2.4;
     if (!userView) {
@@ -286,10 +304,7 @@ export function createTreeScene(
     );
     sun.intensity = settings.sunIntensity * 1.4;
     sun.target.position.set(0, settings.size * 0.3, 0);
-    if (environment === "garden")
-      scene.background = new THREE.Color(
-        treePalettes[settings.palette].background,
-      );
+    atmosphere?.configure(settings);
     sky.intensity = settings.skyIntensity;
     controls.autoRotate = settings.autoRotate && !motion.matches;
     controls.autoRotateSpeed = 0.35;
@@ -301,6 +316,9 @@ export function createTreeScene(
       userView = true;
       interacting = true;
       lastInteraction = performance.now();
+      // Hand the camera back without a jump: whatever drift is applied stays,
+      // the bell simply stops advancing.
+      focusUntil = 0;
       dirty = true;
     };
   const end = () => {
@@ -324,6 +342,7 @@ export function createTreeScene(
       "sunIntensity",
       "skyIntensity",
       "autoRotate",
+      "palette",
     ]);
     const shape = (value: TreeSettings) =>
       JSON.stringify(
@@ -335,6 +354,7 @@ export function createTreeScene(
       if (next.autoRotate && !settings.autoRotate) lastInteraction = -10000;
       settings = next;
       model.configureMotion(next);
+      model.configurePalette(next);
       garden.configure(next);
       lighting();
       dirty = true;
@@ -352,7 +372,7 @@ export function createTreeScene(
     model.setContributions(leaves, count, activeId, arrivalIds, false);
     model.step(performance.now(), 1, true);
     garden.dispose();
-    garden = createTreeEnvironment(scene, settings, isLow());
+    garden = createTreeEnvironment(scene, settings, isLow(), environment === "garden");
     host.dataset.grassBlades = String(garden.grassCount);
     lighting();
     fit();
@@ -379,6 +399,18 @@ export function createTreeScene(
       !first,
     );
     first = false;
+    if (followArrival && arrivals.length) {
+      const fresh = arrivals.filter((id) => !focusSeen.has(id)),
+        point =
+          fresh.length && !motion.matches
+            ? model.focus(fresh[fresh.length - 1])
+            : undefined;
+      focusSeen = new Set(arrivals);
+      if (point) {
+        focusAim.copy(point).applyMatrix4(model.group.matrixWorld);
+        focusUntil = performance.now() + ARRIVAL_MS + 600;
+      }
+    } else if (focusSeen.size) focusSeen = new Set();
     // The poster and portrait crops follow the tree as it grows; a mature frame
     // stays put so the display never rescales under a visitor mid-session.
     // Frame the target growth, not the current one, so the first update does
@@ -406,10 +438,29 @@ export function createTreeScene(
       !interacting &&
       now - lastInteraction > 5000;
     const gust = Math.max(0, 1 - (now - gustStarted) / 2400) ** 2 * 2;
+    if (followArrival && focusUntil) {
+      if (now >= focusUntil) {
+        focusUntil = 0;
+        controls.target.copy(focusHome);
+      } else {
+        // Bell-weighted pull: eases in, peaks, and returns to the framed view.
+        // A sixth of the leaf's offset is enough to read without losing the tree.
+        const t =
+          1 - (focusUntil - now) / (ARRIVAL_MS + 600);
+        controls.target
+          .copy(focusHome)
+          .lerp(
+            focusAim,
+            0.16 * Math.sin(Math.PI * THREE.MathUtils.clamp(t, 0, 1)),
+          );
+      }
+    }
     const moved = controls.update(delta),
+      airy = atmosphere?.step(delta) ?? false,
       grew = model.step(now, delta, motion.matches, gust);
     garden.step(now, motion.matches, count, gust);
-    if (!force && !dirty && !moved && !grew && !controls.autoRotate) return;
+    if (!force && !dirty && !moved && !grew && !airy && !controls.autoRotate)
+      return;
     camera.updateMatrixWorld(true);
     model.group.updateMatrixWorld(true);
     const items: ProjectedLeaf[] = [];
@@ -523,6 +574,7 @@ export function createTreeScene(
     controls.dispose();
     model.dispose();
     garden.dispose();
+    atmosphere?.dispose();
     sun.shadow.dispose();
     renderer.dispose();
     renderer.domElement.remove();
@@ -541,6 +593,7 @@ export function createTreeScene(
     orbit(horizontal, vertical = 0) {
       userView = true;
       lastInteraction = performance.now();
+      focusUntil = 0;
       const spherical = new THREE.Spherical().setFromVector3(
         camera.position.clone().sub(controls.target),
       );
@@ -560,12 +613,14 @@ export function createTreeScene(
       interacting = false;
       lastInteraction = -10000;
       gustStarted = -10000;
+      focusUntil = 0;
       fit();
       render(performance.now(), true);
     },
     zoom(factor) {
       userView = true;
       lastInteraction = performance.now();
+      focusUntil = 0;
       camera.position
         .sub(controls.target)
         .multiplyScalar(factor)

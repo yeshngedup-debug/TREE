@@ -13,6 +13,16 @@ export function seeded(seed: number) {
 export function hashLeaf(text: string) {
   return Array.from(text).reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
 }
+// One arrival flight: long enough to read as a leaf drifting down, short enough
+// that a burst never queues behind a single slow leaf.
+export const ARRIVAL_MS = 2600;
+// Ease-out with a small overshoot, settling back to 1. Reads as the leaf
+// arriving with momentum instead of easing to a stop.
+function easeOutBack(t: number) {
+  const c1 = 1.05,
+    c3 = c1 + 1;
+  return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
+}
 export type GrowthMetrics = {
   count: number;
   foliage: number;
@@ -39,6 +49,7 @@ type Card = {
   size: number;
   color: THREE.Color;
   arrival: number;
+  glow?: number;
 };
 
 export function makeLeafTexture(shape: TreeSettings["leafShape"]) {
@@ -109,7 +120,14 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
   const palette = treePalettes[settings.palette],
     colors = settings.customColors
       ? [settings.leafShadow, settings.leafMid, settings.leafLight]
-      : palette.leaves;
+      : palette.leaves,
+    // Kept as live colour objects so a palette switch can re-tint the canopy
+    // without rebuilding the branch geometry or the leaf instances.
+    leafTones = {
+      shadow: new THREE.Color(colors[0]),
+      mid: new THREE.Color(colors[1]),
+      light: new THREE.Color(colors[2]),
+    };
   const gradient = new THREE.DataTexture(
     new Uint8Array([
       60, 60, 60, 255, 150, 150, 150, 255, 220, 220, 220, 255, 255, 255, 255,
@@ -209,9 +227,9 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
   // Upstream applies a color ramp after lighting instead of multiplying the
   // leaf color by the sun again. Preserve those bands and the fine leaf edges.
   leafMaterial.onBeforeCompile = (shader) => {
-    shader.uniforms.uLeafShadow = { value: new THREE.Color(colors[0]) };
-    shader.uniforms.uLeafMid = { value: new THREE.Color(colors[1]) };
-    shader.uniforms.uLeafLight = { value: new THREE.Color(colors[2]) };
+    shader.uniforms.uLeafShadow = { value: leafTones.shadow };
+    shader.uniforms.uLeafMid = { value: leafTones.mid };
+    shader.uniforms.uLeafLight = { value: leafTones.light };
     shader.uniforms.uCanopyPreview = {
       value: settings.growthMode === "manual" ? 1 : 0,
     };
@@ -267,6 +285,8 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     );
   const matureHeight = Math.max(bounds.max.y, 1),
     dummy = new THREE.Object3D(),
+    tint = new THREE.Color(),
+    aim = new THREE.Vector3(),
     known = new Map<string, THREE.Vector3>();
   windField.configure(settings, matureHeight);
   let target = treeGrowth(0, settings),
@@ -274,6 +294,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     scale = target.scale,
     currentCards: Card[] = [],
     activeId: string | undefined,
+    activeSince = -Infinity,
     lastArrivals = new Set<string>(),
     dirty = true;
   const metrics: GrowthMetrics = {
@@ -300,16 +321,20 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       typeof arrival === "string" ? [arrival] : arrival || [],
     );
     const freshArrivals = [...arrivals].filter((id) => !lastArrivals.has(id));
+    const selectionChanged = selected !== activeId;
     const next = treeGrowth(count, settings),
       changed =
         count !== target.count ||
-        selected !== activeId ||
+        selectionChanged ||
         freshArrivals.length > 0 ||
         arrivals.size !== lastArrivals.size ||
         ordered.some((leaf) => !known.has(leaf.id)) ||
         ordered.length !== known.size;
     target = next;
     activeId = selected;
+    if (selectionChanged)
+      // Drives the short highlight pulse; the sustained lift is time-free.
+      activeSince = performance.now();
     if (!animate) {
       progress = target.progress;
       scale = target.scale;
@@ -465,7 +490,8 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
         ? 0
         : currentCards.reduce(
             (sum, card) =>
-              sum + Number(Boolean(card.arrival && now - card.arrival < 2000)),
+              sum +
+              Number(Boolean(card.arrival && now - card.arrival < ARRIVAL_MS)),
             0,
           ),
       wind = !reduced && settings.wind > 0;
@@ -497,6 +523,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     windField.update(now, reduced, gust);
     group.scale.setScalar(scale);
     group.updateMatrixWorld(true);
+    let tinted = false;
     for (let i = 0; i < currentCards.length; i++) {
       const card = currentCards[i],
         k = smoothGrowth(card.anchor.birth, progress);
@@ -513,15 +540,22 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
         ),
       );
       let pop = 1,
-        turn = 0;
-      if (!reduced && card.arrival && now - card.arrival < 2000) {
-        const t = THREE.MathUtils.clamp((now - card.arrival) / 2000, 0, 1),
-          ease = t * t * (3 - 2 * t),
+        turn = 0,
+        glow = 0;
+      if (!reduced && card.arrival && now - card.arrival < ARRIVAL_MS) {
+        const t = THREE.MathUtils.clamp(
+            (now - card.arrival) / ARRIVAL_MS,
+            0,
+            1,
+          ),
+          ease = easeOutBack(t),
           seed = hashLeaf(card.id || String(i)),
           end = dummy.position.clone(),
+          // The leaf drops in from above the crown rather than up from the
+          // grass, so the eye follows it down into the canopy.
           start = new THREE.Vector3(
             (seeded(seed + 21) - 0.5) * matureHeight * 1.3,
-            matureHeight * 0.04,
+            matureHeight * (1.02 + seeded(seed + 23) * 0.22),
             matureHeight * 0.55,
           ),
           control = end
@@ -529,7 +563,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
             .add(
               new THREE.Vector3(
                 (seeded(seed + 22) - 0.5) * matureHeight * 0.85,
-                matureHeight * 0.35,
+                matureHeight * 0.45,
                 matureHeight * 0.3,
               ),
             );
@@ -541,8 +575,20 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
         pop =
           now < card.arrival
             ? 0
-            : 0.25 + 0.75 * (1 - (1 - t) ** 3) + Math.sin(t * Math.PI) * 0.2;
+            : 0.18 +
+              0.82 * (1 - (1 - t) ** 3) +
+              Math.sin(t * Math.PI) * 0.16;
         turn = (1 - ease) * Math.PI * 1.6;
+        // Brighten while it lands, then hand over to the quiet selected lift.
+        glow = 0.3 * Math.sin(t * Math.PI) ** 0.8;
+      }
+      if (card.id === activeId) {
+        const age = Math.max(0, (now - activeSince) / 1000);
+        glow +=
+          0.09 +
+          (age < 1.4
+            ? Math.sin((age / 1.4) * Math.PI) * 0.22 * Math.exp(-age * 1.4)
+            : 0);
       }
       dummy.rotation.copy(card.rotation);
       dummy.rotation.z += turn;
@@ -571,7 +617,13 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       );
       dummy.updateMatrix();
       foliage.setMatrixAt(i, dummy.matrix);
-      if (dirty) foliage.setColorAt(i, card.color);
+      // Colours only upload when a card's tint actually changes: a static
+      // canopy never re-sends the instance buffer.
+      if (dirty || Math.abs((card.glow ?? 0) - glow) > 0.004) {
+        foliage.setColorAt(i, tint.copy(card.color).multiplyScalar(1 + glow));
+        card.glow = glow;
+        tinted = true;
+      }
       if (card.id) {
         if (
           (!reduced && card.arrival > now) ||
@@ -582,7 +634,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       }
     }
     foliage.instanceMatrix.needsUpdate = true;
-    if (foliage.instanceColor) foliage.instanceColor.needsUpdate = true;
+    if (tinted) foliage.instanceColor!.needsUpdate = true;
     const groups = new Set(
       anchors
         .filter((anchor) => smoothGrowth(anchor.birth, progress) > 0.2)
@@ -628,6 +680,20 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     out.min.y = Math.min(out.min.y, 0);
     return out;
   }
+  // Palette switches re-tint the existing materials in place: no geometry is
+  // regenerated, so the canopy keeps its exact shape and only the light changes.
+  function applyPalette(next: TreeSettings) {
+    const tones = next.customColors
+      ? [next.leafShadow, next.leafMid, next.leafLight]
+      : treePalettes[next.palette].leaves;
+    leafTones.shadow.set(tones[0]);
+    leafTones.mid.set(tones[1]);
+    leafTones.light.set(tones[2]);
+    woodMaterial.color.set(
+      next.customColors ? next.woodColor : treePalettes[next.palette].wood,
+    );
+    dirty = true;
+  }
   function dispose() {
     foliage.dispose();
     geometry.dispose();
@@ -646,6 +712,13 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
     measure,
     growthTarget: () => target.progress,
     targetScale: () => target.scale,
+    // Where a leaf settles, in tree-local space. The display drifts the camera
+    // a little toward a newcomer; nothing else needs to know about it.
+    focus(id?: string) {
+      if (!id) return undefined;
+      const card = currentCards.find((item) => item.id === id);
+      return card ? aim.copy(card.anchor.center).add(card.offset).clone() : undefined;
+    },
     setContributions,
     step,
     dispose,
@@ -654,6 +727,7 @@ export function createTreeModel(settings: TreeSettings, low: boolean) {
       windField.configure(next, matureHeight);
       dirty = true;
     },
+    configurePalette: applyPalette,
     windOffset: () =>
       windField.sample(new THREE.Vector3(0, matureHeight, 0)).clone(),
   };
