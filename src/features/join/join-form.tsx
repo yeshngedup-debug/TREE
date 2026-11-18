@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ThemeIcon } from "@/components/theme-icon";
 import { LeafResult } from "@/features/leaf/leaf-result";
-import { uuid, api } from "@/lib/client";
+import { uuid, api, ApiError } from "@/lib/client";
 import { themeSchema, contributionSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { VisitorAccess } from "./visitor-access";
@@ -102,8 +102,11 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             }
             setStep(2);
           })
-          .catch(() => {
-            sessionStorage.removeItem("bi-tree-hope-receipt");
+          .catch((err) => {
+            // Only a confirmed 404 means the leaf is gone. A transient
+            // outage keeps the receipt so the next visit can still restore.
+            if (err instanceof ApiError && err.status === 404)
+              sessionStorage.removeItem("bi-tree-hope-receipt");
           });
     } catch {
       /* Storage is optional on private browsers. */
@@ -312,7 +315,10 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           <VisitorAccess onDismiss={() => setShowHistory(false)} />
         </div>
       )}
-      <ol aria-label="Your progress" className="flex items-center justify-between gap-2 text-xs uppercase tracking-wider">
+      <ol
+        aria-label="Your progress"
+        className="join-steps flex items-center justify-between gap-2 text-xs uppercase tracking-wider"
+      >
         {["Theme", "Your note", "Your leaf"].map((label, index) => (
           <li key={label} className="flex flex-col items-center gap-1">
             <span
@@ -355,12 +361,12 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
         </p>
       )}
       {step === 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
             <p className="mb-1 sm:mb-2 text-xs font-semibold tracking-wider uppercase text-soft">
               Step 1 of 3
             </p>
-            <h2 className="join-step-title text-2xl sm:text-3xl tracking-tight">
+            <h2 className="join-step-title text-xl sm:text-3xl leading-tight sm:leading-normal tracking-tight">
               What matters to you?
             </h2>
             <p className="mt-2 text-sm leading-6 text-soft">
@@ -369,12 +375,12 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
           </div>
           <fieldset className="rounded-2xl p-1">
             <legend className="sr-only">Choose a theme</legend>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
               {themes.map((item) => (
                 <label
                   key={item.id}
                   className={cn(
-                    "relative flex cursor-pointer items-center gap-3 rounded-xl bg-card p-2 sm:p-3 transition-colors min-h-[56px]",
+                    "relative flex cursor-pointer items-center gap-2 sm:gap-3 rounded-xl bg-card p-1.5 sm:p-3 transition-colors min-h-[48px] sm:min-h-[56px]",
                     theme === item.id
                       ? "bg-accent"
                       : "hover:bg-muted",
@@ -391,16 +397,16 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
                     }}
                   />
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl"
                     style={{ backgroundColor: themeColor }}
                   >
                     <ThemeIcon theme={item.id} size={18} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="block text-sm font-medium leading-5">
+                    <span className="block text-[13px] sm:text-sm font-medium leading-[1.15rem] sm:leading-5">
                       {item.label}
                     </span>
-                    <span className="block text-xs text-soft">
+                    <span className="hidden sm:block text-xs text-soft">
                       {item.short}
                     </span>
                   </div>
@@ -464,17 +470,63 @@ export function JoinForm({ initialTheme }: { initialTheme?: Theme }) {
             className="flex justify-between gap-3 text-xs text-soft"
           >
             <span>Leave out names, contact details and links.</span>
-            <span className="shrink-0">{aspiration.length} / 200</span>
+            <span
+              className={cn(
+                "shrink-0 tabular-nums",
+                aspiration.length > 180 && "join-counter-warn",
+              )}
+            >
+              {aspiration.length} / 200
+            </span>
           </div>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => edit(themeFor(theme).prompt)}
-            className="inline-flex min-h-10 items-center gap-2 text-xs text-soft hover:underline"
-          >
-            <Sparkles size={13} />
-            Try an example
-          </button>
+          <div className="join-preview" aria-hidden="true">
+            <div className="join-preview-head">
+              <span className="join-preview-eyebrow">
+                Live leaf preview
+              </span>
+              <span className="join-preview-theme">
+                {themeFor(theme).short}
+              </span>
+            </div>
+            <blockquote
+              className={cn(
+                "join-preview-quote",
+                !aspiration.trim() && "is-empty",
+              )}
+            >
+              {aspiration.trim() ||
+                "Your hope will appear here as you write."}
+            </blockquote>
+            <p className="join-preview-foot">
+              <Sprout size={12} aria-hidden="true" />
+              Anonymous in public · checked before it joins the tree
+            </p>
+          </div>
+          <div className="join-starters" aria-label="Writing prompts">
+            <span className="join-starters-label">
+              <Sparkles size={13} aria-hidden="true" />
+              Need a nudge?
+            </span>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => edit(themeFor(theme).prompt)}
+              className="join-starter"
+            >
+              Try an example
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                if (!aspiration.trim()) edit("I hope ");
+                textarea.current?.focus();
+              }}
+              className="join-starter"
+            >
+              Start with “I hope…”
+            </button>
+          </div>
           <label className="flex items-start gap-3 text-sm leading-6">
             <input
               type="checkbox"

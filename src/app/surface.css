@@ -194,6 +194,17 @@
   }
 }
 
+@media (max-width: 399px) {
+  .surface-shell .site-header nav[aria-label="Main navigation"] {
+    gap: 0;
+    padding: 2px;
+  }
+
+  .surface-shell .site-header nav a {
+    padding: 0 4px;
+  }
+}
+
 /* Footer -------------------------------------------------------------------- */
 
 .surface-shell > footer {
@@ -1079,6 +1090,52 @@
   }
 }
 
+/* Phones: compress the intro and the step flow so step one fits one screen. */
+@media (max-width: 639px) {
+  .surface-shell .surface-join {
+    padding-top: 0.9rem;
+  }
+
+  .surface-shell .join-title {
+    margin-top: 0.7rem;
+    font-size: clamp(2rem, 8.6vw, 2.4rem);
+    line-height: 0.97;
+  }
+
+  .surface-shell .join-lede {
+    max-width: none;
+    margin-top: 0.6rem;
+    font-size: 12.5px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* The "Step 1 of 3" copy inside the flow already carries progress;
+     the dot stepper is decorative on small phones. */
+  .surface-shell .join-steps {
+    display: none;
+  }
+}
+
+/* Very small phones (≤420px): the title, the kicker and the form explain
+   the flow on their own; the lede would push step one out of the fold. */
+@media (max-width: 420px) {
+  .surface-shell .join-lede {
+    display: none;
+  }
+
+  .surface-shell .surface-join {
+    padding-top: 0.75rem;
+  }
+
+  .surface-shell .join-title {
+    margin-top: 0.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .surface-shell .join-layout {
     display: grid;
@@ -1140,28 +1197,39 @@
 
 @media (max-width: 520px) {
   .surface-shell .visit-choice {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    display: flex;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 10px 12px;
-    padding: 0.85rem;
+    gap: 8px;
+    padding: 0.55rem 0.7rem;
+    border-radius: 18px;
+  }
+
+  /* The eyebrow label duplicates the surrounding heading on small phones. */
+  .surface-shell .visit-choice > span {
+    display: none;
   }
 
   .surface-shell .visit-choice > div {
-    grid-column: 1 / -1;
+    grid-column: auto;
     display: flex;
-    width: 100%;
+    width: auto;
+    flex: 1;
   }
 
   .surface-shell .visit-choice button {
     flex: 1;
+    min-height: 34px;
+    padding: 0 8px;
+    font-size: 11.5px;
     white-space: nowrap;
   }
 
   .surface-shell .visit-choice > a {
-    grid-column: 2;
-    grid-row: 1;
+    grid-column: auto;
+    grid-row: auto;
     margin-left: 0;
+    font-size: 11.5px;
     white-space: nowrap;
   }
 }
@@ -1244,6 +1312,133 @@
   outline: none;
   background: #fffdf6;
   box-shadow: inset 0 0 0 1.5px var(--s-ink);
+}
+
+/* Join — live leaf preview, counter and prompt starters. */
+
+.surface-shell .surface-join .join-counter-warn {
+  color: #94551a;
+  font-weight: 650;
+}
+
+.surface-shell .surface-join .join-preview {
+  position: relative;
+  overflow: hidden;
+  padding: 0.95rem 1.1rem 0.9rem;
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      90% 140% at 100% 0%,
+      color-mix(in srgb, var(--s-lime) 38%, transparent),
+      transparent 62%
+    ),
+    #fffdf6;
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+
+.surface-shell .surface-join .join-preview::after {
+  content: "";
+  position: absolute;
+  right: -26px;
+  bottom: -34px;
+  width: 110px;
+  height: 110px;
+  border-radius: 60% 40% 55% 45%;
+  background: color-mix(in srgb, var(--s-lime) 34%, transparent);
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+
+.surface-shell .surface-join .join-preview-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.surface-shell .surface-join .join-preview-eyebrow {
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.64);
+}
+
+.surface-shell .surface-join .join-preview-theme {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.06);
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.surface-shell .surface-join .join-preview-quote {
+  position: relative;
+  z-index: 1;
+  margin: 0.6rem 0 0;
+  max-width: 46ch;
+  font-size: 1.05rem;
+  font-weight: 430;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.surface-shell .surface-join .join-preview-quote.is-empty {
+  font-style: italic;
+  color: rgba(23, 27, 18, 0.4);
+}
+
+.surface-shell .surface-join .join-preview-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0.75rem 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: rgba(23, 27, 18, 0.64);
+}
+
+.surface-shell .surface-join .join-starters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.surface-shell .surface-join .join-starters-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.surface-shell .surface-join .join-starter {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.05);
+  font-size: 11.5px;
+  color: rgba(23, 27, 18, 0.78);
+  transition: background var(--dur-base) ease;
+}
+
+.surface-shell .surface-join .join-starter:hover {
+  background: rgba(23, 27, 18, 0.1);
+}
+
+.surface-shell .surface-join .join-starter:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* Keepsake, guide and receipt tree --------------------------------------------- */
@@ -1835,5 +2030,102 @@
   .surface-shell > footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+/* Phones: step 2 of the join flow stays inside the first screen. This block
+   sits last on purpose - with equal specificity, source order decides, and the
+   base join rules above would otherwise win the hide/compact overrides. */
+@media (max-width: 639px) {
+  .surface-shell .surface-join form.space-y-4 > :not(:last-child) {
+    margin-block-end: 0.6rem;
+  }
+
+  .surface-shell .surface-join textarea {
+    min-height: 88px;
+  }
+
+  .surface-shell .surface-join .join-starters {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px 6px;
+    padding: 4px 0;
+  }
+
+  .surface-shell .surface-join .join-starters-label {
+    display: none;
+  }
+
+  .surface-shell .surface-join .join-starter {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .surface-shell .surface-join .join-preview {
+    padding: 0.5rem 0.75rem;
+    border-radius: 16px;
+  }
+
+  .surface-shell .surface-join .join-preview-head {
+    display: none;
+  }
+
+  .surface-shell .surface-join .join-preview-quote {
+    margin-top: 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+
+  .surface-shell .surface-join .join-preview-foot {
+    margin-top: 0.25rem;
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Very small phones: squeeze the writing surface and the consent copy so the
+   submit button stays inside the first screen too. */
+@media (max-width: 420px) {
+  .surface-shell .surface-join form.space-y-4 > :not(:last-child) {
+    margin-block-end: 0.3rem;
+  }
+
+  /* Cap the auto-grow so a filled note never pushes the submit below the fold. */
+  .surface-shell .surface-join textarea {
+    min-height: 84px;
+    max-height: 88px;
+    overflow-y: auto;
+  }
+
+  /* The live preview is a progressive enhancement; at this width it is the
+     element that would otherwise push the submit action off the first screen. */
+  .surface-shell .surface-join .join-preview {
+    display: none;
+  }
+
+  .surface-shell .surface-join details summary {
+    min-height: 30px;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+
+  .surface-shell .surface-join .join-step-title {
+    font-size: 1.35rem;
+  }
+
+  .surface-shell .surface-join label.flex.items-start {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .surface-shell .surface-join .join-preview-quote {
+    font-size: 0.8125rem;
   }
 }
