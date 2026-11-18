@@ -29,11 +29,9 @@ export default async function JoinPage({
               for Bhutan.
             </h1>
             <p className="join-lede">
-              BI Tree — the Bhutanese Idea Tree — is one shared, living tree
-              for everyone in the country. A hope can be anything you wish
-              for Bhutan: big or small, personal or national. Write yours and
-              it joins the canopy with everyone else’s. No account is
-              required.
+              BI Tree — one living tree for the whole country. A hope is
+              any wish for Bhutan, read by a person before it appears. No
+              account needed.
             </p>
             <ol
               className="join-lifecycle"

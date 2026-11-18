@@ -1076,7 +1076,9 @@
 }
 
 .surface-shell .join-lifecycle {
-  display: grid;
+  /* Same compact-first contract as .join-notes: the form stays above the
+     fold on phones; the full explainer shows on desktop (>= 1024px). */
+  display: none;
   gap: 0.7rem;
   margin: 1.5rem 0 0;
   padding: 0;
@@ -1193,6 +1195,10 @@
 
   .surface-shell .join-notes {
     display: block;
+  }
+
+  .surface-shell .join-lifecycle {
+    display: grid;
   }
 }
 
