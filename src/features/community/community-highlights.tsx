@@ -168,7 +168,9 @@ export function CommunityHighlights({
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow text-soft">Browse by theme</p>
-              <h2 className="mt-2 text-2xl">Popular categories</h2>
+              <h2 className="mt-2 text-2xl">
+                {empty ? "Themes to explore" : "Popular categories"}
+              </h2>
             </div>
             <Link href="/discover" className="flex min-h-11 items-center gap-2 text-xs">
               Discover everything <ArrowUpRight size={14} aria-hidden="true" />
@@ -182,7 +184,9 @@ export function CommunityHighlights({
                 className="community-chip"
               >
                 {category.label}
-                <span aria-hidden="true">{category.postCount}</span>
+                {category.postCount > 0 ? (
+                  <span aria-hidden="true">{category.postCount}</span>
+                ) : null}
               </Link>
             ))}
           </div>

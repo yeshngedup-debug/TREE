@@ -27,7 +27,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
           BI Tree
         </span>
         {!compact && (
-          <span className="mt-1.5 block whitespace-nowrap text-xs tracking-[.14em] opacity-70">
+          <span className="site-header-brand-sub mt-1.5 block whitespace-nowrap text-xs tracking-[.14em] opacity-70">
             Bhutanese Idea Tree
           </span>
         )}
@@ -72,9 +72,19 @@ export function SiteHeader() {
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
+              aria-label={href === "/explore" ? "Explore Bhutan" : undefined}
               className="site-header-link"
             >
-              {label}
+              {href === "/explore" ? (
+                <>
+                  <span className="site-header-label-full">{label}</span>
+                  <span className="site-header-label-short" aria-hidden="true">
+                    Explore
+                  </span>
+                </>
+              ) : (
+                label
+              )}
               {href === "/display" && (
                 <ArrowUpRight size={13} aria-hidden="true" />
               )}
@@ -274,7 +284,7 @@ export function SiteFooter() {
         <Link href="/join">Add a hope</Link>
         <Link href="/privacy">Participation & privacy</Link>
         <Link href="/admin">Staff console</Link>
-        <span>Bhutanese Idea Tree · Hackathon</span>
+        <span>Bhutanese Idea Tree</span>
       </div>
     </footer>
   );

@@ -9,12 +9,14 @@ import {
   ArrowUpRight,
   Compass,
   Leaf,
+  Move3D,
   Sprout,
 } from "lucide-react";
 import { useTree } from "@/hooks/use-tree";
 import { TreeCanvas } from "@/features/display/tree-canvas";
 import { ThemeIcon } from "@/components/theme-icon";
-import { themes } from "@/lib/catalog";
+import { Skeleton } from "@/components/skeletons";
+import { themes, themeFor } from "@/lib/catalog";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -76,8 +78,24 @@ const statement: { word: string; accent?: boolean }[] = [
   { word: "together.", accent: true },
 ];
 
+function leafAge(value: string) {
+  const time = Date.parse(value);
+  if (!Number.isFinite(time)) return "recently";
+  const days = Math.floor((Date.now() - time) / 86_400_000);
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 30) return `${days} days ago`;
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+  }).format(time);
+}
+
 export function HomeExperience() {
-  const { tree } = useTree();
+  const { tree, ready } = useTree();
+  const publicLeaves = tree.leaves
+    .filter((leaf) => !leaf.is_demo)
+    .slice(0, 3);
   const scope = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -204,6 +222,10 @@ export function HomeExperience() {
               composition="portrait"
             />
             <div className="hero-tree-atmosphere" aria-hidden="true" />
+            <span className="hero-tree-hint" aria-hidden="true">
+              <Move3D size={12} aria-hidden="true" />
+              Drag to orbit · Scroll to zoom
+            </span>
             <Link href="/display" className="hero-tree-link">
               See the tree up close <ArrowUpRight size={13} aria-hidden="true" />
             </Link>
@@ -267,7 +289,9 @@ export function HomeExperience() {
               </p>
               <span className="bento-live">
                 <span className="bento-live-dot" aria-hidden="true" />
-                {tree.total > 0 ? (
+                {!ready ? (
+                  "Connecting to the canopy…"
+                ) : tree.total > 0 ? (
                   <>
                     <strong>{tree.total}</strong>{" "}
                     {tree.total === 1 ? "hope" : "hopes"} taking root
@@ -316,6 +340,92 @@ export function HomeExperience() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section
+        className="home-section home-section-tight canopy-section"
+        aria-labelledby="canopy-title"
+      >
+        <div className="home-heading-row">
+          <div>
+            <p className="home-eyebrow">From the canopy</p>
+            <h2 className="home-h2" id="canopy-title">
+              Hopes that have already taken root.
+            </h2>
+          </div>
+          <Link href="/discover" className="home-text-link">
+            Read the grove <ArrowUpRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
+
+        {!ready ? (
+          <div
+            className="canopy-grid"
+            aria-busy="true"
+            aria-label="Loading recent hopes from the tree"
+          >
+            {[0, 1, 2].map((index) => (
+              <Skeleton key={index} className="canopy-skeleton" />
+            ))}
+          </div>
+        ) : publicLeaves.length ? (
+          <ul className="canopy-grid">
+            {publicLeaves.map((leaf) => (
+              <li key={leaf.id}>
+                <Link
+                  href={`/leaf/${leaf.id}`}
+                  className="canopy-card"
+                  style={
+                    {
+                      "--tone": themeFor(leaf.category).color,
+                    } as CSSProperties
+                  }
+                >
+                  <span className="canopy-theme">
+                    <ThemeIcon theme={leaf.category} size={14} />
+                    {themeFor(leaf.category).short}
+                  </span>
+                  <blockquote>“{leaf.leaf_message}”</blockquote>
+                  <span className="canopy-meta">
+                    Leaf #{leaf.id.slice(0, 6)} · {leafAge(leaf.created_at)}
+                  </span>
+                  <span className="canopy-arrow" aria-hidden="true">
+                    <ArrowUpRight size={15} />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="canopy-empty">
+            <div className="canopy-empty-copy">
+              <h3>The canopy is young.</h3>
+              <p>
+                No public hopes have landed here yet. The first leaf is yours
+                to plant — it takes about a minute, and no account is needed.
+              </p>
+              <div className="canopy-empty-actions">
+                <Link className="hero-cta hero-cta-primary" href="/join">
+                  Add the first hope
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </Link>
+                <Link href="/explore" className="home-text-link">
+                  Or wander Bhutan first
+                </Link>
+              </div>
+            </div>
+            <figure className="canopy-sample">
+              <figcaption className="canopy-sample-badge">
+                Example, not a submission
+              </figcaption>
+              <blockquote>
+                “I hope Bhutan&rsquo;s forests and green spaces keep thriving
+                for generations.”
+              </blockquote>
+              <p>What a leaf can look like · Nature</p>
+            </figure>
+          </div>
+        )}
       </section>
 
       <section className="home-section home-section-tight">
