@@ -56,6 +56,7 @@ export function DisplayScreen() {
     [reflectionVisible, setReflectionVisible] = useState(false),
     [sound, setSound] = useState(true),
     [notice, setNotice] = useState<Notice | null>(null);
+  const [leafFocusMiss, setLeafFocusMiss] = useState(false);
   const leafFocus = useRef<string | null>(null);
   const initialized = useRef(false),
     synced = useRef(false),
@@ -90,9 +91,21 @@ export function DisplayScreen() {
     const match = tree.leaves.find((leaf) => leaf.id === id);
     if (match) {
       leafFocus.current = null;
+      setLeafFocusMiss(false);
       setSelected(match);
     }
   }, [ready, tree]);
+  useEffect(() => {
+    if (!ready) return;
+    // Give the leaf a fair chance to arrive (cold database, cached first
+    // paint) before saying it is missing. An id that never matches stays
+    // unconsumed, so the banner only appears when there is genuinely no
+    // such leaf on the public tree.
+    const timer = setTimeout(() => {
+      if (leafFocus.current) setLeafFocusMiss(true);
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [ready]);
   useEffect(() => {
     const stored = setTimeout(() => setSound(soundAllowed()), 0);
     // Browsers keep audio locked until someone touches the kiosk. Arm the
@@ -422,6 +435,21 @@ export function DisplayScreen() {
               </span>
             </span>
           </motion.p>
+          {leafFocusMiss && (
+            <div className="kiosk-leaf-miss" role="status">
+              <p>
+                That leaf isn’t on the public tree right now — it may still
+                be in review, or it may have been removed.
+              </p>
+              <button
+                type="button"
+                onClick={() => setLeafFocusMiss(false)}
+                aria-label="Dismiss this message"
+              >
+                ×
+              </button>
+            </div>
+          )}
           <AnimatePresence>
             {notice && (
               <motion.aside

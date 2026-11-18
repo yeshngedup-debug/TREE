@@ -1075,6 +1075,45 @@
   color: var(--s-ink);
 }
 
+.surface-shell .join-lifecycle {
+  display: grid;
+  gap: 0.7rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--s-line);
+  padding-top: 1.5rem;
+}
+
+.surface-shell .join-lifecycle li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.surface-shell .join-lifecycle li strong {
+  color: var(--s-ink);
+  font-weight: 500;
+}
+
+.surface-shell .join-lifecycle-n {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: var(--s-lime);
+  box-shadow: inset 0 0 0 1px rgba(23, 27, 18, 0.16);
+  color: var(--s-ink);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
 .surface-shell .join-flow {
   min-width: 0;
 }

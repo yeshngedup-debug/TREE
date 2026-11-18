@@ -53,6 +53,11 @@ export function VisitorVoices() {
           A private place for the hopes you’ve shared and the replies you
           received.
         </p>
+        <p className="mt-2 text-xs leading-5 text-soft">
+          Enter the 11-digit CID and 6-digit PIN you chose when you planted.
+          Staff cannot recover a forgotten CID or PIN — your keepsake link
+          (shown when you planted) is the only other way back to a leaf.
+        </p>
       </div>
       {error && (
         <p role="alert" className="text-sm text-red-800">
@@ -109,12 +114,20 @@ export function VisitorVoices() {
                 Your leaf: “{voice.leaf_message}”
               </p>
               {voice.status === "approved" ? (
-                <Link
-                  href={`/leaf/${voice.id}`}
-                  className="mt-3 inline-flex min-h-10 items-center text-sm underline underline-offset-4"
-                >
-                  Open public keepsake
-                </Link>
+                <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <Link
+                    href={`/leaf/${voice.id}`}
+                    className="inline-flex min-h-10 items-center text-sm underline underline-offset-4"
+                  >
+                    Open public keepsake
+                  </Link>
+                  <Link
+                    href={`/display?leaf=${voice.id}`}
+                    className="inline-flex min-h-10 items-center text-sm underline underline-offset-4"
+                  >
+                    See it on the shared tree
+                  </Link>
+                </span>
               ) : (
                 <p className="mt-3 text-xs text-soft">
                   This leaf is no longer on the public tree.
