@@ -283,6 +283,39 @@
   mix-blend-mode: multiply;
 }
 
+/* Passive orbit/zoom affordance for the hero tree. The camera controls stay
+   hidden (it is decorative here) but the tree is fully interactive, so people
+   need to know they can move it. Non-interactive: never blocks a drag. */
+.hero-tree-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.62);
+  color: rgba(246, 245, 234, 0.85);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.hero-tree-hint > svg {
+  color: var(--home-lime);
+}
+
+@media (max-width: 480px) {
+  .hero-tree-hint {
+    display: none;
+  }
+}
+
 /* Light bloom: a low sun over the canopy, and a drift of dawn mist where the
    meadow meets the bottom of the window. Screen-lighting the bottom hides the
    island's hard rim without dimming the tree. */
@@ -977,6 +1010,189 @@
   background: currentColor;
 }
 
+/* Canopy — real leaves, or a clearly labelled example ---------------------- */
+
+.canopy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.canopy-skeleton {
+  min-height: 214px;
+  border-radius: 22px;
+}
+
+.canopy-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  min-height: 214px;
+  padding: 22px 22px 20px;
+  border: 1px solid var(--home-line);
+  border-radius: 22px;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--tone) 12%, var(--home-cream)),
+    var(--home-cream)
+  );
+  color: var(--home-ink);
+  transition:
+    transform var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
+}
+
+.canopy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(23, 27, 18, 0.1);
+}
+
+.canopy-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.66);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.canopy-card blockquote {
+  margin: 0;
+  flex: 1;
+  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  font-weight: 430;
+  line-height: 1.42;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.canopy-meta {
+  padding-right: 26px;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+.canopy-arrow {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  transition: transform var(--dur-base) ease;
+}
+
+.canopy-card:hover .canopy-arrow {
+  transform: translate(2px, -2px);
+}
+
+.canopy-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: stretch;
+  gap: 14px;
+  margin-top: 28px;
+}
+.canopy-empty-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(24px, 3vw, 38px);
+  border-radius: 24px;
+  background: var(--home-cream);
+  border: 1px solid var(--home-line);
+}
+.canopy-empty-copy h3 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 440;
+  letter-spacing: -0.03em;
+}
+.canopy-empty-copy p {
+  max-width: 46ch;
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.canopy-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 20px;
+}
+.canopy-sample {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px dashed rgba(23, 27, 18, 0.24);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.42);
+}
+.canopy-sample-badge {
+  align-self: flex-start;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(23, 27, 18, 0.07);
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.62);
+}
+.canopy-sample blockquote {
+  margin: 14px 0 0;
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  font-weight: 430;
+  line-height: 1.42;
+  letter-spacing: -0.015em;
+}
+.canopy-sample p {
+  margin: 12px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(23, 27, 18, 0.62);
+}
+
+@media (max-width: 900px) {
+  .canopy-empty {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .canopy-grid {
+    grid-template-columns: 1fr;
+  }
+  .canopy-card {
+    min-height: 0;
+  }
+  .canopy-skeleton {
+    min-height: 150px;
+  }
+}
+
 /* Closing ----------------------------------------------------------------- */
 
 .home-closing {
@@ -1168,8 +1384,14 @@
 }
 
 @media (max-width: 767px) {
+  /* The stacked header is taller than the desktop token; size the hero
+     against the real height so it always fits one viewport. */
+  .home-shell {
+    --home-header: 136px;
+  }
+
   .home-hero {
-    height: calc(100svh - var(--home-header) - 28px);
+    height: calc(100svh - var(--home-header));
     min-height: 520px;
     padding: 4px 12px 8px;
   }
