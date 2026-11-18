@@ -9,7 +9,7 @@ How to prove a change ships clean before calling it done. Written after the awar
 | Types | `npx tsc --noEmit` | exit 0 |
 | Lint | `npm run lint` (eslint `src`) | exit 0 |
 | Production build | `npm run build` | exit 0; route table lists `/icon.svg` (favicon fix) |
-| E2E | Harness below + `npx playwright test` | 102/102 |
+| E2E | Harness below + `npx playwright test` | 103/103 |
 
 E2E needs a running app. The suite defaults to `BASE_URL=http://127.0.0.1:3100` (see `playwright.config.ts`); do **not** point the suite at your dev server on port 3000 or run it twice against it — some specs mutate (admin sign-in, community posts).
 
@@ -25,7 +25,7 @@ Protocol:
 
 1. Kill any listeners on 3100/3101/3102, remove `data/tests/*.sqlite*`.
 2. `node scripts/test-server.mjs` (background).
-3. `npx playwright test` — a full clean run has reported **102 passed** (2026-11-18).
+3. `npx playwright test` — a full clean run has reported **103 passed** (2026-11-18, after the keepsake-page recovery link and the `display-leaf-miss` deep-link spec were added).
 4. If a single spec ever fails on state left behind (e.g. `00-growth` seeing a non-zero count), the DB was dirty, not the code: return to step 1. A dirty-DB failure is distinguishable because it only appears after the harness has already served other specs.
 5. `tests/scene-animation.spec.ts` asserts the kiosk QR sits on the solid white `.kiosk-qr` panel, matching the "QR on solid white" design requirement.
 
@@ -76,4 +76,4 @@ Verify at **360, 390, 430, 768, 1024, 1366, 1920** (+320 smoke where cheap):
 - Console (fresh navigations): `/` → 0 errors / 3 warnings (1 three.js + 2 CSS preload); `/display` → 0 errors / 1 warning (three.js). If you see `favicon.ico` 404, `src/app/icon.svg` was removed or renamed.
 - `/api/health` over LAN: 200. Neon cold-wake latency 2–4s is normal; size waits in e2e accordingly.
 - Hidden leaf on the HTML route: `/leaf/<hidden-id>` must return **404**, not a streamed 200 shell. The homepage streaming skeleton now lives in the `(home)` route group (`src/app/(home)/loading.tsx`), so `/` keeps its skeleton while `/leaf/[id]` can throw `notFound()` before headers commit. Do not re-add `src/app/loading.tsx` at the root — it re-breaks the 404.
-- Full e2e against the harness: **102 passed** (2026-11-18, after the `(home)` route-group move, the ≤420px join compaction, the compact starters row, and the `.kiosk-qr` white-panel assertion in `tests/scene-animation.spec.ts`).
+- Full e2e against the harness: **103 passed** (2026-11-18, after the `(home)` route-group move, the ≤420px join compaction, the compact starters row, the `.kiosk-qr` white-panel assertion in `tests/scene-animation.spec.ts`, and the keepsake recovery link plus `tests/display-leaf-miss.spec.ts`).
