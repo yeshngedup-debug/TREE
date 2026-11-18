@@ -7,7 +7,15 @@ import type { SceneController } from "@/features/display/tree-scene";
 import { useTree } from "@/hooks/use-tree";
 import { themeFor, type Leaf } from "@/lib/catalog";
 import { treePalettes } from "@/lib/tree-settings";
-export function ReceiptTree({ leaf }: { leaf: Leaf }) {
+export function ReceiptTree({
+  leaf,
+  title = "A little more life, because of you.",
+  subtitle = `The tree’s current growth · your leaf #${leaf.id.slice(0, 6)} is highlighted.`,
+}: {
+  leaf: Leaf;
+  title?: string;
+  subtitle?: string;
+}) {
   const { tree } = useTree();
   const scene = useRef<SceneController | null>(null);
   const [busy, setBusy] = useState(false),
@@ -119,11 +127,8 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
     >
       <div className="flex items-start justify-between gap-3 px-4 pt-4">
         <div>
-          <h2 className="text-lg">A little more life, because of you.</h2>
-          <p className="mt-1 text-xs text-soft">
-            The tree’s current growth · your leaf #{leaf.id.slice(0, 6)} is
-            highlighted.
-          </p>
+          <h2 className="text-lg">{title}</h2>
+          <p className="mt-1 text-xs text-soft">{subtitle}</p>
         </div>
       </div>
       <div className="receipt-tree-stage">
@@ -132,6 +137,7 @@ export function ReceiptTree({ leaf }: { leaf: Leaf }) {
           contributionCount={Math.max(tree?.stats.total || 0, leaves.length)}
           settings={tree?.settings}
           activeId={leaf.id}
+          arrivalIds={[leaf.id]}
           onSelect={() => {}}
           sceneRef={scene}
           showControls={false}

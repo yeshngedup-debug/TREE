@@ -56,6 +56,7 @@ export function DisplayScreen() {
     [reflectionVisible, setReflectionVisible] = useState(false),
     [sound, setSound] = useState(true),
     [notice, setNotice] = useState<Notice | null>(null);
+  const leafFocus = useRef<string | null>(null);
   const initialized = useRef(false),
     synced = useRef(false),
     seen = useRef(new Set<string>()),
@@ -72,6 +73,26 @@ export function DisplayScreen() {
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
+  // Deep-link: /display?leaf=<id> opens the shared tree with that leaf
+  // highlighted. Applied once the first snapshot confirms the leaf is on the
+  // tree; the highlight itself reuses the is-featured marker path.
+  useEffect(() => {
+    leafFocus.current = new URLSearchParams(window.location.search).get(
+      "leaf",
+    );
+  }, []);
+  useEffect(() => {
+    if (!ready || !tree) return;
+    const id = leafFocus.current;
+    if (!id) return;
+    // Don't consume the id until the leaf is actually on the snapshot — the
+    // cached tree may arrive with zero leaves before the live one lands.
+    const match = tree.leaves.find((leaf) => leaf.id === id);
+    if (match) {
+      leafFocus.current = null;
+      setSelected(match);
+    }
+  }, [ready, tree]);
   useEffect(() => {
     const stored = setTimeout(() => setSound(soundAllowed()), 0);
     // Browsers keep audio locked until someone touches the kiosk. Arm the

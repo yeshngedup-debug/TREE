@@ -189,6 +189,14 @@ export function LeafResult({
             <ArrowUpRight size={12} className="shrink-0" />
           </Link>
         </div>
+        <div className="text-center">
+          <Link
+            href={`/display?leaf=${leaf.id}`}
+            className="text-xs text-soft underline underline-offset-4"
+          >
+            See it on the shared tree
+          </Link>
+        </div>
         {notice && (
           <p
             role="status"
@@ -283,12 +291,25 @@ export function LeafResult({
           Save keepsake
         </Button>
       </div>
+      <p className="no-print text-center">
+        <Link
+          href={`/display?leaf=${leaf.id}`}
+          className="text-xs text-soft underline underline-offset-4"
+        >
+          See it on the shared tree
+        </Link>
+      </p>
       <p
         role="status"
         className="break-all text-center text-xs text-soft"
       >
         {notice}
       </p>
+      <ReceiptTree
+        leaf={leaf}
+        title="This leaf, on the living tree."
+        subtitle={`The living tree right now · Leaf #${leaf.id.slice(0, 6)} is highlighted.`}
+      />
       <GuideRecommendation path={leaf.chamber_id} reason={leaf.chamber_reason} />
       <p className="text-center text-xs leading-relaxed text-soft">
         {leaf.mode === "offline"
