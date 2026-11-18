@@ -307,6 +307,79 @@ export async function accountByUsername(username: string) {
   return rows[0] ? toAccount(rows[0]) : null;
 }
 
+export async function changePassword(
+  accountId: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ success: boolean }> {
+  const account = await accountById(accountId);
+  if (!account) return { success: false };
+  // accountById returns CommunityAccount without password fields;
+  // fetch the secret from the DB directly.
+  const secretRow = await queryRows<{ password_hash: string; password_salt: string }>(
+    `select password_hash, password_salt from community_accounts where id=$1`,
+    [accountId],
+  );
+  if (!secretRow.length) return { success: false };
+  const valid = await passwordMatches(
+    currentPassword,
+    String(secretRow[0].password_salt),
+    String(secretRow[0].password_hash),
+  );
+  if (!valid) return { success: false };
+  if (newPassword.length < 8) return { success: false };
+  const { salt, hash } = await hashPassword(newPassword);
+  await queryRows(
+    `update community_accounts set password_hash=$1, password_salt=$2, updated_at=$3 where id=$4`,
+    [hash, salt, new Date().toISOString(), accountId],
+  );
+  return { success: true };
+}
+
+export async function requestPasswordReset(
+  usernameOrEmail: string,
+): Promise<{ success: boolean; token?: string }> {
+  const account = await accountByUsername(usernameOrEmail);
+  if (!account) return { success: false };
+  const token = randomBytes(32).toString("base64url");
+  const now = new Date().toISOString();
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
+  try {
+    await queryRows(
+      `insert into password_resets(token,account_id,expires) values($1,$2,$3)`,
+      [token, account.id, expires],
+    );
+    return { success: true, token };
+  } catch (error) {
+    console.error("Password reset request failed:", error);
+    return { success: false };
+  }
+}
+
+export async function resetPasswordWithToken(
+  token: string,
+  newPassword: string,
+): Promise<{ success: boolean }> {
+  const row = await queryRows<{ id: string }>(
+    `select id from password_resets where token=$1 and expires > $2`,
+    [token, new Date()],
+  );
+  if (!row.length) return { success: false };
+  const accountId = row[0].id;
+  if (newPassword.length < 8) return { success: false };
+  const { salt, hash } = await hashPassword(newPassword);
+  await queryRows(
+    `update community_accounts set password_hash=$1, password_salt=$2, updated_at=$3 where id=$4`,
+    [hash, salt, new Date().toISOString(), accountId],
+  );
+  try {
+    await queryRows(`delete from password_resets where token=$1`, [token]);
+  } catch {
+    /* best-effort cleanup */
+  }
+  return { success: true };
+}
+
 export async function updateProfile(
   accountId: string,
   patch: ProfilePatch,

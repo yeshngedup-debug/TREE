@@ -208,7 +208,17 @@ export function HomeExperience() {
               </Link>
             </div>
             <p className="hero-note">
-              No account. Just a minute and one honest hope.
+              Two ways to grow the tree:<br />
+              <span className="font-medium">Leave a Hope</span> — Anonymous.
+              Share your hope without creating an account. Your leaf joins the
+              tree immediately. <a href="/guidelines" className="underline">
+                Community Guidelines
+              </a><br />
+              <span className="font-medium ml-2">Share an Idea</span> — Account-based.
+              Publish an aspiration or idea with a profile, comments, likes, and
+              bookmarks. <a href="/create?mode=login" className="underline ml-2">
+                Get started
+              </a>
             </p>
           </div>
           <div className="home-tree hero-tree-frame">
@@ -333,8 +343,8 @@ export function HomeExperience() {
             <div>
               <h3>A trail becomes tomorrow.</h3>
               <p>
-                Add one hope in under a minute. No account, no noise — just your
-                voice in the canopy.
+                Add one hope in under a minute. <span className="font-medium">No
+                account needed</span> — just your voice in the canopy.
               </p>
               <Link href="/join" className="home-text-link bento-link">
                 Start with one hope <ArrowRight size={14} aria-hidden="true" />
@@ -535,9 +545,18 @@ export function HomeClosing() {
         <p className="home-eyebrow">Your turn</p>
         <h2>One leaf. One hope. One Bhutan.</h2>
         <p className="closing-copy">
-          The canopy is still growing. Add the future you want to see, then
-          follow the hopes of people you have never met.
-        </p>
+              Two ways to grow the tree:<br />
+              <span className="font-medium">Leave a Hope</span> — Anonymous.
+              Add a hope without an account; your leaf joins the Living Tree
+              immediately. <a href="/guidelines" className="underline">
+                Community Guidelines
+              </a><br />
+              <span className="font-medium ml-2">Share an Idea</span> — Account-based.
+              Publish an aspiration or idea with a profile, comments, likes, and
+              bookmarks. <a href="/create?mode=login" className="underline ml-2">
+                Share an idea
+              </a>
+            </p>
         <div className="closing-actions">
           <Link className="closing-primary" href="/join">
             Add your hope <ArrowUpRight size={17} aria-hidden="true" />

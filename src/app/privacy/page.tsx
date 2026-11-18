@@ -60,7 +60,19 @@ export default function PrivacyPage() {
               configured AI provider for safety checks and interpretation, with
               response storage disabled in our generation requests. The provider
               processes that request under its own data policies. In offline
-              mode we use local keyword matching and a curated sentence instead.
+              mode (set via <code>AI_MODE=offline</code>) we use local keyword
+              matching and a curated sentence instead — no external provider is
+              contacted.
+            </p>
+            <p>
+              <strong>AI-generated guidance is clearly labeled.</strong> When the
+              AI guide responds, the UI indicates whether it used the live
+              provider or the curated offline fallback. Conversation history is
+              held by the browser and sent with each request; there is no per-
+              visitor chat table in the database. Any provider failure, timeout,
+              or malformed response degrades to the deterministic offline fallback.
+            </p>
+            <p>
               With the consent you give before submitting, your original words
               are retained privately for staff review. Email addresses,
               phone-like numbers and links are redacted before the message is

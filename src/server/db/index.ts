@@ -87,6 +87,12 @@ if (useSqlite) {
         value text not null
       );
 
+      create table if not exists password_resets (
+        token text primary key,
+        account_id text not null references community_accounts(id) on delete cascade,
+        expires bigint not null
+      );
+
       create table if not exists rate_limits (
         key text primary key,
         count integer not null,

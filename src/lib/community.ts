@@ -278,8 +278,10 @@ const avatarUrlSchema = z
   .trim()
   .max(500)
   .refine(
-    (value) => value === "" || isHttpsUrl(value),
-    "Use an https:// image URL or leave it blank.",
+    (value) =>
+      value === "" ||
+      (isHttpsUrl(value) && /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(value)),
+    "Use an https:// image URL with a valid extension (.jpg, .png, .gif, .webp, .svg) or leave it blank.",
   );
 
 export function isHttpsUrl(value: string) {
@@ -354,6 +356,7 @@ export const postCreateSchema = z.object({
     .default([])
     .transform((tags) => Array.from(new Set(tags))),
   imageUrl: avatarUrlSchema.default(""),
+  imageAlt: z.string().max(120).default("").optional(),
 });
 
 /** Editing replaces every field, so the same validation applies. */
@@ -385,6 +388,13 @@ export const categoryUpdateSchema = z.object({
 });
 
 export const moderationActionSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.enum(["hide", "restore", "suspend", "resolve", "-dismiss", "append_note"]),
+    target_kind: z.enum(["post", "comment"]).optional(),
+    target_id: z.string().uuid().optional(),
+    detail: z.string().optional(),
+    note: z.string().optional(),
+  }),
   z.object({
     action: z.literal("post_status"),
     target: z.string().trim().min(1).max(80),

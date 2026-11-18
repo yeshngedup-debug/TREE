@@ -61,6 +61,11 @@ export function SiteHeader() {
       label: "Live tree",
       active: pathname.startsWith("/display"),
     },
+    {
+      href: "/guidelines",
+      label: "Guidelines",
+      active: pathname.startsWith("/guidelines"),
+    },
   ];
   return (
     <header className="site-header">
