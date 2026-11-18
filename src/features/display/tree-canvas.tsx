@@ -54,10 +54,17 @@ export function TreeCanvas({
     hint = useId(),
     appearance = JSON.stringify(settings);
   const growth = treeGrowth(contributionCount, settings);
+  // Keep latest.current on the newest props before any other effect or the
+  // async scene module reads it. The appearance effect's configure() call
+  // can fire while the WebGL module is still loading (controller null, call
+  // swallowed), and the creation .then() must see post-rehydration settings,
+  // not the mount-time snapshot.
+  useEffect(() => {
+    latest.current = { leaves, activeId, arrivalId, arrivalIds, settings, contributionCount };
+  });
   useEffect(() => {
     let cancelled = false,
       scene: SceneController | null = null;
-    latest.current = { leaves, activeId, arrivalId, arrivalIds, settings, contributionCount };
     const fail = () => {
       scene?.dispose();
       scene = null;
@@ -100,6 +107,11 @@ export function TreeCanvas({
           );
           controller.current = scene;
           if (sceneRef) sceneRef.current = scene;
+          // The settings may have changed while the scene module was still
+          // loading; the appearance effect fires on settings change but a
+          // still-null controller swallows that call. Always reapply the
+          // latest settings once the controller exists.
+          scene.configure(latest.current.settings);
           scene.update(
             latest.current.leaves,
             latest.current.activeId,

@@ -62,6 +62,10 @@ type Tones = {
 
 const hsl = { h: 0, s: 0, l: 0 };
 const white = new THREE.Color("#ffffff");
+// Dark skies lift toward a moonlit periwinkle instead of pure white: in the
+// linear working space a white mix on a near-black base turns the dome grey
+// instead of night.
+const moonlit = new THREE.Color("#93a1de");
 
 // HSL shifts are taken in sRGB so a pale blossom sky and a deep night sky
 // respond predictably, rather than drifting in the linear working space.
@@ -80,8 +84,9 @@ function tonesFor(settings: TreeSettings, out: Tones) {
   const palette = treePalettes[settings.palette],
     base = new THREE.Color(palette.background),
     grass = new THREE.Color(palette.grass),
-    light = base.getHSL(hsl).l;
-  out.horizon.copy(base).lerp(white, 0.2);
+    light = base.getHSL(hsl).l,
+    dark = light <= 0.45;
+  out.horizon.copy(base).lerp(dark ? moonlit : white, dark ? 0.35 : 0.2);
   // Light skies deepen upward; the night palette only needs a touch less
   // brightness, or it turns black and swallows the light of the canopy.
   shift(out.zenith.copy(base), 0.01, 0.04, light > 0.45 ? -0.14 : -0.08);
