@@ -740,6 +740,17 @@ export function insertLeaf(
   });
 }
 
+export function emptyTreeStats(): TreeStats {
+  return {
+    total: 0,
+    today: 0,
+    demo: 0,
+    categories: Object.fromEntries(
+      themes.map((t) => [t.id, 0]),
+    ) as Record<Theme, number>,
+  };
+}
+
 export function treeStats(): Promise<TreeStats> {
   return q<{ category: string; count: string }>(
     "select category, count(*) as count from approved_leaves where status='approved' group by category",
@@ -803,14 +814,7 @@ export async function snapshot(): Promise<TreeSnapshot> {
   try {
     stats = await treeStats();
   } catch {
-    stats = {
-      total: 0,
-      today: 0,
-      demo: 0,
-      categories: Object.fromEntries(
-        themes.map((t) => [t.id, 0]),
-      ) as Record<Theme, number>,
-    };
+    stats = emptyTreeStats();
   }
   let leaves: Leaf[] = [];
   try {
@@ -1126,7 +1130,7 @@ export function seedDemo() {
             theme.id,
             theme.message,
             theme.path,
-            "An illustrative contribution for the hackathon demonstration.",
+            "An illustrative contribution for the BI Tree demonstration.",
             new Date(
               Date.now() - (24 - round * 6 - themes.indexOf(theme)) * 60000,
             ).toISOString(),

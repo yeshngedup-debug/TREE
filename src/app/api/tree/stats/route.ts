@@ -1,7 +1,11 @@
-import { treeStats } from "@/server/db";
+import { emptyTreeStats, treeStats } from "@/server/db";
 import { noStore } from "@/server/http";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET() {
-  return Response.json(await treeStats(), { headers: noStore });
+  try {
+    return Response.json(await treeStats(), { headers: noStore });
+  } catch {
+    return Response.json(emptyTreeStats(), { headers: noStore });
+  }
 }
