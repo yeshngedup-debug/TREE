@@ -36,7 +36,7 @@ import {
 type Notice = { count: number; leaf: Leaf };
 
 export function DisplayScreen() {
-  const { tree, connection } = useTree({ cache: true });
+  const { tree, connection, ready } = useTree({ cache: true });
   const scene = useRef<SceneController | null>(null);
   const [rotating, setRotating] = useState(true);
   const [arrivalIds, setArrivalIds] = useState<string[]>([]);
@@ -97,7 +97,10 @@ export function DisplayScreen() {
     return () => clearTimeout(timer);
   }, [notice]);
   useEffect(() => {
-    if (!tree) return;
+    // Wait for a real snapshot before priming. The hook mounts with an empty
+    // placeholder tree, and treating that placeholder as the baseline makes
+    // every existing leaf look like a fresh arrival on reload.
+    if (!ready || !tree) return;
     available.current = new Set(tree.leaves.map((leaf) => leaf.id));
     if (!initialized.current || (!synced.current && connection === "live")) {
       initialized.current = true;
@@ -141,7 +144,7 @@ export function DisplayScreen() {
     setFeatured((previous) =>
       previous && !available.current.has(previous.id) ? null : previous,
     );
-  }, [tree, connection]);
+  }, [tree, connection, ready]);
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -350,16 +353,27 @@ export function DisplayScreen() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <span className="kiosk-caption-count">
-              <motion.strong
-                key={lastArrival}
-                initial={{ scale: 1.2, opacity: 0.4 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 14 }}
-              >
-                {tree?.total ?? 0}
-              </motion.strong>
-              <span>{tree?.total === 1 ? "hope" : "hopes"} taking root</span>
+            <span className="kiosk-caption-count" aria-busy={!ready}>
+              {ready ? (
+                <>
+                  <motion.strong
+                    key={lastArrival}
+                    initial={{ scale: 1.2, opacity: 0.4 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                  >
+                    {tree?.total ?? 0}
+                  </motion.strong>
+                  <span>
+                    {tree?.total === 1 ? "hope" : "hopes"} taking root
+                  </span>
+                </>
+              ) : (
+                <span className="kiosk-caption-loading">
+                  <span className="kiosk-caption-pulse" aria-hidden="true" />
+                  Counting the canopy
+                </span>
+              )}
             </span>
             <span className="kiosk-caption-divider" aria-hidden="true">
               ·
@@ -574,8 +588,13 @@ export function DisplayScreen() {
                     ? joinUrl.replace(/^https?:\/\//, "")
                     : "Come back shortly"}
                 </span>
+                {connection !== "live" ? (
+                  <span className="kiosk-qr-status">
+                    Connection paused · the tree will catch up
+                  </span>
+                ) : null}
               </div>
-              {joinUrl && (
+              {joinUrl ? (
                 <Link
                   href="/join"
                   className="kiosk-qr"
@@ -583,13 +602,17 @@ export function DisplayScreen() {
                 >
                   <QRCodeSVG
                     value={joinUrl}
-                    size={252}
-                    marginSize={2}
+                    size={420}
+                    marginSize={3}
                     fgColor="#171b12"
                     bgColor="#ffffff"
                     title="Scan to add your hope"
                   />
                 </Link>
+              ) : (
+                <div className="kiosk-qr kiosk-qr-pending" role="status">
+                  <span className="sr-only">Preparing the scan link</span>
+                </div>
               )}
             </motion.section>
           </div>
