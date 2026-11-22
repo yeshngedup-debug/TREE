@@ -4,6 +4,7 @@ import "./globals.css";
 import "./surface.css";
 import "./redesign.css";
 import { HydrationCompatibility } from "@/components/hydration-compat";
+import { Interactive3D } from "@/components/interactive-3d";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -70,7 +71,10 @@ export default function RootLayout({
       <head>
         <HydrationCompatibility />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Interactive3D />
+      </body>
     </html>
   );
 }
