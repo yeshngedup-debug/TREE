@@ -1,7 +1,10 @@
-/* BI Tree redesign: a shared visual language across the canopy, grove, guide and kiosk. */
+/* BI Tree redesign: one tree-first visual language across the canopy, grove, guide and kiosk.
+   Route stylesheets (home.css, discover.css, explore.css) load after this file, so every
+   override of theirs is scoped under its shell class to win on specificity, not on order. */
 :root {
   --tree-ink: #17241b;
   --tree-forest: #12231a;
+  --tree-night: #0f1a13;
   --tree-moss: #263d2e;
   --tree-paper: #f3f0e5;
   --tree-cream: #fbf9f0;
@@ -10,148 +13,203 @@
   --tree-ease: cubic-bezier(.22, 1, .36, 1);
 }
 html { scroll-padding-top: 6rem; }
-body { background: var(--tree-paper); }
 :where(a, button, input, textarea, select, summary) { -webkit-tap-highlight-color: transparent; }
 :where(a, button, input, textarea, select, summary):focus-visible { outline: 2px solid #6d8d45; outline-offset: 3px; }
 
-/* A quiet, consistent navigation bar with the anonymous hope as the main action. */
-.site-header { max-width: 1540px; padding-top: 10px; }
-.site-header-bar { min-height: 60px; padding: 7px 8px 7px 15px; border: 1px solid rgba(32, 49, 37, .08); background: rgba(250, 249, 242, .91); box-shadow: 0 12px 32px rgba(18, 35, 26, .08); }
-.site-header-nav { background: rgba(18, 35, 26, .045); }
-.site-header-link { min-height: 42px; }
+/* ---------------------------------------------------------------------------
+   Header: one floating bar everywhere, with the anonymous hope as the main action.
+--------------------------------------------------------------------------- */
+.site-header { max-width: 1540px; }
+.site-header-bar { border: 1px solid rgba(32, 49, 37, .08); background: rgba(250, 249, 242, .9); box-shadow: 0 12px 32px rgba(18, 35, 26, .1); }
 .site-header-link[aria-current="page"] { background: var(--tree-forest); color: var(--tree-cream); }
 .site-header-actions { gap: 6px; }
-.site-header-grow, .site-header-idea { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; padding: 0 16px; font-size: 12px; font-weight: 550; text-decoration: none; transition: background-color .2s ease, color .2s ease, transform .2s ease; }
+.site-header-grow,
+.site-header-idea { display: inline-flex; min-height: 44px; flex: none; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; padding: 0 16px; font-size: 12px; font-weight: 550; white-space: nowrap; text-decoration: none; transition: background-color .2s ease, color .2s ease, transform .2s var(--tree-ease); }
 .site-header-grow { background: var(--tree-forest); color: var(--tree-cream); }
 .site-header-grow:hover { background: var(--tree-moss); transform: translateY(-1px); }
-.site-header-idea { background: transparent; color: var(--tree-ink); }
-.site-header-idea:hover { background: rgba(18,35,26,.07); }
-.site-header-grow svg, .site-header-idea svg { flex: none; }
-@media (max-width: 1023px) {
-  .site-header { width: calc(100% - 20px); }
-  .site-header-bar { row-gap: 7px; }
-  .site-header-nav { gap: 2px; }
-  .site-header-link { min-height: 38px; }
+.site-header-idea { background: transparent; color: var(--tree-ink); box-shadow: inset 0 0 0 1px rgba(23, 36, 27, .16); }
+.site-header-idea:hover { background: rgba(18, 35, 26, .07); }
+.site-header-grow svg,
+.site-header-idea svg { flex: none; }
+
+/* The shared surface pages used to wrap the bar in a second pill; keep a single bar. */
+.surface-shell .site-header { display: block; width: 100%; max-width: 1540px; margin: 0 auto; padding: 10px 12px 0; border-radius: 0; background: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.surface-shell .site-header .site-header-bar a.site-header-grow,
+.surface-shell .site-header .site-header-bar a.site-header-grow:hover { background: var(--tree-forest); color: var(--tree-cream); }
+.surface-shell .site-header .site-header-bar a.site-header-grow:hover { background: var(--tree-moss); }
+.surface-shell .site-header .site-header-bar a.site-header-idea[aria-label="Share an idea"] { min-height: 44px; padding: 0 16px; gap: 7px; background: transparent; color: var(--tree-ink); font-weight: 550; }
+.surface-shell .site-header .site-header-bar a.site-header-idea[aria-label="Share an idea"]:hover { background: rgba(18, 35, 26, .07); transform: none; }
+
+/* The idea label gives way first, then the hope label, so the bar never overflows. */
+@media (max-width: 1279px) {
+  .site-header-idea,
+  .surface-shell .site-header .site-header-bar a.site-header-idea[aria-label="Share an idea"] { width: 44px; min-width: 44px; padding: 0; }
+  .site-header-idea span,
+  .surface-shell .site-header .site-header-bar a.site-header-idea[aria-label="Share an idea"] span { display: none; }
+}
+@media (min-width: 1024px) and (max-width: 1179px) {
+  .site-header-brand-sub { display: none; }
 }
 @media (max-width: 639px) {
-  .site-header-grow, .site-header-idea { width: 42px; min-width: 42px; min-height: 42px; padding: 0; }
-  .site-header-grow span, .site-header-idea span { display: none; }
-  .site-header-nav { overflow-x: auto; }
-  .site-header-link { flex: 0 0 auto; padding-inline: 12px; }
+  .site-header-grow { width: 44px; min-width: 44px; padding: 0; }
+  .site-header-grow span { display: none; }
 }
-@media (max-width: 359px) {
-  .site-header-bar { padding-inline: 8px; }
-  .site-header-link { padding-inline: 8px; font-size: 11px; }
+@media (min-width: 768px) {
+  .surface-shell .site-header { padding-inline: 20px; }
+}
+@media (min-width: 1024px) {
+  .surface-shell .site-header { padding-inline: 32px; }
 }
 
-/* Home: the tree is the setting, not a card beside the copy. */
-.home-hero { position: relative; width: 100%; max-width: none; height: min(920px, calc(100svh - 84px)); min-height: 620px; margin: 0; padding: 0; }
-.home-hero-card { display: block; height: 100%; min-height: 0; padding: 0; border-radius: 0; background: #122018; }
-.home-hero-card::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(14,26,19,.93) 0%, rgba(14,26,19,.76) 31%, rgba(14,26,19,.24) 62%, rgba(14,26,19,.05) 100%), linear-gradient(0deg, rgba(14,26,19,.43), transparent 34%); }
-.hero-tree-frame { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; border-radius: 0; background: radial-gradient(ellipse at 70% 15%, #b8cdb5, #809b7b 48%, #253d2d 100%); box-shadow: none; }
-.hero-tree-canvas { width: 100%; height: 100%; }
-.hero-tree-atmosphere { opacity: .18; mix-blend-mode: screen; background: radial-gradient(45% 45% at 70% 18%, rgba(247,237,196,.46), transparent 76%), linear-gradient(0deg, rgba(18,35,26,.38), transparent 46%); }
-.hero-tree-frame::after { background: radial-gradient(40% 42% at 70% 15%, rgba(251,249,240,.3), transparent 77%), linear-gradient(0deg, rgba(18,35,26,.32), transparent 34%); mix-blend-mode: normal; }
-.hero-copy { z-index: 8; width: min(58%, 760px); min-height: 100%; padding: clamp(32px, 7vw, 110px); }
-.hero-kicker { color: rgba(251,249,240,.76); letter-spacing: .12em; text-transform: uppercase; }
-.hero-title { max-width: 11ch; margin-top: 25px; font-size: clamp(3.2rem, 7.3vw, 7.2rem); line-height: .91; letter-spacing: -.055em; }
-.hero-highlight { color: var(--tree-lime); }
-.hero-highlight::after { height: .055em; background: var(--tree-lime); opacity: .8; }
-.hero-description { max-width: 38ch; margin-top: 24px; color: rgba(251,249,240,.82); font-size: clamp(.95rem, 1.25vw, 1.1rem); line-height: 1.7; }
-.home-hero nav[aria-label="Choose your way into the tree"] { position: relative; z-index: 9; max-width: 480px; margin-top: 24px; }
-.home-hero nav[aria-label="Choose your way into the tree"] > div { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); gap: 8px; }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"], .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { display: flex; min-height: 72px; align-items: center; gap: 12px; padding: 12px 15px; border: 1px solid rgba(251,249,240,.24); border-radius: 18px; color: var(--tree-cream); text-decoration: none; backdrop-filter: blur(12px); transition: transform .24s var(--tree-ease), background-color .24s ease, border-color .24s ease; }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] { background: var(--tree-lime); border-color: var(--tree-lime); color: var(--tree-ink); }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { background: rgba(18,35,26,.35); }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"]:hover, .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"]:hover { transform: translateY(-2px); }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"]:hover { background: rgba(251,249,240,.12); border-color: rgba(251,249,240,.5); }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] strong, .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] strong { display: block; font-size: 13px; font-weight: 600; }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] small, .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] small { display: block; margin-top: 3px; font-size: 10px; line-height: 1.35; opacity: .74; }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] > svg:first-child { color: var(--tree-forest); }
-.home-hero nav[aria-label="Choose your way into the tree"] a[href="/explore"] { display: inline-flex; min-height: 42px; align-items: center; gap: 7px; margin-top: 7px; color: rgba(251,249,240,.86); font-size: 12px; text-underline-offset: 4px; }
-.hero-tree-link { z-index: 8; }
-.hero-tree-hint { z-index: 8; }
-.hero-tree-frame .tree-camera-controls { z-index: 9; right: 14px; bottom: 64px; background: rgba(18,35,26,.56); }
-.home-marquee { padding-block: 22px; }
-.home-section { max-width: 1320px; }
-.home-section .home-eyebrow, .home-section .home-text-link { color: #435247; }
-.home-section .home-h2 { max-width: 18ch; }
-.canopy-card { border-radius: 24px; box-shadow: 0 8px 28px rgba(23,36,27,.035); }
-.canopy-card:hover { box-shadow: 0 18px 42px rgba(23,36,27,.1); }
-.theme-slice { border-radius: 24px; }
+/* ---------------------------------------------------------------------------
+   Home: the tree is the setting. The header floats over it, the copy sits in
+   the dark left field and the canopy emerges from the right.
+--------------------------------------------------------------------------- */
+.home-shell .home-hero { position: relative; height: 100svh; min-height: 640px; max-width: none; margin: calc(-1 * var(--home-header)) 0 0; padding: 0 8px 8px; }
+.home-shell .home-hero-card { display: block; height: 100%; padding: 0; border-radius: 0 0 34px 34px; background: var(--tree-night); }
+.home-shell .home-hero-card::before { opacity: .3; }
+.home-shell .hero-tree-frame { position: absolute; inset: 0; z-index: 1; width: auto; height: auto; border-radius: inherit; background: radial-gradient(72% 82% at 78% 34%, #2f4d39 0%, #182a1f 56%, var(--tree-night) 100%); box-shadow: none; }
+.home-shell .home-tree { border-radius: inherit; }
+.home-shell .hero-tree-frame::after { content: none; }
+.home-shell .hero-tree-frame::before { box-shadow: none; background: linear-gradient(0deg, rgba(15, 26, 19, .42), transparent 24%); }
+.home-shell .hero-tree-canvas,
+.home-shell .hero-tree-atmosphere { position: absolute; inset: 0 0 0 34%; width: auto; height: auto; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 30%); mask-image: linear-gradient(90deg, transparent 0, #000 30%); }
+.home-shell .hero-tree-atmosphere { opacity: .38; }
+.home-shell .hero-copy { position: relative; z-index: 8; width: min(50%, 700px); height: 100%; justify-content: center; padding: calc(var(--home-header) + 12px) 0 64px clamp(28px, 6vw, 96px); }
+.home-shell .hero-kicker { color: rgba(251, 249, 240, .78); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+.home-shell .hero-title { margin-top: 24px; font-size: clamp(2.9rem, 5vw, 5rem); line-height: .96; letter-spacing: -.045em; }
+.home-shell .hero-highlight { color: var(--tree-lime); }
+.home-shell .hero-description { max-width: 38ch; margin-top: 24px; color: rgba(251, 249, 240, .84); font-size: clamp(.95rem, 1.2vw, 1.08rem); line-height: 1.7; }
 
-/* Story cards make the hope-to-action journey legible without another tutorial. */
-.home-story { width: 100%; max-width: 1320px; margin: 0 auto; padding: clamp(40px,7vw,88px) 24px; }
-.home-story-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 28px; }
-.home-story-card { min-height: 230px; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; border: 1px solid var(--tree-line); border-radius: 22px; background: var(--tree-cream); color: var(--tree-ink); }
-.home-story-card:nth-child(2) { background: #e8ecdf; }
-.home-story-card:nth-child(3) { background: var(--tree-forest); color: var(--tree-cream); }
-.home-story-number { font-size: 11px; letter-spacing: .12em; color: #697765; }
-.home-story-card h3 { max-width: 16ch; margin: 25px 0 0; font-size: clamp(1.25rem,2vw,1.7rem); line-height: 1.08; }
-.home-story-card p { margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: #59665a; }
-.home-story-card:nth-child(3) p { color: rgba(251,249,240,.72); }
-.home-statement .statement-card { border-radius: 30px; background: var(--tree-forest); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] { position: relative; max-width: 500px; margin-top: 26px; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] > div { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 8px; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"],
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { display: flex; min-width: 0; min-height: 74px; align-items: center; gap: 12px; padding: 12px 15px; border: 1px solid rgba(251, 249, 240, .24); border-radius: 18px; color: var(--tree-cream); text-decoration: none; transition: transform .24s var(--tree-ease), background-color .24s ease, border-color .24s ease, box-shadow .24s ease; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] { background: var(--tree-lime); border-color: var(--tree-lime); color: var(--tree-ink); box-shadow: 0 14px 40px rgba(215, 237, 146, .2); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { background: rgba(251, 249, 240, .07); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"]:hover,
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"]:hover { transform: translateY(-2px); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"]:hover { box-shadow: 0 18px 48px rgba(215, 237, 146, .32); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"]:hover { background: rgba(251, 249, 240, .14); border-color: rgba(251, 249, 240, .5); }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a > span { min-width: 0; flex: 1; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a > svg { flex: none; color: currentColor; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a strong { display: block; font-size: 14px; font-weight: 600; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a small { display: block; margin-top: 3px; font-size: 11px; line-height: 1.35; opacity: .78; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/explore"] { display: inline-flex; min-height: 44px; align-items: center; gap: 7px; margin-top: 6px; color: rgba(251, 249, 240, .88); font-size: 12.5px; text-decoration: underline; text-decoration-color: rgba(251, 249, 240, .35); text-underline-offset: 5px; }
+.home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/explore"]:hover { color: var(--tree-lime); text-decoration-color: currentColor; }
 
-/* Shared pages: one readable paper-and-forest system for forms, stories and tools. */
-.surface-shell, .discover-shell, .explore-shell { background: var(--tree-paper); color: var(--tree-ink); }
-.surface-shell .site-header, .discover-shell .site-header, .explore-shell .site-header { margin-top: 8px; }
-.surface-shell .site-header-bar, .discover-shell .site-header-bar, .explore-shell .site-header-bar { border-radius: 22px; }
-.surface-shell .community-panel, .surface-shell .post-article, .surface-shell .profile-head, .surface-shell .visitor-access, .surface-shell .join-receipt { border: 1px solid rgba(23,36,27,.08); box-shadow: 0 18px 50px rgba(23,36,27,.055); }
-.surface-shell .community-panel { border-radius: 28px; }
-.surface-shell .community-card { border: 1px solid rgba(23,36,27,.07); border-radius: 22px; }
-.surface-shell .community-card:hover { transform: translateY(-3px); }
-.surface-shell .community-field input, .surface-shell .community-field textarea, .surface-shell .community-field select, .surface-shell .surface-join textarea, .surface-shell .visitor-input { border: 1px solid rgba(23,36,27,.13); background: #fffefa; color: #17241b; }
-.surface-shell .surface-join .join-preview { border: 1px solid rgba(23,36,27,.1); }
-.surface-shell .surface-join .join-form > :is(div,form) { animation: branch-arrive .36s var(--tree-ease) both; }
-.surface-shell .join-receipt { animation: branch-arrive .42s var(--tree-ease) both; }
-.surface-shell .community-submit, .surface-shell [data-slot="button"].bg-primary { transition: transform .2s var(--tree-ease), background-color .2s ease; }
-.surface-shell .community-submit:hover:not(:disabled), .surface-shell [data-slot="button"].bg-primary:hover { transform: translateY(-1px); }
-.surface-shell .post-article { border-radius: 30px; }
-.surface-shell .comment-section { border-top: 1px solid var(--tree-line); }
+/* Quiet tree controls: present, small, and out of the way of the copy. */
+.home-shell .hero-tree-link { left: auto; right: 16px; bottom: 16px; z-index: 7; }
+.home-shell .hero-tree-frame .tree-camera-controls { right: 16px; bottom: 66px; border-radius: 999px; background: rgba(15, 26, 19, .5); opacity: .72; transition: opacity .2s ease; }
+.home-shell .hero-tree-frame .tree-camera-controls:hover,
+.home-shell .hero-tree-frame .tree-camera-controls:focus-within { opacity: 1; }
+.home-shell .hero-tree-frame .tree-camera-controls > span { display: none; }
+.home-shell .hero-tree-frame .tree-camera-controls button { border-radius: 999px; }
+.hero-scroll { position: absolute; left: clamp(28px, 6vw, 96px); bottom: 18px; z-index: 9; display: inline-flex; min-height: 40px; align-items: center; gap: 8px; color: rgba(251, 249, 240, .72); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+.hero-scroll:hover { color: var(--tree-lime); }
+.hero-scroll svg { animation: hero-nudge 2.2s ease-in-out infinite; }
+.hero-arrival { position: absolute; right: 16px; top: calc(var(--home-header) + 14px); z-index: 9; display: inline-flex; max-width: min(320px, calc(100% - 32px)); align-items: center; gap: 9px; padding: 9px 14px; border-radius: 999px; background: rgba(15, 26, 19, .7); color: var(--tree-cream); font-size: 12px; animation: branch-arrive .5s var(--tree-ease) backwards; }
+.hero-arrival-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--tree-lime); box-shadow: 0 0 0 0 rgba(215, 237, 146, .6); animation: arrival-ring 1.6s ease-out infinite; }
 
-/* Discover and Explore begin in the same forest-lit field guide. */
-.discover-hero-grid, .explore-hero-grid { overflow: hidden; border-radius: 30px; background: var(--tree-forest); color: var(--tree-cream); box-shadow: 0 24px 70px rgba(18,35,26,.14); }
-.discover-hero-grid { padding: clamp(24px,4vw,54px); }
-.discover-copy, .explore-copy { color: var(--tree-cream); }
-.discover-title, .explore-title { color: var(--tree-cream); }
-.discover-kicker, .explore-kicker { color: rgba(251,249,240,.72); }
-.discover-lede, .explore-lede { color: rgba(251,249,240,.76); }
-.discover-shell .discover-cta-secondary, .explore-shell .explore-cta-secondary { color: var(--tree-cream); }
-.discover-shell .grove-card { border: 1px solid rgba(251,249,240,.08); box-shadow: none; }
-.discover-shell .discover-filters { border: 1px solid rgba(23,36,27,.08); border-radius: 18px; box-shadow: 0 12px 32px rgba(23,36,27,.05); }
-.discover-shell .community-card { border: 1px solid rgba(23,36,27,.07); border-radius: 20px; }
-.explore-hero-grid { padding: clamp(22px,3vw,38px); }
-.explore-photo-frame { border-radius: 22px; box-shadow: none; }
-.explore-shell .place-card { border: 1px solid rgba(23,36,27,.07); border-radius: 20px; }
-.explore-shell .guide-panel-card { border-radius: 28px; }
-.explore-shell .explore-closing-card { border-radius: 28px; }
+.home-shell .home-section { max-width: 1320px; }
+.home-shell .canopy-card { border-radius: 24px; transition: transform .3s var(--tree-ease), box-shadow .3s ease; }
+.home-shell .canopy-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px rgba(23, 36, 27, .1); }
+.home-shell .theme-slice { border-radius: 24px; }
+.home-shell .statement-card { border-radius: 30px; background: var(--tree-forest); }
 
-/* Public tree kiosk: keep attention on the canopy and let the controls recede. */
-.kiosk-shell .kiosk-controls { border: 1px solid rgba(255,255,255,.2); background: rgba(18,35,26,.48); box-shadow: 0 8px 26px rgba(8,16,12,.12); }
-.kiosk-shell .kiosk-controls button { transition: background-color .2s ease, transform .2s var(--tree-ease); }
-.kiosk-shell .kiosk-controls button:hover { transform: translateY(-1px); }
-.kiosk-shell .kiosk-qr { border-radius: 14px; }
+/* Story cards: how a hope becomes a leaf, in three beats. */
+.home-story { width: 100%; max-width: 1320px; margin: 0 auto; padding: clamp(48px, 7vw, 96px) 20px clamp(16px, 3vw, 32px); }
+.home-story-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 28px 0 0; padding: 0; list-style: none; }
+.home-story-card { position: relative; display: flex; min-height: 240px; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 24px; border: 1px solid var(--tree-line); border-radius: 24px; background: var(--tree-cream); color: var(--tree-ink); transition: transform .3s var(--tree-ease), box-shadow .3s ease; }
+.home-story-card:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(23, 36, 27, .1); }
+.home-story-card:nth-child(2) { background: #e6ecd9; }
+.home-story-card:nth-child(3) { border-color: transparent; background: var(--tree-forest); color: var(--tree-cream); }
+.home-story-top { display: flex; align-items: center; justify-content: space-between; }
+.home-story-number { font-size: 11px; letter-spacing: .14em; color: #5d6b5c; }
+.home-story-card:nth-child(3) .home-story-number { color: rgba(251, 249, 240, .7); }
+.home-story-icon { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; background: rgba(23, 36, 27, .07); }
+.home-story-card:nth-child(3) .home-story-icon { background: rgba(215, 237, 146, .16); color: var(--tree-lime); }
+.home-story-card h3 { max-width: 16ch; margin: 28px 0 0; font-size: clamp(1.3rem, 2vw, 1.75rem); line-height: 1.08; letter-spacing: -.02em; }
+.home-story-card p { margin: 10px 0 0; font-size: 13.5px; line-height: 1.6; color: #4f5c50; }
+.home-story-card:nth-child(3) p { color: rgba(251, 249, 240, .78); }
 
-@keyframes branch-arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 767px) {
-  .home-hero { height: calc(100svh - 110px); min-height: 630px; }
-  .home-hero-card::after { background: linear-gradient(180deg, rgba(14,26,19,.78) 0%, rgba(14,26,19,.58) 44%, rgba(14,26,19,.08) 100%), linear-gradient(0deg, rgba(14,26,19,.36), transparent 40%); }
-  .hero-copy { width: 100%; min-height: 0; height: auto; padding: clamp(26px,8vw,54px) 22px 0; }
-  .hero-title { max-width: 10ch; margin-top: 16px; font-size: clamp(2.8rem,12vw,4.4rem); }
-  .hero-description { max-width: 34ch; margin-top: 14px; font-size: 13px; }
-  .home-hero nav[aria-label="Choose your way into the tree"] { max-width: 100%; margin-top: 16px; }
-  .home-hero nav[aria-label="Choose your way into the tree"] > div { grid-template-columns: minmax(0,1fr); gap: 6px; }
-  .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"], .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { min-height: 58px; padding: 8px 12px; border-radius: 15px; }
-  .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"] small, .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] small { font-size: 10px; }
-  .hero-tree-frame .tree-camera-controls { right: 10px; bottom: 52px; }
-  .home-story-grid { grid-template-columns: minmax(0,1fr); }
-  .home-story-card { min-height: 170px; }
-  .discover-hero-grid, .explore-hero-grid { border-radius: 22px; }
-  .discover-hero-grid { padding: 22px 18px; }
-  .explore-hero-grid { padding: 18px; }
+  .home-shell .home-hero { height: max(100svh, 700px); min-height: 0; padding: 0 6px 6px; }
+  .home-shell .home-hero-card { border-radius: 0 0 26px 26px; }
+  .home-shell .hero-tree-canvas,
+  .home-shell .hero-tree-atmosphere { inset: 50% 0 0 0; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 26%); mask-image: linear-gradient(180deg, transparent 0, #000 26%); }
+  .home-shell .hero-copy { width: 100%; height: auto; justify-content: flex-start; padding: calc(var(--home-header) + 10px) 18px 0; }
+  .home-shell .hero-kicker { font-size: 10.5px; letter-spacing: .1em; }
+  .home-shell .hero-title { margin-top: 14px; font-size: clamp(2.2rem, 10.5vw, 3.4rem); }
+  .home-shell .hero-description { margin-top: 12px; font-size: 13px; line-height: 1.55; }
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] { max-width: 100%; margin-top: 16px; }
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] > div { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/join"],
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { min-height: 52px; padding: 8px 14px; border-radius: 16px; }
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] a[href="/create"] { background: rgba(15, 26, 19, .62); }
+  .home-shell .home-hero nav[aria-label="Choose your way into the tree"] a small { display: none; }
+  .home-shell .hero-tree-link { right: 10px; bottom: 10px; }
+  .home-shell .hero-tree-frame .tree-camera-controls { right: 10px; bottom: 52px; }
+  .hero-scroll { left: 16px; bottom: 8px; }
+  .hero-arrival { display: none; }
+  .home-story { padding-inline: 16px; }
+  .home-story-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-story-card { min-height: 0; gap: 8px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Shared pages: one readable paper-and-forest system for forms, stories and tools.
+--------------------------------------------------------------------------- */
+.surface-shell .community-panel,
+.surface-shell .post-article,
+.surface-shell .profile-head,
+.surface-shell .visitor-access,
+.surface-shell .join-receipt { border: 1px solid rgba(23, 36, 27, .08); box-shadow: 0 18px 50px rgba(23, 36, 27, .055); }
+.surface-shell .community-panel { border-radius: 28px; }
+.surface-shell .post-article { border-radius: 30px; }
+.surface-shell .community-card { border: 1px solid rgba(23, 36, 27, .07); border-radius: 22px; transition: transform .3s var(--tree-ease), box-shadow .3s ease; }
+.surface-shell .community-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(23, 36, 27, .09); }
+.surface-shell .community-field input,
+.surface-shell .community-field textarea,
+.surface-shell .community-field select,
+.surface-shell .surface-join textarea,
+.surface-shell .visitor-input { border: 1px solid rgba(23, 36, 27, .13); }
+.surface-shell .surface-join .join-preview { border: 1px solid rgba(23, 36, 27, .1); }
+.surface-shell .join-lifecycle-n { background: var(--tree-forest); color: var(--tree-lime); }
+
+.discover-shell .community-card,
+.explore-shell .place-card { transition: transform .3s var(--tree-ease), box-shadow .3s ease; }
+.discover-shell .community-card:hover,
+.explore-shell .place-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(23, 36, 27, .09); }
+.discover-shell .discover-cta-primary,
+.explore-shell .explore-cta-primary { box-shadow: 0 12px 30px rgba(18, 35, 26, .14); }
+
+/* Kiosk: the canopy keeps the attention; controls only respond a little more softly. */
+.kiosk-shell .kiosk-controls button { transition: background-color .2s ease, transform .2s var(--tree-ease); }
+
+/* ---------------------------------------------------------------------------
+   Motion: content arrives the way a branch settles. Fill mode is "backwards"
+   only, so nothing keeps a transform after it lands.
+--------------------------------------------------------------------------- */
+@keyframes branch-arrive { from { opacity: 0; transform: translateY(14px); } }
+@keyframes hero-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+@keyframes arrival-ring { to { box-shadow: 0 0 0 10px rgba(215, 237, 146, 0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .surface-shell .surface-hero-copy > *,
+  .surface-shell .join-intro > * { animation: branch-arrive .7s var(--tree-ease) backwards; }
+  .surface-shell .surface-hero-copy > :nth-child(2),
+  .surface-shell .join-intro > :nth-child(2) { animation-delay: .07s; }
+  .surface-shell .surface-hero-copy > :nth-child(3),
+  .surface-shell .join-intro > :nth-child(3) { animation-delay: .14s; }
+  .surface-shell .surface-hero-copy > :nth-child(n + 4),
+  .surface-shell .join-intro > :nth-child(n + 4) { animation-delay: .21s; }
+  .surface-shell .surface-hero-aside,
+  .surface-shell .join-flow { animation: branch-arrive .8s var(--tree-ease) .18s backwards; }
+  .surface-shell .join-receipt,
+  .surface-shell .join-preview { animation: branch-arrive .5s var(--tree-ease) backwards; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .surface-shell .join-form > :is(div,form), .surface-shell .join-receipt { animation: none; }
-  .site-header-grow, .site-header-idea, .home-story-card, .kiosk-shell .kiosk-controls button { transition: none; }
+  .hero-scroll svg, .hero-arrival, .hero-arrival-dot { animation: none; }
+  .site-header-grow, .site-header-idea, .home-story-card, .home-shell .canopy-card, .surface-shell .community-card, .discover-shell .community-card, .explore-shell .place-card, .kiosk-shell .kiosk-controls button { transition: none; }
+  .home-story-card:hover, .home-shell .canopy-card:hover, .surface-shell .community-card:hover, .discover-shell .community-card:hover, .explore-shell .place-card:hover { transform: none; }
 }
