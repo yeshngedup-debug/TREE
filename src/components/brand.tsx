@@ -8,6 +8,7 @@ import {
   ChevronDown,
   LogIn,
   LogOut,
+  PenLine,
   ShieldCheck,
   Sprout,
   UserRound,
@@ -39,6 +40,11 @@ export function SiteHeader() {
   const pathname = usePathname();
   const items = [
     {
+      href: "/",
+      label: "Home",
+      active: pathname === "/",
+    },
+    {
       href: "/discover",
       label: "Discover",
       active:
@@ -55,11 +61,6 @@ export function SiteHeader() {
       href: "/display",
       label: "Live tree",
       active: pathname.startsWith("/display"),
-    },
-    {
-      href: "/guidelines",
-      label: "Guidelines",
-      active: pathname.startsWith("/guidelines"),
     },
   ];
   return (
@@ -94,19 +95,19 @@ export function SiteHeader() {
         <div className="site-header-actions">
           <Link
             href="/join"
-            aria-label="Grow your leaf"
+            aria-label="Leave a hope"
             className="site-header-grow"
           >
             <Sprout size={16} aria-hidden="true" />
-            <span>Grow your leaf</span>
+            <span>Leave a hope</span>
           </Link>
           <Link
             href="/create"
             aria-label="Share an idea"
             className="site-header-idea"
           >
+            <PenLine size={15} aria-hidden="true" />
             <span>Share an idea</span>
-            <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
           <AccountMenu />
         </div>
@@ -201,7 +202,10 @@ function AccountMenu() {
     );
 
   return (
-    <details ref={menu} className="relative shrink-0">
+    <details
+      ref={menu}
+      className="relative shrink-0"
+    >
       <summary
         aria-label={`Account menu for ${account.displayName}`}
         onKeyDown={(event) => {
