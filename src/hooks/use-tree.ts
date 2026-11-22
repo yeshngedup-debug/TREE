@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TreeSnapshot } from "@/lib/catalog";
-import { themes, type Theme, type Leaf } from "@/lib/catalog";
+import { themes, type Theme } from "@/lib/catalog";
 import { fetchWithTimeout } from "@/lib/client";
 import { defaultTreeSettings } from "@/lib/tree-settings";
 export function useTree({ cache = false }: { cache?: boolean } = {}) {
+  // The initial placeholder and offline cache are not live server responses.
+  const latestLiveTime = useRef<number | null>(null);
   const [tree, setTree] = useState<TreeSnapshot>(() => ({
     leaves: [],
     total: 0,
@@ -34,6 +36,12 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
     let busy = false;
     function accept(data: TreeSnapshot) {
       if (!alive) return;
+      const timestamp = Date.parse(data.serverTime);
+      if (!Number.isFinite(timestamp) || !Array.isArray(data.leaves)) {
+        throw new Error("Invalid tree snapshot");
+      }
+      setConnection(navigator.onLine ? "live" : "reconnecting");
+      if (latestLiveTime.current !== null && timestamp < latestLiveTime.current) return;
       const safeData: TreeSnapshot = {
         ...data,
         stats: {
@@ -47,17 +55,12 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
           >,
         },
       };
-      setTree((previous) =>
-        !previous ||
-        Date.parse(data.serverTime) >= Date.parse(previous.serverTime)
-          ? safeData
-          : previous,
-      );
-      setConnection(navigator.onLine ? "live" : "reconnecting");
+      latestLiveTime.current = timestamp;
+      setTree(safeData);
       setReady(true);
       if (cache)
         try {
-          localStorage.setItem("bi-tree-cache", JSON.stringify(data));
+          localStorage.setItem("bi-tree-cache", JSON.stringify(safeData));
         } catch {
           /* optional cache */
         }
@@ -73,6 +76,7 @@ export function useTree({ cache = false }: { cache?: boolean } = {}) {
           Date.now() - Date.parse(stored.serverTime) < 86400000
         )
           setTimeout(() => {
+            if (!alive || latestLiveTime.current !== null) return;
             setTree(stored);
             setReady(true);
           }, 0);
