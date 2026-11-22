@@ -39,11 +39,6 @@ export function SiteHeader() {
   const pathname = usePathname();
   const items = [
     {
-      href: "/",
-      label: "Home",
-      active: pathname === "/",
-    },
-    {
       href: "/discover",
       label: "Discover",
       active:
@@ -98,9 +93,17 @@ export function SiteHeader() {
         </nav>
         <div className="site-header-actions">
           <Link
+            href="/join"
+            aria-label="Grow your leaf"
+            className="site-header-grow"
+          >
+            <Sprout size={16} aria-hidden="true" />
+            <span>Grow your leaf</span>
+          </Link>
+          <Link
             href="/create"
             aria-label="Share an idea"
-            className="site-header-share"
+            className="site-header-idea"
           >
             <span>Share an idea</span>
             <ArrowUpRight size={15} aria-hidden="true" />
@@ -198,10 +201,7 @@ function AccountMenu() {
     );
 
   return (
-    <details
-      ref={menu}
-      className="relative shrink-0"
-    >
+    <details ref={menu} className="relative shrink-0">
       <summary
         aria-label={`Account menu for ${account.displayName}`}
         onKeyDown={(event) => {
