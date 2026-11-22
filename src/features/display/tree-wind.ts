@@ -1,14 +1,12 @@
 import * as THREE from "three";
 import type { TreeSettings } from "@/lib/tree-settings";
 
-// WebGL adaptation of just-a-simple-tree's wind.js (MIT): height-weighted
-// downwind sway, independent branch beats, hanging lift, and leaf flutter.
-// The same field runs on the CPU for leaf hit targets and in the wood shader.
+// WebGL adaptation of just-a-simple-tree's wind.js (MIT). Branches, shadows
+// and the CPU leaf hit targets all share the same displacement field.
 export function createTreeWind(initial: TreeSettings) {
   let settings = initial;
   const uniforms = {
-    uTreeTime: { value: 0 },
-    uTreeWind: { value: 0 },
+    uTreeTime: { value: 0 }, uTreeWind: { value: 0 },
     uTreeSpeed: { value: initial.windSpeed },
     uTreeDirection: { value: THREE.MathUtils.degToRad(initial.windDirection) },
     uTreeHeight: { value: initial.size },
@@ -16,16 +14,12 @@ export function createTreeWind(initial: TreeSettings) {
   function configure(next: TreeSettings, height = uniforms.uTreeHeight.value) {
     settings = next;
     uniforms.uTreeSpeed.value = next.windSpeed;
-    uniforms.uTreeDirection.value = THREE.MathUtils.degToRad(
-      next.windDirection,
-    );
+    uniforms.uTreeDirection.value = THREE.MathUtils.degToRad(next.windDirection);
     uniforms.uTreeHeight.value = Math.max(1, height);
   }
   function update(now: number, reduced: boolean, gust = 0) {
     uniforms.uTreeTime.value = now / 1000;
-    uniforms.uTreeWind.value = reduced
-      ? 0
-      : settings.wind * settings.size * 0.17 * (1 + gust);
+    uniforms.uTreeWind.value = reduced ? 0 : settings.wind * settings.size * 0.17 * (1 + gust);
   }
   const source = `
     uniform float uTreeTime, uTreeWind, uTreeSpeed, uTreeDirection, uTreeHeight;
@@ -44,43 +38,41 @@ export function createTreeWind(initial: TreeSettings) {
     }
   `;
   function apply(material: THREE.Material) {
+    const bark = material instanceof THREE.MeshToonMaterial;
     material.onBeforeCompile = (shader) => {
       Object.assign(shader.uniforms, uniforms);
       shader.vertexShader = shader.vertexShader
-        .replace(
-          "#include <common>",
-          `#include <common>\n${source}\nattribute float swayLift;\nattribute vec2 swayDetail;`,
-        )
-        .replace(
-          "#include <begin_vertex>",
-          "#include <begin_vertex>\ntransformed += treeSway(transformed, swayLift, swayDetail);",
-        );
+        .replace("#include <common>", `#include <common>\n${source}\nattribute float swayLift;\nattribute vec2 swayDetail;\n${bark ? 'varying vec3 vBarkPosition;' : ''}`)
+        .replace("#include <begin_vertex>", `#include <begin_vertex>\n${bark ? 'vBarkPosition = position / max(uTreeHeight, 1.);' : ''}\ntransformed += treeSway(transformed, swayLift, swayDetail);`);
+      // Fixed in tree space, so grain stays on the trunk as it sways. Fade
+      // unresolved ridges rather than letting distant twigs sparkle.
+      if (bark) shader.fragmentShader = shader.fragmentShader
+        .replace("#include <common>", "#include <common>\nvarying vec3 vBarkPosition;")
+        .replace("#include <color_fragment>", `#include <color_fragment>
+          vec3 b = vBarkPosition;
+          float grainPhase = 270. * (b.x + .61*b.z) + 2.4*sin(14.*b.y + 23.*b.z) + .65*sin(49.*b.y);
+          float resolved = 1. - smoothstep(.5, 2.8, fwidth(grainPhase));
+          float groove = smoothstep(.22, .94, sin(grainPhase));
+          float barkBase = 1. - .55*smoothstep(.15,.83,b.y);
+          diffuseColor.rgb *= 1. + (.065 - .26*groove)*resolved*barkBase;
+        `);
     };
-    material.customProgramCacheKey = () => "bi-tree-branch-wind-v1";
+    material.customProgramCacheKey = () => bark ? "bi-tree-bark-wind-v2" : "bi-tree-depth-wind-v1";
   }
   const offset = new THREE.Vector3();
   function sample(p: THREE.Vector3, lift = 0, flex = 0, phase = 0) {
     const time = uniforms.uTreeTime.value * uniforms.uTreeSpeed.value,
       direction = uniforms.uTreeDirection.value,
-      x = Math.cos(direction),
-      z = Math.sin(direction),
-      spatial = (p.x * x + p.z * z) * 0.55 + p.y * 0.31,
-      gust =
-        0.65 +
-        0.3 * Math.sin(time * 1.37 - spatial) +
-        0.18 * Math.sin(time * 0.63 + spatial * 1.7),
-      bend = Math.max(0, (p.y + lift) / uniforms.uTreeHeight.value) ** 1.7,
-      cross = Math.sin(time * 0.87 + spatial * 0.8) * 0.18,
-      alongBeat = 0.4 + 0.6 * Math.sin(time * 2.6389 + phase),
-      acrossBeat = 0.45 * Math.sin(time * 1.9478 + phase + 2.1),
-      own = flex * gust * 0.6;
-    return offset
-      .set(
-        (x * gust - z * cross) * bend + (x * alongBeat - z * acrossBeat) * own,
-        0.2 * Math.sin(time * 3.5814 + phase + 4.2) * own,
-        (z * gust + x * cross) * bend + (z * alongBeat + x * acrossBeat) * own,
-      )
-      .multiplyScalar(uniforms.uTreeWind.value);
+      x = Math.cos(direction), z = Math.sin(direction),
+      spatial = (p.x*x + p.z*z)*0.55 + p.y*0.31,
+      gust = 0.65 + 0.3*Math.sin(time*1.37-spatial) + 0.18*Math.sin(time*0.63+spatial*1.7),
+      bend = Math.max(0, (p.y+lift)/uniforms.uTreeHeight.value)**1.7,
+      cross = Math.sin(time*0.87+spatial*0.8)*0.18,
+      alongBeat = 0.4+0.6*Math.sin(time*2.6389+phase),
+      acrossBeat = 0.45*Math.sin(time*1.9478+phase+2.1), own = flex*gust*0.6;
+    return offset.set((x*gust-z*cross)*bend+(x*alongBeat-z*acrossBeat)*own,
+      0.2*Math.sin(time*3.5814+phase+4.2)*own,
+      (z*gust+x*cross)*bend+(z*alongBeat+x*acrossBeat)*own).multiplyScalar(uniforms.uTreeWind.value);
   }
   return { uniforms, configure, update, apply, sample };
 }
