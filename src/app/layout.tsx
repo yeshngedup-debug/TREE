@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
 import "./globals.css";
 import "./surface.css";
+import "./redesign.css";
 import { HydrationCompatibility } from "@/components/hydration-compat";
 
 const outfit = Outfit({
